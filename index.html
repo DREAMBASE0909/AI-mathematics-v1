@@ -117,31 +117,40 @@ function updateMoney(){renderUpgradeOffer();updateLandButtons();$('balance').tex
 function footprintStyle(node,type,cell){const size=SIZES[type];node.style.left=(cell%COLS)/COLS*100+'%';node.style.top=Math.floor(cell/COLS)/ROWS*100+'%';node.style.width=size/COLS*100+'%';node.style.height=size/ROWS*100+'%'}
 function factoryArtwork(item){
  const level=levelOf(item),active=item.status==='active';
- const lamp=(x,y,color='#bcff90',delay=0)=>'<circle class="facility-light" style="animation-delay:'+delay+'s" cx="'+x+'" cy="'+y+'" r="2" fill="'+(active?color:'#8a948b')+'"/>';
- const shell=(x,y,w,h,roof,face,side)=>'<path d="M '+x+' '+y+' l '+w+' 0 7 -5 -'+w+' 0 Z" fill="'+roof+'"/><rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="3" fill="'+face+'"/><path d="M '+(x+w)+' '+y+' l 7 -5 v '+h+' l -7 5 Z" fill="'+side+'"/>';
- let art='<ellipse cx="60" cy="88" rx="44" ry="9" fill="#314732" opacity=".18"/>';
+ const lamp=(x,y,c='#baffab')=>'<circle class="facility-light" cx="'+x+'" cy="'+y+'" r="2" fill="'+(active?c:'#788578')+'"/>';
+ const box=(x,y,w,h,face,roof,side)=>'<path d="M'+x+' '+y+'l7 -5h'+w+'l-7 5Z" fill="'+roof+'"/><rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="2" fill="'+face+'"/><path d="M'+(x+w)+' '+y+'l7 -5v'+h+'l-7 5Z" fill="'+side+'"/>';
+ const rack=(x,y,w,h)=>{let a=box(x,y,w,h,'#426f7a','#c9e7df','#284852');for(let yy=y+6;yy<y+h-3;yy+=8)a+='<rect x="'+(x+3)+'" y="'+yy+'" width="'+(w-6)+'" height="5" rx="1" fill="#203d4c"/>'+lamp(x+w-6,yy+2.5);return a};
+ const tube=(x,y,w,h)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+w/3+'" fill="#4b91a6"/><ellipse cx="'+(x+w/2)+'" cy="'+y+'" rx="'+w/2+'" ry="7" fill="#dcf6ef"/><path d="M'+(x+4)+' '+(y+h*.4)+'h'+(w-8)+'m-'+(w-8)+' 7h'+(w-8)+'" stroke="#97dce0" stroke-width="3"/>';
+ const dome=(x,y,r,c)=>'<ellipse cx="'+x+'" cy="'+(y+3)+'" rx="'+r+'" ry="'+r*.45+'" fill="#536e71"/><path d="M'+(x-r)+' '+y+'a'+r+' '+r+' 0 0 1 '+r*2+' 0q-'+r+' '+r*.8+' -'+r*2+' 0" fill="'+c+'"/><path d="M'+(x-r+4)+' '+(y-3)+'q2 -8 8 -9" stroke="#ffffff99" stroke-width="3" fill="none" stroke-linecap="round"/>'+lamp(x,y+3);
+ let art='<ellipse cx="60" cy="89" rx="'+(level===1?35:51)+'" ry="8" fill="#314732" opacity=".18"/>';
  if(item.type==='matrix'){
-  const rows=level+2,top=73-rows*8;
-  art+=shell(39,top,35,rows*8+8,'#ddeceb','#416b73','#294b58');
-  for(let i=0;i<rows;i++){const y=top+5+i*8;art+='<rect x="43" y="'+y+'" width="27" height="6" rx="1.5" fill="#253e50"/><path d="M46 '+(y+3)+'h12" stroke="#769b9e" stroke-width="2"/>'+lamp(66,y+3,'#bbf891',i*.2)}
-  art+='<rect x="33" y="82" width="49" height="5" rx="2" fill="#d6ddcb"/>';
-  if(level>=3)art+='<path d="M57 '+(top-5)+'v-9" stroke="#456474" stroke-width="3"/>'+lamp(57,top-15,'#ffe38c');
+  if(level===1)art+=rack(43,51,29,32);
+  if(level===2)art+=rack(38,34,36,49);
+  if(level===3)art+=rack(24,42,28,42)+rack(59,26,29,58);
+  if(level>=4){art+='<path d="M10 85L60 64L111 83L63 96Z" fill="#b6cec1"/>';art+=rack(13,47,24,34)+rack(82,43,22,38)+rack(43,level===5?13:28,31,level===5?69:54);art+='<path d="M37 64h6m31 0h8" stroke="#91dbca" stroke-width="6"/>';}
+  if(level===5){art+='<path d="M45 9h34l-9 -7H54Z" fill="#f2d681"/><path d="M12 89l48 7 47 -9" stroke="#bff9d8" stroke-width="3" fill="none"/>';art+=lamp(61,8,'#fff4b6');}
  }else if(item.type==='language'){
-  art+='<path d="M35 65 Q60 44 85 64" stroke="#547b88" stroke-width="14" fill="none"/><path d="M35 61 Q60 40 85 60" stroke="#c9edf0" stroke-width="9" fill="none"/>';
-  for(const [x,y,h] of [[18,45,33],[70,37,41]]){art+='<rect x="'+x+'" y="'+y+'" width="31" height="'+h+'" rx="12" fill="#518c9e"/><ellipse cx="'+(x+15.5)+'" cy="'+y+'" rx="15.5" ry="9" fill="#def4ef"/><path d="M'+(x+5)+' '+(y+13)+'h21M'+(x+5)+' '+(y+22)+'h21" stroke="#8bc7d2" stroke-width="3"/>';for(let i=0;i<level;i++)art+=lamp(x+7+i*6,y+h-7,'#b8fff2',i*.3)}
-  if(level>=2)art+='<path d="M86 29V15m-7 4q7 -7 14 0m-17 -5q10 -9 20 0" stroke="#477788" stroke-width="2" fill="none"/>';
-  art+='<g class="data-message"><path d="M42 17h25a5 5 0 0 1 5 5v12a5 5 0 0 1 -5 5h-12l-7 6v-6h-6a5 5 0 0 1 -5 -5V22a5 5 0 0 1 5 -5" fill="#fff6cf"/><path d="M44 25h20m-20 6h13" stroke="#c89b52" stroke-width="3" stroke-linecap="round"/></g>';
+  if(level===1){art+='<path d="M45 67h29" stroke="#b3dfe1" stroke-width="8"/>';art+=tube(23,55,26,28)+tube(74,50,26,33);}
+  if(level===2){art+='<path d="M37 63Q60 31 86 60" stroke="#bedfe2" stroke-width="9" fill="none"/>';art+=tube(18,45,30,38)+tube(72,36,30,47);art+='<path d="M88 30V17m-8 4q8 -9 16 0" stroke="#396879" stroke-width="3" fill="none"/>';}
+  if(level>=3){art+='<ellipse cx="60" cy="83" rx="49" ry="10" fill="#bedbd3"/>';art+=tube(10,55,23,28)+tube(87,48,23,35)+tube(36,32,47,53);art+='<path d="M58 30V18" stroke="#3c7180" stroke-width="5"/><path d="M38 9Q52 42 79 12Z" fill="#e5f7e9" stroke="#7eb3bf" stroke-width="2"/><path d="M58 23l9 -17" stroke="#e5b95b" stroke-width="3"/>'+lamp(68,5,'#ffe593');}
+  if(level===4){art+='<path d="M12 50V16m94 26V9" stroke="#376980" stroke-width="4"/><path d="M4 20q8 -9 16 0m78 -5q8 -9 16 0" stroke="#b9f6f3" stroke-width="3" fill="none"/><path d="M31 67H89" stroke="#b8fff1" stroke-width="5"/>';art+=lamp(12,14,'#ffe196')+lamp(106,7,'#ffe196');}
+  if(level<=2)art+='<g class="data-message"><path d="M43 17h24v17H55l-7 6v-6h-5Z" fill="#fff0bf"/><path d="M48 23h14m-14 6h9" stroke="#b89142" stroke-width="2"/></g>';
  }else if(item.type==='gradient'){
-  const blocks=[[16,27,22,54],[43,43,22,38],[70,59,22,22]];
-  for(let i=0;i<blocks.length;i++){art+=shell(...blocks[i],'#e8dff8','#9788bd','#675986');const [x,y,w,h]=blocks[i];art+='<path d="M'+(x+5)+' '+(y+12)+'h12m-12 7h12" stroke="#c7bce3" stroke-width="3"/>';art+=lamp(x+11,y+5,'#ffe5a3',i*.45)}
-  art+='<path d="M29 17L57 33L84 49" fill="none" stroke="#f9e7a7" stroke-width="3" stroke-dasharray="4 4" class="data-flow"/>';
-  for(let i=1;i<level;i++)art+='<rect x="'+(19+i*20)+'" y="85" width="14" height="5" rx="2" fill="#d8c7ed"/>';
-  if(level>=3)art+='<path d="M28 18V9" stroke="#665681" stroke-width="3"/>'+lamp(28,7,'#ffe59a');
+  const blocks=level===1?[[28,54,18,29],[50,63,18,20],[72,71,18,12]]:level===2?[[19,32,23,51],[48,49,23,34],[77,65,23,18]]:[[16,24,25,59],[48,44,25,39],[80,64,25,19]];
+  if(level===4){art+='<path d="M8 80V19L54 8h44v70" fill="none" stroke="#574871" stroke-width="8"/><path d="M8 20L54 9h44" fill="none" stroke="#d8bbf6" stroke-width="4"/>';art+=box(88,23,16,45,'#76668e','#d1bbeb','#4e3f66');}
+  for(const [x,y,w,h] of blocks){art+=box(x,y,w,h,'#9780b7','#e6d7f5','#635180');art+='<path d="M'+(x+5)+' '+(y+9)+'h'+(w-10)+'" stroke="#dbc8eb" stroke-width="3"/>'+lamp(x+6,y+h-6,'#ffe9a1');}
+  if(level>=3){art+='<g class="data-message"><path d="M61 5l17 10 -17 10 -17 -10Z" fill="#ffe19b"/><path d="M44 15v9l17 10 17 -10v-9L61 25Z" fill="#bd82d5"/></g><path d="M60 34v11L88 57" stroke="#f8dfa2" stroke-width="3" stroke-dasharray="3 3" class="data-flow" fill="none"/>';art+='<rect x="25" y="86" width="68" height="5" rx="2" fill="#c8b0e3"/>';}
+  if(level===4)art+='<path d="M8 88h100" stroke="#ffdf8a" stroke-width="4"/><path d="M20 91h79" stroke="#9e77b7" stroke-width="3"/>';
  }else{
-  const domes=[[35,39,17,'#85c6b6'],[82,44,18,'#d8b36d'],[58,74,20,'#9caad8'],[24,73,12,'#85c6b6'],[93,76,12,'#d8b36d']];
-  const links='M35 39L58 74L82 44'+(level>=2?'M35 39L24 73':'')+(level>=3?'M82 44L93 76':'');
-  art+='<path d="'+links+'" stroke="#657f75" stroke-width="7" fill="none"/><path class="data-flow" d="'+links+'" stroke="#eaf4cb" stroke-width="2" stroke-dasharray="3 5" fill="none"/>';
-  for(const [x,y,r,color] of domes.slice(0,level+2)){art+='<ellipse cx="'+x+'" cy="'+(y+3)+'" rx="'+r+'" ry="'+(r*.45)+'" fill="#677978"/><path d="M'+(x-r)+' '+y+'a'+r+' '+r+' 0 0 1 '+(r*2)+' 0q-'+r+' '+(r*.8)+' -'+(r*2)+' 0" fill="'+color+'"/><path d="M'+(x-r+5)+' '+(y-4)+'q2 -9 9 -10" stroke="#ffffff99" stroke-width="3" fill="none" stroke-linecap="round"/>'+lamp(x,y+3,'#e8ffb1',x*.03)}
+  if(level===1){art+='<path d="M38 55L60 77L84 55" stroke="#dde8bc" stroke-width="5" fill="none"/>';art+=dome(38,55,14,'#8bc8b4')+dome(84,55,14,'#d9b66f')+dome(60,77,16,'#a0b1dc');}
+  else{
+   art+='<ellipse cx="60" cy="69" rx="49" ry="22" fill="none" stroke="#637c72" stroke-width="7"/><ellipse cx="60" cy="69" rx="49" ry="22" fill="none" stroke="#e8f1b6" stroke-width="2" stroke-dasharray="3 5" class="data-flow"/>';
+   art+=dome(28,48,14,'#8bc8b4')+dome(91,49,14,'#d9b66f');
+   if(level===2)art+=dome(60,66,23,'#a0b1dc');
+   else{art+=tube(39,29,43,42)+dome(60,29,22,'#c3c6ee');art+='<ellipse cx="60" cy="26" rx="30" ry="10" fill="none" stroke="#fae5a0" stroke-width="3"/><path d="M60 6V1" stroke="#685b99" stroke-width="3"/>'+lamp(60,3,'#ffe8b3');}
+   art+=dome(23,80,13,'#8bc8b4')+dome(96,80,13,'#d9b66f');
+   if(level===3)art+=dome(59,89,11,'#a0b1dc');
+  }
  }
  return '<span class="facility-art"><svg viewBox="0 0 120 100" aria-hidden="true">'+art+'</svg></span>';
 }
