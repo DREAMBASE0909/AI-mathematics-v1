@@ -87,7 +87,7 @@ function migrateLand(){
  for(const id of [...owned]){let row=2,col=1;while(row!==Math.floor(id/3)){row--;owned.add(row*3+col)}while(col!==id%3){col+=col<id%3?1:-1;owned.add(row*3+col)}}
  state.land=[...owned];
 }
-function updateLandButtons(){document.querySelectorAll('[data-land]').forEach(b=>{const id=Number(b.dataset.land),near=adjacentLand(id),cost=landCost();b.disabled=!near||state.balance<cost||!!(placing||moving);b.classList.toggle('affordable',near&&state.balance>=cost);b.innerHTML=near?'<strong>＋ 부지 구매</strong><span>'+cost.toLocaleString('ko-KR')+'원</span><small>7 × 6</small>':'<strong>잠긴 부지</strong><small>맞닿은 땅부터 구매하세요</small>'})}
+function updateLandButtons(){document.querySelectorAll('[data-land]').forEach(b=>{const id=Number(b.dataset.land),near=adjacentLand(id),cost=landCost();b.disabled=!near||state.balance<cost||!!(placing||moving);b.classList.toggle('affordable',near&&state.balance>=cost);b.innerHTML=near?'<strong>＋ 부지 구매</strong><span>'+cost.toLocaleString('ko-KR')+'원</span>':'<strong>잠긴 부지</strong><small>맞닿은 땅부터 구매하세요</small>'})}
 function renderLand(){for(let id=0;id<9;id++){if(state.land.includes(id))continue;const b=document.createElement('button');b.type='button';b.className='land-locked';b.dataset.land=id;b.style.left=(id%3*100/3)+'%';b.style.top=(Math.floor(id/3)*100/3)+'%';b.addEventListener('click',e=>{e.stopPropagation();buyLand(id)});$('factories').append(b)}updateLandButtons()}
 let pendingLand=null;
 function buyLand(id){if(placing||moving||!adjacentLand(id)||state.balance<landCost())return;const cost=landCost();state.balance-=cost;state.land.push(id);save();renderBoard()}
