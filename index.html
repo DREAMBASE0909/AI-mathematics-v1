@@ -323,14 +323,14 @@ function dataFlowLights(items,plan){
 function animateElectricity(items,plan){
  cancelAnimationFrame(electricFrameHandle);const tours=dataFlowCircuit(items,plan),pads=new Map();for(const v of items){if(v.cell<0)continue;for(let y=0;y<SIZES[v.type];y++)for(let x=0;x<SIZES[v.type];x++)pads.set(v.cell+y*COLS+x,v.uid)}
  function position(tour,d){const len=tour.length-1;d=((d%len)+len)%len;const i=Math.floor(d),f=d-i,a=tour[i],b=tour[i+1];return {x:a%COLS+.5+(b%COLS-a%COLS)*f,y:Math.floor(a/COLS)+.5+(Math.floor(b/COLS)-Math.floor(a/COLS))*f,a,b,f}}
- const arrivals=new Map(tours.map(tour=>[tour,tour.slice(0,-1).map((from,edge)=>({from,to:tour[edge+1],edge})).filter(v=>!pads.has(v.from)&&pads.has(v.to))]));
+ const arrivals=new Map(tours.map(tour=>[tour,tour.slice(0,-1).map((from,edge)=>({from,to:tour[edge+1],edge})).filter(v=>pads.has(v.to)&&pads.get(v.from)!==pads.get(v.to))]));
  window.renderElectricFrame=function(seconds){const packets=[],padBrightness=new Map();
  const xy=p=>p.x+','+p.y;
  for(const tour of tours){const len=tour.length-1,count=Math.max(1,Math.round(len/9));for(let j=0;j<count;j++){
  const distance=seconds*.9+j*len/count,trailLength=.95;let segment=[],segments=[];
  // Clip each part of the long pulse at the inset pad light, so the head is
  // absorbed first and the tail continues to approach instead of popping off.
- for(let offset=trailLength;offset>=-.001;offset-=.025){const q=position(tour,distance-offset),inside=pads.has(q.a)&&pads.has(q.b);if(inside){if(segment.length>1)segments.push(segment);segment=[]}else segment.push(q)}
+ for(let offset=trailLength;offset>=-.001;offset-=.025){const q=position(tour,distance-offset),inside=pads.has(q.a)&&pads.get(q.a)===pads.get(q.b);if(inside){if(segment.length>1)segments.push(segment);segment=[]}else segment.push(q)}
  if(segment.length>1)segments.push(segment);
  const bright=.78+.12*Math.sin(seconds*Math.PI/2.4);
  for(const points of segments){const d=points.map((p,k)=>(k?'L':'M')+xy(p)).join(' ');packets.push('<g class="flow-spark" opacity="'+bright+'"><path d="'+d+'" fill="none" stroke="#91effa" stroke-width=".1" stroke-linecap="round" stroke-linejoin="round"/></g>')}
