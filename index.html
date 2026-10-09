@@ -57,7 +57,78 @@ button{text-align:center}
 
 .mt-final-system{font-size:21px;line-height:1.65;text-align:center;color:#304d3a;font-variant-numeric:tabular-nums}.mt-final-matrices{display:flex;align-items:center;justify-content:center;gap:12px}.mt-final-matrices .mt-bracket{font-size:23px;gap:6px 12px;align-items:center}.mt-final-matrices .mt-bracket>span{display:grid;place-items:center;height:44px}.mt-final-a input{width:48px;height:44px;min-width:0;border:2px dashed #a79259;border-radius:7px;background:#fff6d9;font-size:23px;color:#304d3a;text-align:center;padding:2px}.mt-final-a input:not(:placeholder-shown){border-style:solid}.mt-final-a input[aria-invalid=true]{border-style:double;border-width:3px}.mt-final-matrices>b{font-size:21px}
 @media(max-width:420px){.mt-final-system{font-size:18px}.mt-final-matrices{gap:5px}.mt-final-matrices .mt-bracket{font-size:18px;gap:5px 4px;padding:8px;grid-template-columns:repeat(var(--cols),minmax(22px,1fr))}.mt-final-a input{width:36px;height:44px;font-size:19px}.mt-final-matrices .mt-bracket>span{height:44px}.mt-final-matrices>b{font-size:17px}}
-</style><link rel="stylesheet" href="matrix-lab.css"></head><body>
+</style><link rel="stylesheet" href="matrix-lab.css"><style>
+/* Viewport-sized lessons and tablet touch layout. Keep navigation outside the scroll area. */
+body:has(dialog[open]){overflow:hidden}
+button{touch-action:manipulation}
+#learningDialog.matrix-tutorial{height:min(940px,96dvh);max-height:96dvh;padding:12px;overflow:hidden}
+#learningDialog.matrix-tutorial[open]{display:flex;flex-direction:column}
+#learningDialog.matrix-tutorial>.dialog-top{flex:none;min-height:44px;padding:0 8px 6px}
+#learningDialog.matrix-tutorial>.card{display:flex;flex:1;flex-direction:column;min-height:0;padding:14px;overflow:hidden}
+#learningDialog.matrix-tutorial #learningTitle{font-size:22px;margin:3px 0}
+#learningDialog.matrix-tutorial #learningDescription{margin:3px 0 6px}
+#learningDialog.matrix-tutorial #learningQuestion{flex:1;min-height:0;height:auto;max-height:none;margin:10px 0 0;padding:14px;overscroll-behavior:contain;scroll-padding:12px}
+#learningDialog.matrix-tutorial #mtGuide{flex:none;margin-top:26px;min-height:124px;padding:16px 154px 12px 18px}
+#learningDialog.matrix-tutorial #mtGuide .ml-dream-character{width:140px;height:160px;right:6px;bottom:6px}
+#learningDialog.matrix-tutorial #mtSpeech{font-size:15px;line-height:1.65;min-height:48px;margin:4px 0 8px}
+#learningDialog.matrix-tutorial #mtNav{margin-top:6px;margin-right:0}
+#learningDialog.matrix-tutorial #mtNav .mt-button{min-height:44px}
+#learningDialog.matrix-tutorial #learningForm{flex:none}
+#learningDialog.matrix-tutorial #learningFeedback{margin:5px 0;line-height:1.5}
+#learningDialog.matrix-tutorial #learningForm+p{margin:6px 0 0;line-height:1.4}
+#learningDialog.matrix-tutorial #mtTestLevels{margin-top:4px}
+#learningDialog.matrix-tutorial #mtTestLevels button{min-height:44px}
+#learningDialog.matrix-tutorial .mt-final-a input{width:48px;min-height:48px;font-size:22px}
+#learningDialog.matrix-tutorial .mt-final-matrices .mt-bracket>span{height:48px}
+#learningDialog.matrix-tutorial .mt-final-system{line-height:1.8}
+@media(min-width:650px){
+ #learningQuestion[data-step="4"]{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);align-content:center;column-gap:18px}
+ #learningQuestion[data-step="4"]>.mt-progress,#learningQuestion[data-step="4"]>h3{grid-column:1/-1}
+ #learningQuestion[data-step="4"]>.mt-final-system{grid-column:1;grid-row:3;align-self:center;font-size:22px}
+ #learningQuestion[data-step="4"]>.mt-caption{grid-column:1;grid-row:4;align-self:start}
+ #learningQuestion[data-step="4"]>.mt-final-matrices{grid-column:2;grid-row:3/5;gap:8px}
+ .mt-final-matrices .mt-bracket{gap:5px 8px;padding:8px 10px}
+}
+@media(max-width:1100px){
+ main{padding:0 20px}.layout{grid-template-columns:1fr;gap:20px}
+ .intro{height:auto;min-height:80px}.intro h1{font-size:29px}
+ .sidebar{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:0}
+ .sidebar .wallet{grid-column:1;grid-row:1}.sidebar .owned-panel{grid-column:2;grid-row:1;min-height:180px}
+ .sidebar>.request-dock{grid-column:2;grid-row:2}.sidebar .mission{grid-column:1;grid-row:2}
+ .map-scroll{padding-bottom:100px}.map-stage,.factory-grid{min-width:0}
+ #shop .shop-item{min-height:72px;padding:10px 6px}#shop .shop-item strong{font-size:14px}#shop .shop-item span{font-size:12px}#shop .shop-item em{font-size:11px}
+ #placementActions button,#placementActions #sellFactory{width:44px;height:44px}
+ .secondary,.owned-row button,.test-tools button{min-height:44px}
+ .owned-row button{font-size:12px}.dialog-top .secondary{font-size:13px}
+}
+@media(max-width:649px){
+ #learningDialog.matrix-tutorial{width:100%;max-width:100%;height:100dvh;max-height:100dvh;margin:0;border-radius:0;padding:8px;border-width:0}
+ #learningDialog.matrix-tutorial>.card{padding:10px}
+ #learningDialog.matrix-tutorial #learningTitle{font-size:20px}
+ #learningDialog.matrix-tutorial #learningQuestion{padding:12px}
+ #learningDialog.matrix-tutorial #mtGuide{padding:16px 90px 10px 12px;min-height:124px;margin-top:22px}
+ #learningDialog.matrix-tutorial #mtGuide .ml-dream-character{width:88px;height:102px;right:0;bottom:36px}
+ #learningDialog.matrix-tutorial #mtSpeech{font-size:14px;min-height:0}
+ #learningDialog.matrix-tutorial #mtNav{margin-right:-70px}
+ #learningDialog.matrix-tutorial .mt-final-system{font-size:18px;line-height:1.5}
+ #learningDialog.matrix-tutorial .mt-final-a input{width:44px}
+ #learningDialog.matrix-tutorial .mt-final-matrices{gap:5px}
+ #learningDialog.matrix-tutorial .mt-final-matrices .mt-bracket{font-size:18px;gap:4px;padding:7px;grid-template-columns:repeat(var(--cols),minmax(22px,1fr))}
+ #learningDialog.matrix-tutorial #learningForm+p{display:none}
+ .map-stage,.factory-grid{min-width:550px}
+ .sidebar{grid-template-columns:1fr}.sidebar .wallet,.sidebar .owned-panel,.sidebar>.request-dock,.sidebar .mission{grid-column:1;grid-row:auto}
+ #shop{grid-template-columns:1fr 1fr}
+}
+@media(max-height:700px) and (min-width:650px){
+ #learningDialog.matrix-tutorial>.card{padding:8px 12px}
+ #learningDialog.matrix-tutorial #learningTitle{font-size:19px}
+ #learningDialog.matrix-tutorial #learningDescription{font-size:12px}
+ #learningDialog.matrix-tutorial #mtGuide{margin-top:20px;min-height:100px;padding-top:10px;padding-bottom:8px}
+ #learningDialog.matrix-tutorial #mtSpeech{min-height:0;font-size:14px;margin-bottom:4px}
+ #learningDialog.matrix-tutorial #mtGuide .ml-dream-character{width:115px;height:132px}
+ #learningDialog.matrix-tutorial #learningForm+p{display:none}
+}
+</style></head><body>
 <div class="world-scenery" aria-hidden="true"><div class="sun"></div><div class="cloud"></div><div class="cloud c2"></div><div class="cloud c3"></div><div class="hill"></div><div class="hill h2"></div><div class="hill h3"></div></div><header><div class="brand"><span>ai</span> AI COMPANY</div><div class="tag">AI × MATH · TYCOON</div></header>
 <main><section class="intro"><div><div class="eyebrow">BUILD YOUR OWN AI COMPANY</div><h1>나의 AI 회사</h1><p>의뢰를 해결하고, 공장을 하나씩 가동해 보세요.</p></div><span class="badge">LEVEL 01 · 신입 창업가</span></section>
 <div class="layout"><section class="campus"><div class="campus-head"><div><h2>나의 공장 단지</h2><span class="mini">작은 공장 하나에서 시작하는 AI 회사</span></div></div><div class="placement-tools"><div id="shop"></div><div class="placement-help"><span id="placementStatus" role="status"></span><button id="resumeLearning" class="secondary" hidden>선택한 공장 학습</button></div></div><div class="map-scroll"><div class="map-stage"><div id="factories" class="factory-grid" tabindex="0" aria-label="21열 18행 배치 지도. 방향키로 이동, Enter로 확정, Escape로 취소"></div><div id="placementActions" hidden><button id="moveFactory" aria-label="공장 이동" title="이동" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M2 12h20M8 6l4-4 4 4M8 18l4 4 4-4M6 8l-4 4 4 4M18 8l4 4-4 4"/></svg></button><button id="confirmPlacement" aria-label="배치 확정"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4L19 6"/></svg></button><button id="cancelPlacement" aria-label="배치 취소"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><button id="upgradeFactory" aria-label="공장 업그레이드" aria-expanded="false" aria-controls="upgradeOffer" hidden><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button><button id="sellFactory" type="button" aria-label="공장 판매" aria-expanded="false" aria-controls="sellOffer" hidden><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/></svg></button><button id="sellOffer" type="button" hidden></button><button id="upgradeOffer" type="button" hidden></button></div></div></div><i class="tree" aria-hidden="true"></i><i class="tree t2" aria-hidden="true"></i><i class="tree t3" aria-hidden="true"></i></section>
@@ -271,7 +342,7 @@ function startMatrixLesson(uid,test=false){
  renderMatrixLesson();if(!$('learningDialog').open)$('learningDialog').showModal();$('mtStepTitle').focus();
 }
 function renderMatrixLesson(){
- stopMatrixLessonAnimation();const step=MATRIX_LESSON_STEPS[matrixLessonStep];
+ stopMatrixLessonAnimation();const step=MATRIX_LESSON_STEPS[matrixLessonStep];$('learningQuestion').dataset.step=String(matrixLessonStep);
  $('learningQuestion').innerHTML='<div class="mt-progress">'+(matrixLessonStep+1)+' / '+MATRIX_LESSON_STEPS.length+'</div><h3 id="mtStepTitle" tabindex="-1">'+step.title+'</h3>'+step.html;
  $('mtSpeech').textContent=step.speech;$('learningFeedback').textContent='';$('learningForm').hidden=matrixLessonStep<4;
  $('learningForm').querySelector('label').hidden=true;$('learningAnswer').hidden=true;$('learningAnswer').required=false;
