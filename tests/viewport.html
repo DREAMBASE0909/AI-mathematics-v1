@@ -75,7 +75,7 @@
       frame.srcdoc = gameHTML;
     };
     document.getElementById('seedLegacy4').onclick = () => {
-      memory.set('ai-matrix-lab-v1-test-4', JSON.stringify({ weights: [2,-1,2,-1], sample: 1, checked: [true,true], legacyMarker: 'preserve-me' }));
+      memory.set('ai-matrix-lab-v1-test-4', JSON.stringify({ weights: [2,-1,2,-1], sample: 1, checked: [true,true], imageLessonV4: { step: 4, choice: 'left', revealed: true }, legacyMarker: 'preserve-me' }));
       frame.srcdoc = gameHTML;
     };
     document.getElementById('seedResearch4').onclick = () => {

@@ -25,7 +25,11 @@
 #sortOverlap { margin-top: 5px; }
 #sortTerms { font-weight: bold; font-variant-numeric: tabular-nums; }
 #sortHorizontal:not([hidden]) { display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 13px; }
-#sortHorizontal .px-grid { width: 42px; margin: 0; }
+.sort-horizontal-stack { position: relative; width: 54px; height: 54px; }
+#sortHorizontal .px-grid, #sortHorizontal .mi-weights { width: 54px; margin: 0; }
+.sort-horizontal-overlay { position: absolute; inset: 0; opacity: .88; }
+.sort-horizontal-overlay span { font-size: 10px; }
+.sort-horizontal-overlay .sort-muted { opacity: .12; }
 .sort-paint-layout { display: flex; justify-content: center; align-items: center; gap: 28px; margin: 10px 0; }
 .sort-brushes { display: flex; justify-content: center; gap: 4px; margin-bottom: 7px; }
 .sort-brushes button { min-height: 34px; padding: 4px 7px; border: 1px solid #91a087; border-radius: 5px; background: #f5f7f0; font-size: 12px; }

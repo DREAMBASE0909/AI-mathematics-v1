@@ -76,7 +76,10 @@
     const input = get('sortTotal'), check = get('sortTotalCheck');
     function horizontal() {
       get('sortHorizontal').hidden = false;
-      get('sortHorizontal').innerHTML = picture('H') + '<span>가로 막대: 0 + 3 + 0 = <strong>3점</strong></span>';
+      get('sortHorizontal').innerHTML = '<div class="sort-horizontal-stack">' + picture('H')
+        + '<div class="sort-horizontal-overlay">' + weightMap(stencil, 3) + '</div></div>'
+        + '<span>가로 막대: 0 + 3 + 0 = <strong>3점</strong></span>';
+      get('sortHorizontal').querySelectorAll('.mi-weights span').forEach((cell, i) => cell.classList.toggle('sort-muted', !parts.H[i]));
     }
     function finishOverlay() {
       data.overlaySeen = true;
