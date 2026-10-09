@@ -23,6 +23,12 @@
   <output id="size"></output>
   <pre id="errors" aria-live="polite"></pre>
   <div id="stage"><iframe id="game" title="검증용 게임"></iframe></div>
+  <details><summary>저장 호환성 검증 도구</summary>
+    <button id="seedLegacy">예전 Lv.2 기록 넣고 새로 열기</button>
+    <button id="reloadGame">게임만 다시 열기</button>
+    <button id="auditStorage">격리 저장 기록 확인</button>
+    <pre id="storageAudit"></pre>
+  </details>
   <script>
     // Memory storage belongs only to this QA page; the game still uses its original keys/schema.
     const memory = new Map();
@@ -45,6 +51,15 @@
     document.querySelectorAll('[data-size]').forEach(button => {
       button.onclick = () => resize(...button.dataset.size.split(',').map(Number));
     });
+    let gameHTML = '';
+    document.getElementById('reloadGame').onclick = () => { frame.srcdoc = gameHTML; };
+    document.getElementById('seedLegacy').onclick = () => {
+      memory.set('ai-matrix-lab-v1-test-2', JSON.stringify({ pixels: [0,1,0,1,1,1,0,1,0], pixelEdit: true, numberEdit: true, legacyMarker: 'preserve-me' }));
+      frame.srcdoc = gameHTML;
+    };
+    document.getElementById('auditStorage').onclick = () => {
+      document.getElementById('storageAudit').textContent = JSON.stringify(Object.fromEntries([...memory].map(([key, value]) => [key, JSON.parse(value)])), null, 2);
+    };
     fetch('../index.html').then(response => response.text()).then(html => {
       const base = new URL('../', location.href).href;
       const setup = `<base href="${base}"><script>
@@ -52,7 +67,8 @@
         addEventListener('error', event => parent.qaError(event.message || 'Resource error: ' + event.target.src), true);
         addEventListener('unhandledrejection', event => parent.qaError(String(event.reason)));
       <\/script>`;
-      frame.srcdoc = html.replace('<head>', '<head>' + setup);
+      gameHTML = html.replace('<head>', '<head>' + setup);
+      frame.srcdoc = gameHTML;
       resize(1366, 768);
     }).catch(error => window.qaError(String(error)));
   </script>
