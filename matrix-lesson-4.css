@@ -12,18 +12,7 @@
 .flip-equation { display: flex; justify-content: center; align-items: center; gap: 12px; }
 .flip-equation > b { font-size: 20px; }
 .flip-card { min-width: 0; }
-.flip-card .px-grid, .flip-lamps { width: 114px; }
-.flip-card .px-grid > span, .flip-card .px-grid > button { font-size: 12px; }
-.flip-lamps { display: grid; grid-template-columns: repeat(3, 1fr); aspect-ratio: 1; gap: 3px; margin: auto; }
-.flip-lamps > * {
-  display: grid; place-items: center; min-width: 0; padding: 0;
-  color: #5b665d; background: #e6e9df; border: 1px solid #aab5a2;
-  border-radius: 6px; font: bold 17px ui-monospace, monospace;
-}
-.flip-lamps .is-on { background: #ffe086; color: #594214; border: 2px solid #ac801a; }
-.flip-lamps button { touch-action: manipulation; cursor: pointer; }
-.flip-lamps button:focus-visible { outline: 3px solid #3265cb; outline-offset: 1px; }
-.flip-selected { outline: 3px solid #e58219; outline-offset: -3px; }
+.flip-card .px-grid, .flip-selected { outline: 3px solid #e58219; outline-offset: -3px; }
 .flip-ghost { opacity: .45; }
 .flip-intro { margin: 18px 0; }
 .flip-formula { font: 16px ui-monospace, monospace; }

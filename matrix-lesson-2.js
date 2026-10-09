@@ -24,16 +24,17 @@
   function status(message) { get('pxStatus').textContent = message; }
   function mountZoom(api) {
     get('pxZoomImage').innerHTML = grid(face, 7, true);
-    get('pxZoomImage').classList.toggle('expanded', data.zoomDone);
-    get('pxZoom').disabled = data.zoomDone;
-    get('pxZoom').onclick = () => {
-      get('pxZoom').disabled = true;
-      get('pxZoomImage').classList.add('expanded');
-      const finish = () => { data.zoomDone = true; changed(); status('칸 하나마다 밝기를 나타내는 숫자가 있어요.'); };
-      if (matchMedia('(prefers-reduced-motion: reduce)').matches) finish();
-      else api.schedule(finish, 1200);
-    };
+    MatrixControls.bindZoom({
+      image: get('pxZoomImage'), button: get('pxZoom'), complete: data.zoomDone,
+      controller: api,
+      onComplete() {
+        data.zoomDone = true;
+        changed();
+        status('칸 하나마다 밝기를 나타내는 숫자가 있어요.');
+      }
+    });
   }
+
   function mountAddress() {
     const host = get('pxAddress');
     host.innerHTML = '<span></span>' + Array.from({ length: 6 }, (_, i) => `<b>${i + 1}</b>`).join('');

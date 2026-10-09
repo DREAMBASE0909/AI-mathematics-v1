@@ -28,13 +28,7 @@
 .px-grid > button:focus-visible { outline: 3px solid #ed872c; z-index: 1; }
 .px-grid > button.px-wrong { outline: 3px dashed #e24c23; outline-offset: -3px; }
 .px-zoom { height: 220px; display: grid; place-items: center; }
-#pxZoomImage { transform: scale(.55); transition: transform 1.2s ease; }
 #pxZoomImage .px-grid { width: 210px; }
-#pxZoomImage span { color: transparent !important; border-color: transparent; transition: color .6s .5s, border-color .6s .5s; }
-#pxZoomImage.expanded { transform: scale(1); }
-#pxZoomImage.expanded span { color: inherit !important; border-color: #9aa5a0; }
-/* Brightness-specific foreground is restored without changing the cell values. */
-#pxZoomImage.expanded span[style*="color:#fff"] { color: #fff !important; }
 #pxAddress {
   display: grid;
   grid-template-columns: 24px repeat(6, 34px);
@@ -83,9 +77,6 @@
   #pxBrushes button { font-size: 11px; padding: 0; }
   #pxBrushes button::before { width: 10px; height: 10px; margin-right: 2px; }
   .px-paint-layout h4 { font-size: 12px; margin: 2px 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  #pxZoomImage, #pxZoomImage span { transition: none; }
 }
 @media (max-height: 740px) and (min-width: 650px) {
   #learningDialog.matrix-level-two > .card { padding: 10px; }

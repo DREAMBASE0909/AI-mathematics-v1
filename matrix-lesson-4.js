@@ -41,16 +41,10 @@
   function picture(values, name, id = '') {
     return `<section class="flip-card" ${id ? `id="${id}"` : ''}><h4>${name}</h4>${grid(values.flat(), values.length, true)}</section>`;
   }
-  function lamps(values, editable = false) {
-    return `<div class="flip-lamps" aria-label="0과 1로 된 기계">` + values.flat().map((v, i) => {
-      const attributes = `class="${v ? 'is-on' : ''}" data-cell="${i}"`;
-      return editable
-        ? `<button type="button" ${attributes} aria-label="기계 ${labels[i]}" aria-pressed="${!!v}">${v}</button>`
-        : `<span ${attributes}>${v}</span>`;
-    }).join('') + '</div>';
-  }
-  const machineCard = (values, id = '', editable = false) =>
-    `<section class="flip-card" ${id ? `id="${id}"` : ''}><h4>기계 ${editable ? '· 칸을 누르세요' : equal(values, I) ? 'I' : 'J'}</h4>${lamps(values, editable)}</section>`;
+  const lamps = (values, editable = false) => MatrixControls.lamps(values, { editable });
+  const machineCard = (values, id = '', editable = false) => MatrixControls.machineCard(values, {
+    id, editable, title: '기계 ' + (editable ? '· 칸을 누르세요' : equal(values, I) ? 'I' : 'J')
+  });
   const statusHTML = '<p id="flipStatus" class="flip-status" role="status"></p>';
   function mountIdentity(api) {
     const result = get('flipIdentityResult').querySelector('.px-grid');
@@ -102,15 +96,11 @@
       } else get('flipStatus').textContent = '';
       changed();
     }
-    board.querySelectorAll('button').forEach((button, index) => {
-      button.onclick = () => {
-        const r = Math.floor(index / 3), c = index % 3;
-        data.machine.forEach((row, i) => { row[c] = Number(i === r); });
-        data.viewed = [];
-        data.prediction = null;
-        data.choice = null;
-        update();
-      };
+    MatrixControls.bindMachine(board, data.machine, () => {
+      data.viewed = [];
+      data.prediction = null;
+      data.choice = null;
+      update();
     });
     get('flipHint').onclick = () => {
       const hints = ['결과 1열에는 원본 몇 번째 열이 와야 할까요?', '1열과 3열을 서로 바꿔 보세요. 가운데 열은 그대로예요.'];
