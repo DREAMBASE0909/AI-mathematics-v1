@@ -111,3 +111,13 @@
 | Lv.1 전용 CSS `!important` | 중복 덮어쓰기 포함 | 0 |
 
 추가 회귀 확인: 자연어 공장 첫 구매는 기존 `(학습 요소)` 화면과 완료 버튼을 유지하며, 완료 후 초당 400원으로 정상 가동됐다.
+
+## Lv.2 픽셀 레슨
+
+`matrix-lesson-2.js`는 확대, 행·열 주소, 밝기, 7×7 그림판, 선택형 퀴즈의 단계 데이터를 정의한다. `matrix-lesson-2.css`는 이 레슨에만 적용된다. `MatrixLab.start(2, options)`는 `MatrixLessonTwo.start(options)`로 연결하고 기존 연구 비용 및 완료 콜백을 그대로 전달한다. Lv.3~5는 기존 LearningShell을 사용한다.
+
+공통 `StepLesson`의 단계는 `onMount(controller)`와 `isComplete()`를 선택적으로 제공한다. 활동 상태가 바뀌면 `controller.refresh()`로 진행 가능 여부를 갱신한다. `quiz.type: 'choice'`는 `controller.answerChoice(value)`로 채점하며, 기존 숫자 입력 퀴즈는 변경 없이 유지한다. `requireAllSteps`는 마지막 완료 시 앞 단계의 조건도 검사한다. 같은 대화창의 이벤트는 현재 활성 컨트롤러만 처리한다.
+
+Lv.2는 기존 `ai-matrix-lab-v1-{test|play}-2` 키에 `imageLessonV2` 필드를 추가한다. 이전 `pixels`, `pixelEdit`, `numberEdit`와 알 수 없는 필드는 보존한다. 새 필드가 없거나 잘못된 경우 안전한 초기값으로 시작한다. 그림판 가장자리는 저장값과 무관하게 고정한다. 테스트와 연구 저장은 분리되며 테스트 완료는 게임의 비용·공장 변경 콜백을 호출하지 않는다.
+
+확인 퀴즈의 반대각선 행렬은 전치해도 같다. 반대 방향 대각선 보기는 전치라고 부르지 않고 위치 읽기 오류를 확인하는 보기로 사용한다.
