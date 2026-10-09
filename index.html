@@ -188,7 +188,32 @@ $('sellOffer').addEventListener('click',()=>sellFactory(selectedBuilding));
 function income(){return state.instances.reduce((n,v)=>n+(v.status==='active'&&v.cell>=0?itemRate(v):0),0)}
 function updateMoney(){renderUpgradeOffer();updateLandButtons();$('balance').textContent=state.balance.toLocaleString('ko-KR');$('solved').textContent=state.solved+'건';$('income').textContent=income()+'원/초';document.querySelectorAll('[data-shop]').forEach(b=>{const f=factories.find(v=>v.id===b.dataset.shop);b.disabled=state.balance<f.cost||firstSpace(f.id)<0});const used=state.instances.reduce((n,v)=>n+(v.cell>=0?SIZES[v.type]**2:0),0);$('goalDetail').textContent=used+' / '+state.land.length*42+'칸 사용 · 부지 '+state.land.length+' / 9';$('bar').style.width=used/(state.land.length*42)*100+'%'}
 function footprintStyle(node,type,cell){const size=SIZES[type];node.style.left=(cell%COLS)/COLS*100+'%';node.style.top=Math.floor(cell/COLS)/ROWS*100+'%';node.style.width=size/COLS*100+'%';node.style.height=size/ROWS*100+'%'}
+function kmeansArtwork(item){
+ const level=item.level||1;
+ let a='<ellipse cx="60" cy="79" rx="47" ry="9" fill="#253f49" opacity=".2"/>';
+ const groups=[{x:34,y:34,c:'#91d6b7',dark:'#487e73',points:[[15,25],[29,16],[47,23],[16,42],[40,47]]},{x:87,y:39,c:'#edd18a',dark:'#9c8654',points:[[71,21],[97,24],[108,39],[99,54],[71,48]]},{x:58,y:72,c:'#b7bdec',dark:'#727eaa',points:[[35,63],[44,86],[70,88],[82,71],[62,55]]}];
+ a+='<path d="M34 34L87 39L58 72Z" stroke="#91acb4" stroke-opacity=".35" stroke-width="1.5" fill="none"/>';
+ if(level>=2){groups[0].points.push([22,53],[52,34]);groups[1].points.push([84,17],[107,49]);groups[2].points.push([32,77],[84,84]);}
+ if(level===3){a+='<path d="M34 34L61 49L87 39M61 49L58 72" fill="none" stroke="#a5d9d8" stroke-width="2.5" stroke-opacity=".7"/>';}
+ for(const g of groups){
+  a+='<ellipse cx="'+g.x+'" cy="'+g.y+'" rx="25" ry="20" fill="'+g.c+'" fill-opacity=".09" stroke="'+g.c+'" stroke-opacity=".32" stroke-width=".8" stroke-dasharray="2 3"/>';
+  for(const [x,y] of g.points){a+='<path d="M'+g.x+' '+g.y+'L'+x+' '+y+'" stroke="'+g.c+'" stroke-opacity=".48" stroke-width=".8"/><ellipse cx="'+x+'" cy="'+(y+2)+'" rx="3.6" ry="2" fill="#304b56"/><circle cx="'+x+'" cy="'+y+'" r="3" fill="'+g.c+'"/><circle cx="'+(x-.7)+'" cy="'+(y-.8)+'" r=".8" fill="#fff" fill-opacity=".7"/>';}
+  if(level===1){
+  a+='<ellipse cx="'+g.x+'" cy="'+(g.y+3)+'" rx="10" ry="5" fill="'+g.dark+'"/><ellipse cx="'+g.x+'" cy="'+(g.y+1)+'" rx="10" ry="5" fill="'+g.c+'" fill-opacity=".65"/><path d="M'+(g.x-5)+' '+(g.y-7)+'v9l5 3 5 -3v-9Z" fill="'+g.dark+'"/><path d="M'+g.x+' '+(g.y-11)+'l6 4 -6 4 -6 -4Z" fill="'+g.c+'" stroke="#eef6dd" stroke-width=".7"/><circle cx="'+g.x+'" cy="'+(g.y-7)+'" r="1.5" fill="#fff7d6"/>';
+  }else{
+   const x=g.x,y=g.y,h=level===2?18:26,w=level===2?7:9;
+   a+=`<ellipse cx="${x}" cy="${y+3}" rx="12" ry="6" fill="${g.dark}"/><ellipse cx="${x}" cy="${y+1}" rx="12" ry="6" fill="${g.c}" fill-opacity=".7"/><path d="M${x-w} ${y-h}v${h+1}l${w} 4 ${w} -4v-${h+1}Z" fill="${g.dark}"/><path d="M${x} ${y-h+4}v${h+1}l${w} -4v-${h+1}Z" fill="#243f50" fill-opacity=".28"/><path d="M${x} ${y-h-4}l${w} 4 -${w} 4 -${w} -4Z" fill="${g.c}" stroke="#eef6dd" stroke-width=".7"/>`;
+   for(let yy=y-h+7;yy<y;yy+=5)a+=`<path d="M${x-w+2} ${yy}l${w-3} 1.5" stroke="${g.c}" stroke-width="1.6"/><circle cx="${x+w-3}" cy="${yy}" r=".8" fill="#f3edc6"/>`;
+   if(level===3)a+=`<ellipse cx="${x}" cy="${y-h+1}" rx="13" ry="5" fill="none" stroke="${g.c}" stroke-width="1.5"/><circle cx="${x}" cy="${y-h-4}" r="1.5" fill="#fff7d6"/>`;
+  }
+
+ }
+ if(level===3)a+='<g transform="translate(0 -16)"><ellipse cx="61" cy="52" rx="8" ry="4" fill="#304e5c"/><path d="M53 46l8 -5 8 5v6l-8 5 -8 -5Z" fill="#638994"/><path d="M53 46l8 -5 8 5 -8 5Z" fill="#d4efe3"/><path d="M58 45h6m-3 -2v4" stroke="#78ada8" stroke-width="1.2"/></g>';
+ return '<span class="facility-art"><svg viewBox="0 0 120 100">'+a+'</svg></span>';
+}
+
 function factoryArtwork(item){
+ if(item.type==='cluster')return kmeansArtwork(item);
  const level=levelOf(item),active=item.status==='active';
  const lamp=(x,y,c='#baffab')=>'<circle class="facility-light" cx="'+x+'" cy="'+y+'" r="2" fill="'+(active?c:'#788578')+'"/>';
  const box=(x,y,w,h,face,roof,side)=>'<path d="M'+x+' '+y+'l7 -5h'+w+'l-7 5Z" fill="'+roof+'"/><rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="2" fill="'+face+'"/><path d="M'+(x+w)+' '+y+'l7 -5v'+h+'l-7 5Z" fill="'+side+'"/>';
@@ -209,11 +234,17 @@ function factoryArtwork(item){
   if(level===4){art+='<path d="M12 50V16m94 26V9" stroke="#376980" stroke-width="4"/><path d="M4 20q8 -9 16 0m78 -5q8 -9 16 0" stroke="#b9f6f3" stroke-width="3" fill="none"/><path d="M31 67H89" stroke="#b8fff1" stroke-width="5"/>';art+=lamp(12,14,'#ffe196')+lamp(106,7,'#ffe196');}
   if(level<=2)art+='<g class="data-message"><path d="M43 17h24v17H55l-7 6v-6h-5Z" fill="#fff0bf"/><path d="M48 23h14m-14 6h9" stroke="#b89142" stroke-width="2"/></g>';
  }else if(item.type==='gradient'){
-  const blocks=level===1?[[28,54,18,29],[50,63,18,20],[72,71,18,12]]:level===2?[[19,32,23,51],[48,49,23,34],[77,65,23,18]]:[[16,24,25,59],[48,44,25,39],[80,64,25,19]];
-  if(level===4){art+='<path d="M8 80V19L54 8h44v70" fill="none" stroke="#574871" stroke-width="8"/><path d="M8 20L54 9h44" fill="none" stroke="#d8bbf6" stroke-width="4"/>';art+=box(88,23,16,45,'#76668e','#d1bbeb','#4e3f66');}
-  for(const [x,y,w,h] of blocks){art+=box(x,y,w,h,'#9780b7','#e6d7f5','#635180');art+='<path d="M'+(x+5)+' '+(y+9)+'h'+(w-10)+'" stroke="#dbc8eb" stroke-width="3"/>'+lamp(x+6,y+h-6,'#ffe9a1');}
-  if(level>=3){art+='<g class="data-message"><path d="M61 5l17 10 -17 10 -17 -10Z" fill="#ffe19b"/><path d="M44 15v9l17 10 17 -10v-9L61 25Z" fill="#bd82d5"/></g><path d="M60 34v11L88 57" stroke="#f8dfa2" stroke-width="3" stroke-dasharray="3 3" class="data-flow" fill="none"/>';art+='<rect x="25" y="86" width="68" height="5" rx="2" fill="#c8b0e3"/>';}
-  if(level===4)art+='<path d="M8 88h100" stroke="#ffdf8a" stroke-width="4"/><path d="M20 91h79" stroke="#9e77b7" stroke-width="3"/>';
+ art+='<path d="M9 81L19 73H107L97 83Z" fill="#b4a4c9"/><path d="M9 81L97 83V89L9 87Z" fill="#766586"/><path d="M97 83L107 75V81L97 89Z" fill="#51485f"/><path d="M14 86H92" stroke="#c7b5d7" stroke-width="1.5"/>';
+ const ys=level===1?[39,52,64]:level===2?[31,47,63]:[24,43,62];
+ if(level===4)art+='<path d="M9 78V13H107V78" fill="none" stroke="#574871" stroke-width="6"/><path d="M9 12H107" stroke="#c9b1e3" stroke-width="2.5"/><path d="M85 13V24" stroke="#f3d6a0" stroke-width="3"/>';
+ for(let i=0;i<3;i++){const x=18+i*27,y=ys[i];art+=box(x,y,23,79-y,'#9780b7','#e6d7f5','#635180');art+='<path d="M'+(x+5)+' '+(y+9)+'h13" stroke="#dbc8eb" stroke-width="3"/>'+lamp(x+6,73,'#ffe9a1');if(level>=2)art+='<path d="M'+(x+5)+' '+(y+16)+'h13" stroke="#bca5d3" stroke-width="2"/>';}
+ const rail='M23 '+(ys[0]-5)+'H36L50 '+(ys[1]-5)+'H63L78 '+(ys[2]-5)+'H91';
+ art+='<path d="'+rail+'" fill="none" stroke="#594e6e" stroke-width="4" stroke-linejoin="round"/><path d="'+rail+'" fill="none" stroke="#e5c69d" stroke-width="1.8" stroke-linejoin="round"/>'+lamp(30,ys[0]-5,'#f2d398');
+ art+='<path d="M49 86v-7l8 -4 10 4v7" fill="#685978"/><path d="M51 79l6 -3 8 3 -7 4Z" fill="#cae3d7"/><path d="M56 78l5 2" stroke="#608b8b" stroke-width="1"/>';
+ if(level>=2){art+='<path d="M15 90h77" stroke="#c6a4df" stroke-width="2"/>';art+=box(99,66,8,14,'#746080','#bca6ce','#51415e')+lamp(102,72,'#ffe4a1');}
+ if(level>=3){const x=level===4?85:77,y=level===4?27:28;art+='<path d="M'+x+' '+y+'l12 7 -12 7 -12 -7Z" fill="#ffe19b"/><path d="M'+(x-12)+' '+(y+7)+'v8l12 7 12 -7v-8l-12 7Z" fill="#bd82d5"/><path d="M'+x+' '+(y+22)+'v8" stroke="#f8dfa2" stroke-width="2" stroke-dasharray="2 2"/>';}
+ if(level===4)art+='<path d="M14 86H92" stroke="#ffe1a0" stroke-width="2"/>';
+
  }else{
   if(level===1){art+='<path d="M38 55L60 77L84 55" stroke="#dde8bc" stroke-width="5" fill="none"/>';art+=dome(38,55,14,'#8bc8b4')+dome(84,55,14,'#d9b66f')+dome(60,77,16,'#a0b1dc');}
   else{
@@ -443,4 +474,5 @@ $('skip').addEventListener('click',newProblem);$('addTestMoney').addEventListene
 <script src="matrix-lesson-4.js"></script>
 <script src="matrix-lab.js"></script>
 </body></html>
+
 
