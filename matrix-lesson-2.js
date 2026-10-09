@@ -175,7 +175,7 @@
     headingId: 'pxStepTitle', title: '컴퓨터 눈에는 숫자만 보여요',
     description: 'Lv.2 · 흑백 이미지의 행렬 표현', steps,
     requireAllSteps: true, closeOnComplete: true,
-    finishLabel: ({ testing, cost = 0 }) => testing ? '체험 완료 →' : `연구 완료 · ${cost.toLocaleString('ko-KR')}원으로 업그레이드`,
+    finishLabel: ({ testing, cost = 0 }) => testing ? '체험 완료 →' : `연구 완료 · ${typeof cost === 'string' ? cost : cost.toLocaleString('ko-KR') + '원'} · 업그레이드`,
     quiz: { type: 'choice', step: 4, answer: 0,
       hints: { 1: '0은 검정, 255는 흰색이에요. 밝기가 뒤바뀌지 않았는지 확인해 보세요.',
         2: '행은 위에서 아래로, 열은 왼쪽에서 오른쪽으로 세어요. 첫 행의 흰 칸은 어느 열인가요?',
