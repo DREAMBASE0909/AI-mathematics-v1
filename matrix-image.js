@@ -23,20 +23,30 @@
     top: Object.freeze([1, 1, 0, 0]),
     white: Object.freeze([1, 1, 1, 1])
   });
-  const order = Object.freeze(['1행 1열', '1행 2열', '2행 1열', '2행 2열']);
+  const order = (size = 2) => Array.from({ length: size * size }, (_, i) =>
+    `${Math.floor(i / size) + 1}행 ${i % size + 1}열`);
+  const parts = Object.freeze({
+    V: Object.freeze([0,1,0, 0,1,0, 0,1,0]),
+    H: Object.freeze([0,0,0, 1,1,1, 0,0,0]),
+    Vtop: Object.freeze([0,0,0, 0,1,0, 0,1,0]),
+    Vbot: Object.freeze([0,1,0, 0,1,0, 0,0,0]),
+    Hleft: Object.freeze([0,0,0, 0,1,1, 0,0,0]),
+    Hright: Object.freeze([0,0,0, 1,1,0, 0,0,0])
+  });
   const format = value => String(value).replace('-', '−');
   const dot = (row, column) => row.reduce((sum, value, i) => sum + value * column[i], 0);
-  function weightMap(values) {
-    return '<div class="mi-weights">' + values.map((value, i) => {
+  function weightMap(values, size = 2) {
+    const labels = order(size);
+    return `<div class="mi-weights" style="grid-template-columns:repeat(${size},1fr)">` + values.map((value, i) => {
       const alpha = Math.abs(value) / 3 * 0.65 + 0.2;
       const color = value > 0 ? `rgba(40,105,200,${alpha})`
         : value < 0 ? `rgba(193,48,53,${alpha})` : '#858c90';
-      return `<span style="background:${color};color:${Math.abs(value) >= 3 || value === 0 ? '#fff' : '#132333'}" aria-label="${order[i]} 가중치 ${format(value)}">${format(value)}</span>`;
+      return `<span style="background:${color};color:${Math.abs(value) >= 3 || value === 0 ? '#fff' : '#132333'}" aria-label="${labels[i]} 가중치 ${format(value)}">${format(value)}</span>`;
     }).join('') + '</div>';
   }
   window.MatrixImage = Object.freeze({
     face: Object.freeze(face),
     dark: Object.freeze(face.map(value => darkValues[value])),
-    clip, grid, patterns, order, format, dot, weightMap
+    clip, grid, patterns, parts, order, format, dot, weightMap
   });
 })();

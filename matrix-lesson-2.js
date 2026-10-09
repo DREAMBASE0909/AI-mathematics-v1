@@ -81,7 +81,7 @@
     get('pxReference').innerHTML = grid(face, 7);
     get('pxNumbers').innerHTML = grid(data.paint, 7, true);
     const board = get('pxPaint');
-    let dragging = false, last = null, showErrors = false;
+    let showErrors = false;
     const cells = [], numbers = get('pxNumbers').querySelectorAll('span');
     const mismatch = () => data.paint.reduce((n, v, i) => n + (v !== face[i]), 0);
     function updateCell(i) {
@@ -101,40 +101,16 @@
       status('그림과 숫자가 함께 바뀌어요. 다 그렸으면 확인해 주세요.');
       changed();
     }
-    function stroke(i) {
-      if (last === null) paint(i);
-      else {
-        const r = Math.floor(last / 7), c = last % 7;
-        const dr = Math.floor(i / 7) - r, dc = i % 7 - c;
-        const count = Math.max(Math.abs(dr), Math.abs(dc));
-        for (let n = 1; n <= count; n++) paint(Math.round(r + dr * n / count) * 7 + Math.round(c + dc * n / count));
-      }
-      last = i;
-    }
     data.paint.forEach((_, i) => {
       const cell = document.createElement('button');
       cell.type = 'button';
       cell.dataset.pixel = i;
       cell.disabled = edge(i);
-      cell.onclick = event => { if (event.detail === 0) paint(i); };
       cells.push(cell);
       board.append(cell);
       updateCell(i);
     });
-    board.onpointerdown = event => {
-      const cell = event.target.closest('[data-pixel]');
-      if (!cell || cell.disabled) return;
-      event.preventDefault();
-      dragging = true; last = null;
-      board.setPointerCapture(event.pointerId);
-      stroke(Number(cell.dataset.pixel));
-    };
-    board.onpointermove = event => {
-      if (!dragging) return;
-      const cell = document.elementFromPoint(event.clientX, event.clientY)?.closest('[data-pixel]');
-      if (cell && board.contains(cell)) stroke(Number(cell.dataset.pixel));
-    };
-    board.onpointerup = board.onpointercancel = board.onlostpointercapture = () => { dragging = false; last = null; };
+    MatrixPaint.bind(board, { size: 7, paint });
     shades.forEach(v => {
       const button = document.createElement('button');
       button.type = 'button';
