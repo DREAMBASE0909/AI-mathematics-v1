@@ -47,6 +47,11 @@
       MatrixLessonThree.start(options);
       return;
     }
+    if (l === 4) {
+      if (root.open) root.close();
+      MatrixLessonFour.start(options);
+      return;
+    }
     const lesson = el('learningDialog');
     if (lesson.open) lesson.close();
     opener=document.activeElement; level=l; testing=options.test===true; complete=options.onComplete; cost=options.cost||0;
@@ -61,17 +66,7 @@
   const panel=(title,content)=>`<section class="ml-panel"><h3>${title}</h3>${content}</section>`;
   let activityReady=false;
   function update(ready, message) {activityReady=ready;el('mlStatus').textContent=message;el('mlStatus').className=ready?'ml-success':'';el('mlFinish').disabled=!ready;el('mlFinish').textContent=testing?'체험 완료':`연구 완료 · ${cost.toLocaleString('ko-KR')}원으로 업그레이드`;persist();}
-  function draw(){activityReady=false;el('mlSceneControls').replaceChildren();el('mlDreamText').textContent=goals[level-1];el('mlBody').innerHTML='';[weights,batch][level-4]();}
-  const samples=[[1,0,1,0],[1,1,0,0]],sampleNames=['세로선','가로선'];
-  const dot=(a,b)=>a.reduce((sum,v,i)=>sum+v*b[i],0);
-  function weights(){
-    el('mlBody').innerHTML=`<div class="ml-two">${panel('입력 · 2 × 2 이미지','<div id="mlSamples" class="ml-chips"></div><div id="mlInput" class="ml-four"></div><p>이 활동에서는 검정 0, 흰색 1로 표현합니다.</p>')}${panel('세로선 판별기의 가중치','<div id="mlWeights" class="ml-weight-grid"></div><p>흰 픽셀에 양수 가중치를 주면 점수가 올라가고, 음수를 주면 내려갑니다.</p>')}</div><section class="ml-panel"><h3 id="mlPrediction"></h3><p id="mlWeightFormula" class="ml-formula"></p><div class="ml-meter"><div id="mlScoreBar"></div></div><p>점수가 0보다 크면 세로선, 작으면 가로선, 0이면 보류합니다.</p><button id="mlCheckSamples" class="ml-chip">두 이미지로 검사하기</button><p id="mlWeightResult" role="status"></p></section><p class="ml-note">사람이 가중치를 조정하고, 판별기는 입력 × 가중치의 합을 계산합니다. 자동으로 가중치를 학습하는 단계는 아닙니다.</p>`;
-    samples.forEach((_,i)=>{const b=button(sampleNames[i],()=>{data.sample=i;draw();});b.setAttribute('aria-pressed',String(data.sample===i));el('mlSamples').append(b);});
-    samples[data.sample].forEach(v=>{const s=document.createElement('span');s.style.background=v?'#fff':'#203139';s.style.color=v?'#203139':'#fff';s.textContent=String(v);el('mlInput').append(s);});
-    const refresh=()=>{const input=samples[data.sample],score=dot(input,data.weights);el('mlPrediction').textContent=`${sampleNames[data.sample]} 입력 → ${score>0?'세로선':score<0?'가로선':'판정 보류'} (점수 ${score})`;el('mlWeightFormula').textContent=input.map((v,i)=>`${v} × (${data.weights[i]})`).join(' + ')+` = ${score}`;el('mlScoreBar').style.width=`${50+score/12*50}%`;persist();};
-    data.weights.forEach((v,i)=>{const label=document.createElement('label');label.innerHTML=`${Math.floor(i/2)+1}행 ${i%2+1}열 <output>${v}</output><input aria-label="${Math.floor(i/2)+1}행 ${i%2+1}열 가중치" type="range" min="-3" max="3" step="1" value="${v}">`;label.querySelector('input').oninput=e=>{data.weights[i]=Number(e.target.value);label.querySelector('output').textContent=e.target.value;data.checked=[];el('mlWeightResult').textContent='값이 바뀌었습니다. 두 이미지로 다시 검사하세요.';update(false,'가중치를 조절한 뒤 두 이미지를 검사하세요.');refresh();};el('mlWeights').append(label);});
-    el('mlCheckSamples').onclick=()=>{data.checked=samples.map((s,i)=>i===0?dot(s,data.weights)>0:dot(s,data.weights)<0);el('mlWeightResult').textContent=data.checked.map((ok,i)=>`${sampleNames[i]}: ${ok?'통과':'다시 조정'}`).join(' / ');update(data.checked.every(Boolean),data.checked.every(Boolean)?'두 무늬를 구분했습니다. 어떤 위치의 가중치가 차이를 만들었나요?':'세로선에만 흰색인 왼쪽 아래는 양수, 가로선에만 흰색인 오른쪽 위는 음수로 바꿔 보세요.');};refresh();update(data.checked.length===2&&data.checked.every(Boolean),'세로선에는 양수 점수, 가로선에는 음수 점수가 나오도록 조절하고 검사하세요.');
-  }
+  function draw(){activityReady=false;el('mlSceneControls').replaceChildren();el('mlDreamText').textContent=goals[level-1];el('mlBody').innerHTML='';batch();}
   const batchInputs=[MatrixImage.patterns.left,MatrixImage.patterns.top,MatrixImage.patterns.left],batchWeights=[[1,1],[-1,1],[1,-1],[-1,-1]];
   const outputs=batchInputs.map(row=>[0,1].map(c=>row.reduce((s,v,i)=>s+v*batchWeights[i][c],0)));
   function batch(){

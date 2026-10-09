@@ -1,0 +1,74 @@
+/* Shared weight maps and level-four layout. */
+.mi-weights { display: grid; grid-template-columns: repeat(2, 1fr); gap: 3px; width: 100px; margin: auto; }
+.mi-weights span { display: grid; place-items: center; aspect-ratio: 1; color: white; border: 1px solid #66737a; border-radius: 5px; font: bold 20px ui-monospace, monospace; }
+#learningDialog.matrix-level-four #learningQuestion { display: block; text-align: center; padding: 10px; scrollbar-gutter: auto; }
+.matrix-level-four #learningForm + p { display: none; }
+.matrix-level-four h3 { margin: 3px 0 8px; }
+.matrix-level-four #learningQuestion p { margin: 6px 0; font-size: 13px; }
+.wl-row { display: grid; grid-template-columns: repeat(4, 40px); gap: 2px; border-left: 2px solid #38573e; border-right: 2px solid #38573e; padding: 5px; }
+.wl-row span { display: grid; place-items: center; height: 30px; font: bold 18px ui-monospace, monospace; background: #edf2e7; }
+.wl-flatten { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 20px 0; }
+#wlPixels { display: grid; grid-template-columns: repeat(2, 48px); gap: 3px; }
+#wlPixels button { width: 48px; height: 48px; padding: 0; border: 1px solid #718070; border-radius: 4px; font: 15px ui-monospace, monospace; }
+#wlPixels button:disabled { opacity: .4; }
+#wlFlat span { border: 1px dashed #a5b19a; }
+#wlFlat.wl-normalized span { border-style: solid; background: #daead0; }
+#wlHandwriting { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 14px; font-size: 13px; }
+#wlHandwriting[hidden] { display: none; }
+.wl-product { position: relative; width: 360px; height: 195px; margin: 0 auto; }
+.wl-product svg { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke-width: 2; }
+.wl-input-row { position: absolute; top: 26px; left: 15px; }
+.wl-weight-column { position: absolute; top: 28px; left: 274px; grid-template-columns: 30px; }
+.wl-times { position: absolute; top: 35px; left: 212px; }
+.wl-equals { position: absolute; top: 85px; right: 0; }
+.wl-row [data-pair="0"] { color: #1975bd; border-bottom: 2px solid; }
+.wl-row [data-pair="1"] { color: #b13e2b; border-bottom: 2px dashed; }
+.wl-row [data-pair="2"] { color: #267749; border-bottom: 3px double; }
+.wl-row [data-pair="3"] { color: #80529d; border-bottom: 2px dotted; }
+.wl-answer { display: flex; justify-content: center; align-items: center; gap: 8px; }
+.wl-answer input { width: 65px; min-height: 36px; text-align: center; border: 1px solid #87987c; border-radius: 5px; }
+.wl-answer button { padding: 6px 10px; min-height: 36px; }
+#wlFoldMap { height: 112px; margin-top: 6px; }
+#wlFoldMap .mi-weights { width: 203px; grid-template-columns: repeat(4, 48px); }
+#wlFoldMap .mi-weights.wl-folded { width: 99px; grid-template-columns: repeat(2, 48px); }
+.wl-choices { display: flex; justify-content: center; gap: 10px; }
+.wl-choices button { padding: 7px; border: 1px solid #93a288; border-radius: 6px; background: #f4f6ee; }
+.wl-choices button > span { display: block; margin-top: 3px; font-size: 12px; }
+.wl-choices button[aria-pressed="true"] { outline: 3px solid #43623a; outline-offset: -3px; }
+.wl-choices .px-grid { width: 65px; }
+.wl-tuning { display: flex; justify-content: center; align-items: center; gap: 22px; }
+#wlSliders { display: grid; grid-template-columns: repeat(2, 140px); gap: 6px; }
+#wlSliders label { padding: 5px 8px; border: 1px solid #d4dfce; border-radius: 6px; font-size: 12px; }
+#wlSliders output { float: right; font-weight: bold; }
+#wlSliders input { display: block; width: 100%; min-height: 30px; margin: 0; }
+.wl-tests { display: flex; justify-content: center; gap: 14px; margin-top: 10px; }
+.wl-tests section { display: flex; align-items: center; gap: 8px; text-align: left; padding: 7px; border: 1px solid #d4dfce; border-radius: 6px; }
+.wl-tests strong { font-size: 13px; }
+.wl-tests .px-grid { width: 42px; }
+.matrix-level-four #learningQuestion .wl-formula { font-size: 11px; font-family: ui-monospace, monospace; }
+.wl-hints { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 7px; font-size: 12px; }
+.wl-hints button { min-height: 32px; padding: 4px 8px; flex-shrink: 0; }
+.wl-quiz-heading { display: flex; align-items: center; justify-content: center; gap: 20px; margin: 10px 0; }
+.wl-quiz-heading .mi-weights { width: 80px; }
+.wl-revealed { display: block; font-size: 13px; margin-top: 5px; }
+.wl-revealed[hidden] { display: none; }
+@media (max-height: 780px) and (min-width: 650px) {
+  #learningDialog.matrix-level-four > .card { padding: 10px; }
+  .wl-product { height: 180px; }
+}
+@media (max-width: 649px) {
+  .matrix-level-four #learningTitle { font-size: 19px; }
+  .wl-flatten { gap: 6px; }
+  #wlFlat { grid-template-columns: repeat(4, 34px); }
+  .wl-product { width: 320px; transform: scale(.9); transform-origin: top left; margin-bottom: -15px; }
+  #wlSliders { grid-template-columns: repeat(2, 102px); }
+  .wl-tuning { gap: 10px; }
+  .wl-tuning .mi-weights { width: 70px; }
+  .wl-tests { flex-direction: column; gap: 5px; }
+  .wl-tests section { justify-content: center; padding: 5px; }
+  .wl-tests p { line-height: 1.35; }
+  .wl-choices { gap: 5px; }
+  .wl-choices button { padding: 5px; }
+  #wlQuizChoices { display: grid; grid-template-columns: repeat(2, max-content); }
+  .wl-choices button > span { font-size: 11px; }
+}

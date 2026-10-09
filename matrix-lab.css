@@ -115,58 +115,12 @@
   border-radius:10px;
   padding:14px 18px;
 }
-.ml-weight-grid input {
-  width:100%;
-  accent-color:#44735a;
-  min-height:32px;
-}
 .ml-formula {
   background:#f4f6ee;
   padding:12px;
   border-radius:8px;
   font-variant-numeric:tabular-nums;
   overflow-wrap:anywhere;
-}
-.ml-four {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:5px;
-  max-width:160px;
-  margin:20px auto;
-}
-.ml-four span {
-  aspect-ratio:1;
-  display:grid;
-  place-items:center;
-  border:1px solid #adbeb2;
-  border-radius:8px;
-}
-.ml-weight-grid {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-.ml-weight-grid label {
-  font-size:12px;
-  background:#f3f6eb;
-  border-radius:8px;
-  padding:10px;
-}
-.ml-weight-grid output {
-  float:right;
-  font-size:17px;
-  font-weight:bold;
-}
-.ml-meter {
-  height:12px;
-  background:#e6ecdf;
-  border-radius:10px;
-  overflow:hidden;
-}
-.ml-meter div {
-  height:100%;
-  background:#83ae6b;
-  transition:width .15s;
 }
 .ml-matrix {
   display:flex;
