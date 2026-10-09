@@ -273,7 +273,7 @@
     root, className: 'matrix-tutorial', extraClass: 'matrix-level-four',
     headingId: 'flipStepTitle', title: '그림 뒤집기 기계', description: 'Lv.4 · 행렬 곱셈으로 그림 뒤집기',
     steps, requireAllSteps: true, closeOnComplete: true,
-    finishLabel: ({ testing, cost = 0 }) => testing ? '체험 완료 →' : `연구 완료 · ${cost.toLocaleString('ko-KR')}원으로 업그레이드`,
+    finishLabel: ({ testing, cost = 0 }) => testing ? '체험 완료 →' : `연구 완료 · ${typeof cost === 'string' ? cost : cost.toLocaleString('ko-KR') + '원'} · 업그레이드`,
     quiz: {
       type: 'choice', step: 4, answer: 'both',
       hints: {
