@@ -1,0 +1,90 @@
+/* Matrix image transformations. Other lesson layouts remain untouched. */
+#learningDialog.matrix-level-four #learningQuestion {
+  display: block;
+  text-align: center;
+  padding: 10px;
+  scrollbar-gutter: auto;
+}
+.matrix-level-four #learningForm + p { display: none; }
+.matrix-level-four h3 { margin: 3px 0 8px; }
+.matrix-level-four h4 { margin: 2px 0 5px; font-size: 12px; }
+.matrix-level-four #learningQuestion p { margin: 6px 0; font-size: 13px; }
+.flip-equation { display: flex; justify-content: center; align-items: center; gap: 12px; }
+.flip-equation > b { font-size: 20px; }
+.flip-card { min-width: 0; }
+.flip-card .px-grid, .flip-lamps { width: 114px; }
+.flip-card .px-grid > span, .flip-card .px-grid > button { font-size: 12px; }
+.flip-selected { outline: 3px solid #e58219; outline-offset: -3px; }
+.flip-ghost { opacity: .45; }
+.flip-intro { margin: 18px 0; }
+.flip-formula { font: 16px ui-monospace, monospace; }
+.flip-zero { opacity: .4; }
+.flip-kept { font-weight: 800; text-decoration: underline; text-underline-offset: 4px; }
+.flip-status { color: #37583e; background: #edf3e7; padding: 6px 9px; border-radius: 5px; }
+.flip-status:empty { display: none; }
+#flipSources { display: flex; justify-content: center; gap: 8px; font-size: 11px; margin: 3px 0 8px; }
+#flipSources span { padding: 3px 7px; border: 1px solid #bdcaae; border-radius: 4px; }
+.flip-builder-footer { display: flex; align-items: center; justify-content: center; gap: 18px; margin: 8px 0; }
+.flip-builder-footer .px-grid { width: 66px; }
+.flip-builder-footer .px-grid span { font-size: 8px; }
+.flip-builder-footer > div { max-width: 280px; }
+.flip-buttons { display: flex; justify-content: center; gap: 7px; margin: 7px 0; }
+.flip-buttons button, #flipSwitch, #flipHint { min-height: 36px; padding: 5px 12px; font-size: 12px; }
+.flip-buttons button[aria-pressed="true"] { outline: 3px solid #577747; outline-offset: -3px; }
+#flipComparison { display: flex; justify-content: center; gap: 25px; margin: 4px 0 8px; }
+#flipComparison .px-grid { width: 54px; }
+#flipComparison .px-grid span { font-size: 8px; }
+#flipMoveStage .px-grid, #flipMoveStage .flip-lamps { width: 81px; }
+#flipOrderLabel { font-weight: bold; }
+#flipGallery { display: flex; justify-content: center; gap: 12px; }
+#flipGallery .px-grid { width: 69px; }
+#flipGallery .px-grid span { font-size: 8px; }
+#flipBonus { margin: 8px 0; }
+#flipBonus .px-grid { width: 98px; }
+#flipBonus .px-grid span { font-size: 7px; }
+.flip-quiz-preview { display: flex; justify-content: center; align-items: center; gap: 18px; }
+#flipAnswerResult .px-grid { width: 66px; }
+#flipAnswerResult .px-grid span { font-size: 8px; }
+@media (max-height: 780px) and (min-width: 650px) {
+  #learningDialog.matrix-level-four > .card { padding: 10px; }
+  .matrix-level-four #learningQuestion[data-step="3"] .flip-status { font-size: 12px; line-height: 1.35; }
+  #learningQuestion[data-step="2"] .flip-equation .px-grid,
+  #learningQuestion[data-step="2"] .flip-lamps { width: 96px; }
+  .flip-builder-footer { margin: 5px 0; }
+  #flipQuizIntro .px-grid { width: 90px; }
+  #flipOrderActivity { display: grid; grid-template-columns: 180px 1fr; align-items: center; gap: 2px 8px; }
+  #flipOrderActivity[hidden] { display: none; }
+  #flipComparison { grid-row: 1/4; gap: 12px; }
+  #flipSwitch { justify-self: center; }
+  #flipOrderLabel { grid-column: 2; }
+  #flipCelebration { display: grid; grid-template-columns: 1fr 145px; align-items: center; }
+  #flipCelebration[hidden] { display: none; }
+  #flipCelebration > p { grid-column: 1; }
+  #flipBonus { grid-column: 2; grid-row: 1/3; }
+}
+@media (max-width: 649px) {
+  .matrix-level-four #learningTitle { font-size: 19px; }
+  .flip-equation { gap: 5px; }
+  .flip-equation > b { font-size: 16px; }
+  .flip-card .px-grid, .flip-lamps { width: 81px; }
+  .flip-card .px-grid > span, .flip-card .px-grid > button { font-size: 9px; }
+  .flip-card h4 { font-size: 10px; }
+  #flipBuilder .flip-lamps { width: 108px; }
+  .flip-lamps > * { font-size: 14px; }
+  #flipSources { gap: 4px; font-size: 10px; }
+  .flip-builder-footer { gap: 10px; }
+  .flip-builder-footer .px-grid { width: 60px; }
+  .flip-builder-footer > div { max-width: 215px; }
+  .flip-buttons { flex-wrap: wrap; gap: 5px; }
+  .flip-buttons button { min-width: 115px; }
+  #flipPredictions button { min-width: 0; }
+  #flipComparison .px-grid { width: 42px; }
+  #flipMoveStage .px-grid, #flipMoveStage .flip-lamps { width: 72px; }
+  .flip-quiz-preview { flex-wrap: wrap; gap: 4px; }
+  #flipGallery { gap: 7px; }
+  #flipGallery .px-grid { width: 61px; }
+  #flipGallery .px-grid span { font-size: 8px; }
+  #flipBonus .px-grid { width: 98px; }
+  #flipBonus .px-grid span { font-size: 7px; }
+  .matrix-level-four #learningQuestion .flip-status { font-size: 12px; line-height: 1.45; }
+}

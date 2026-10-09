@@ -1,0 +1,63 @@
+/* Image operations use the existing shared dialog and pixel markup. */
+#learningDialog.matrix-level-three #learningQuestion {
+  display: block;
+  text-align: center;
+  padding: 10px;
+  scrollbar-gutter: auto;
+}
+.matrix-level-three h3 { margin: 3px 0 8px; }
+.matrix-level-three #learningQuestion p { margin: 6px 0; font-size: 13px; }
+.matrix-level-three #learningForm + p { display: none; }
+.im-equation { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 8px 0; }
+.im-equation figure, .im-quiz-original figure { margin: 0; }
+.im-equation figcaption, .im-quiz-original figcaption { font-size: 12px; margin-bottom: 3px; }
+.matrix-level-three .px-grid { width: 140px; }
+.matrix-level-three .px-grid span { font-size: 10px; }
+.matrix-level-three .px-grid span.im-clipped {
+  outline: 2px dashed #c53b28;
+  outline-offset: -2px;
+}
+#imMatrix .px-grid { border-left: 2px solid #38573e; border-right: 2px solid #38573e; }
+#imMatrix span { background: #fff !important; color: #20382a !important; border: 0; }
+.im-slider { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px; }
+.im-slider input { width: min(240px, 52%); min-height: 36px; }
+.im-slider output { min-width: 3ch; font-variant-numeric: tabular-nums; }
+.im-difference { max-width: 410px; margin: 6px auto; font-size: 12px; }
+.im-difference > div { display: flex; align-items: center; gap: 8px; }
+.im-difference span { width: 70px; text-align: right; }
+.im-difference meter { flex: 1; height: 18px; }
+.im-difference output { width: 3ch; text-align: right; }
+.im-prediction { display: block; font-size: 14px; }
+.im-prediction input { width: 70px; min-height: 36px; margin: 6px; text-align: center; border: 1px solid #8b9a83; border-radius: 6px; }
+.im-actions { display: flex; justify-content: center; gap: 8px; }
+.im-actions button { min-height: 36px; padding: 5px 12px; }
+#imInverted:empty { width: 140px; height: 140px; display: grid; place-items: center; border: 2px dashed #a8b29e; }
+#imInverted:empty::after { content: '?'; font-size: 28px; }
+.im-quiz-original { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 8px; }
+.im-quiz-original .px-grid { width: 77px; }
+#imChoices { display: flex; justify-content: center; gap: 12px; }
+#imChoices button { border: 1px solid #91a087; background: #f4f6f0; border-radius: 6px; padding: 6px; }
+#imChoices strong { display: block; font-size: 14px; margin-bottom: 3px; }
+#imChoices .px-grid { width: 98px; }
+#imChoices button[aria-pressed="true"] { outline: 3px solid #43623a; outline-offset: -3px; }
+@media (max-height: 780px) and (min-width: 650px) {
+  #learningDialog.matrix-level-three > .card { padding: 10px; }
+  .matrix-level-three .px-grid { width: 126px; }
+  #imInverted:empty { width: 126px; height: 126px; }
+  .im-quiz-original .px-grid { width: 63px; }
+  #imChoices .px-grid { width: 91px; }
+}
+@media (max-width: 649px) {
+  .matrix-level-three #learningTitle { font-size: 19px; }
+  .im-equation { gap: 4px; }
+  .im-equation > b { font-size: 13px; }
+  .matrix-level-three .px-grid { width: 91px; }
+  .matrix-level-three .px-grid span { font-size: 7px; }
+  .im-arrival .px-grid { width: 126px; }
+  .im-arrival .px-grid span { font-size: 10px; }
+  #imInverted:empty { width: 91px; height: 91px; }
+  .im-prediction { font-size: 13px; }
+  .im-quiz-original .px-grid { width: 63px; }
+  #imChoices { display: grid; grid-template-columns: repeat(2, max-content); gap: 8px; }
+  #imChoices .px-grid { width: 84px; }
+}

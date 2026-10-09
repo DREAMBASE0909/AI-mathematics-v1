@@ -1,0 +1,89 @@
+/* Pixel lesson only; the shared dialog and Dreamy scene retain their Lv.1 layout. */
+#learningDialog.matrix-level-two #learningQuestion {
+  display: block;
+  text-align: center;
+  scrollbar-gutter: auto;
+}
+.matrix-level-two h3 { margin: 4px 0 8px; }
+.matrix-level-two h4 { margin: 3px 0 5px; font-size: 13px; }
+.matrix-level-two #learningQuestion p { margin: 8px 0; font-size: 14px; }
+.px-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--n), 1fr);
+  width: 154px;
+  aspect-ratio: 1;
+  margin: auto;
+}
+.px-grid > span, .px-grid > button {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  border: 1px solid #909b96;
+  border-radius: 0;
+  font: 10px ui-monospace, monospace;
+  opacity: 1;
+}
+.px-grid > button:focus-visible { outline: 3px solid #ed872c; z-index: 1; }
+.px-grid > button.px-wrong { outline: 3px dashed #e24c23; outline-offset: -3px; }
+.px-zoom { height: 220px; display: grid; place-items: center; }
+#pxZoomImage .px-grid { width: 210px; }
+#pxAddress {
+  display: grid;
+  grid-template-columns: 24px repeat(6, 34px);
+  grid-template-rows: 24px repeat(6, 34px);
+  gap: 3px;
+  justify-content: center;
+}
+#pxAddress button { border: 1px solid #8e9e8c; border-radius: 4px; background: #edf1e8; padding: 0; }
+#pxAddress b { align-self: center; font-size: 13px; }
+#pxSample { width: 112px; height: 112px; border: 1px solid #879589; margin: 10px auto; }
+.px-slider { display: flex; gap: 12px; align-items: center; justify-content: center; }
+.px-slider input { width: min(230px, 60%); min-height: 36px; }
+.px-slider output { min-width: 3ch; font-variant-numeric: tabular-nums; }
+#pxSwatches { display: flex; justify-content: center; gap: 14px; margin: 12px 0; font-size: 13px; }
+#pxSwatches .px-grid { width: 40px; }
+.px-paint-layout { display: grid; grid-template-columns: 180px 180px; justify-content: center; gap: 32px; }
+#pxBrushes { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+#pxBrushes button { min-height: 36px; border: 1px solid #899c84; border-radius: 6px; background: #fff; }
+#pxBrushes button::before { content: ''; display: inline-block; width: 14px; height: 14px; vertical-align: middle; margin-right: 5px; background: var(--shade); border: 1px solid #849082; }
+#pxBrushes button[aria-pressed="true"], #pxChoices button[aria-pressed="true"] { outline: 3px solid #43623a; outline-offset: -3px; }
+.px-checks { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin-top: 8px; }
+.px-checks button { min-height: 34px; padding: 5px 9px; font-size: 12px; }
+#pxPaint { touch-action: none; user-select: none; }
+#pxNumbers { margin-top: 4px; }
+.px-quiz { display: flex; justify-content: center; align-items: center; gap: 30px; }
+#pxQuizMatrix .px-grid { width: 170px; }
+#pxQuizMatrix span { background: transparent !important; color: #20382a !important; border: 0; font-size: 19px; }
+#pxQuizMatrix { border-left: 2px solid; border-right: 2px solid; padding: 5px; }
+#pxChoices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+#pxChoices button { padding: 5px; border: 1px solid #91a087; background: #f4f6f0; border-radius: 6px; }
+#pxChoices .px-grid { width: 88px; }
+#pxChoices b { display: block; font-size: 12px; }
+@media (max-width: 649px) {
+  .matrix-level-two #learningTitle { font-size: 18px; }
+  .px-paint-layout { grid-template-columns: 130px 154px; gap: 10px; }
+  #pxReference .px-grid { width: 126px; }
+  .px-quiz { gap: 12px; }
+  #pxQuizMatrix .px-grid { width: 112px; }
+  #pxQuizMatrix span { font-size: 13px; }
+  #pxChoices { grid-template-columns: 1fr 1fr; gap: 6px; }
+  #pxChoices .px-grid { width: 66px; }
+}
+@media (max-height: 780px) and (min-width: 650px) {
+  .px-paint-layout .px-grid { width: 133px; }
+  #pxBrushes { grid-template-columns: repeat(4, 1fr); }
+  #pxBrushes button { font-size: 11px; padding: 0; }
+  #pxBrushes button::before { width: 10px; height: 10px; margin-right: 2px; }
+  .px-paint-layout h4 { font-size: 12px; margin: 2px 0; }
+}
+@media (max-height: 740px) and (min-width: 650px) {
+  #learningDialog.matrix-level-two > .card { padding: 10px; }
+  #learningDialog.matrix-level-two #learningQuestion { padding: 10px; }
+  .matrix-level-two #learningForm + p { display: none; }
+  .px-paint-layout .px-grid { width: 126px; }
+  .px-zoom { height: 190px; }
+  #pxZoomImage .px-grid { width: 182px; }
+  #pxSample { width: 96px; height: 96px; }
+}

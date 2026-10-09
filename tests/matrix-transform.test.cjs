@@ -1,0 +1,16 @@
+const assert = require('node:assert/strict');
+global.window = {};
+require('../matrix-image.js');
+const { identity, flip, multiply, face, order } = window.MatrixImage;
+const A = [[255,255,255],[0,0,255],[0,0,255]];
+assert.deepEqual(multiply(A, identity(3)), A);
+assert.deepEqual(multiply(A, flip(3)), [[255,255,255],[255,0,0],[255,0,0]]);
+assert.deepEqual(multiply(flip(3), A), [[0,0,255],[0,0,255],[255,255,255]]);
+assert.deepEqual(multiply(multiply(flip(3), A), flip(3)), [[255,0,0],[255,0,0],[255,255,255]]);
+assert.deepEqual(multiply([[2,3]], [[4],[5]]), [[23]]);
+assert.throws(() => multiply([[1,2]], [[1,2]]), RangeError);
+const rows = Array.from({length:7}, (_, r) => face.slice(r*7,r*7+7));
+assert.deepEqual(multiply(flip(7), rows), [...rows].reverse());
+assert.equal(order().length, 4);
+assert.equal(order(3)[8], '3행 3열');
+console.log('Matrix products, face transformation and shared position labels: passed');

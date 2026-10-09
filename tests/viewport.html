@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>학습 화면 크기 검증</title>
+  <style>
+    body { margin: 12px; font: 14px sans-serif; background: #ddd; }
+    nav { display: flex; gap: 10px; margin-bottom: 8px; align-items: center; }
+    button { padding: 10px; }
+    iframe { display: block; border: 0; transform-origin: top left; }
+    #stage { overflow: hidden; }
+    #errors { color: #a00; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <nav>
+    <button data-size="1366,768">1366 × 768</button>
+    <button data-size="1280,720">1280 × 720</button>
+    <button data-size="390,844">390 × 844</button>
+    <span>격리 테스트 · 실제 학생 저장 기록에 접근하지 않습니다.</span>
+  </nav>
+  <output id="size"></output>
+  <pre id="errors" aria-live="polite"></pre>
+  <div id="stage"><iframe id="game" title="검증용 게임"></iframe></div>
+  <details><summary>저장 호환성 검증 도구</summary>
+    <button id="seedLegacy">예전 Lv.2 기록 넣고 새로 열기</button>
+    <button id="seedLegacy3">예전 Lv.3 기록 넣고 새로 열기</button>
+    <button id="seedResearch3">Lv.3 연구용 공장 준비</button>
+    <button id="seedLegacy4">예전 Lv.4 기록 넣고 새로 열기</button>
+    <button id="seedResearch4">Lv.4 연구용 공장 준비</button>
+    <button id="seedLegacy5">예전 Lv.5 기록 넣고 새로 열기</button>
+    <button id="seedResearch5">Lv.5 자원 연구용 공장 준비</button>
+    <button id="reloadGame">게임만 다시 열기</button>
+    <button id="auditStorage">격리 저장 기록 확인</button>
+    <pre id="storageAudit"></pre>
+  </details>
+  <script>
+    // Memory storage belongs only to this QA page; the game still uses its original keys/schema.
+    const memory = new Map();
+    const errors = document.getElementById('errors');
+    window.qaStorage = {
+      getItem: key => memory.get(key) ?? null,
+      setItem: (key, value) => memory.set(key, String(value)),
+      removeItem: key => memory.delete(key)
+    };
+    window.qaError = message => { errors.textContent += message + '\n'; };
+    const frame = document.getElementById('game');
+    function resize(width, height) {
+      frame.style.width = width + 'px';
+      frame.style.height = height + 'px';
+      const scale = Math.min(1, (innerWidth - 24) / width, (innerHeight - 100) / height);
+      frame.style.transform = `scale(${scale})`;
+      document.getElementById('stage').style.height = height * scale + 'px';
+      document.getElementById('size').textContent = `${width} × ${height} CSS px`;
+    }
+    document.querySelectorAll('[data-size]').forEach(button => {
+      button.onclick = () => resize(...button.dataset.size.split(',').map(Number));
+    });
+    let gameHTML = '';
+    document.getElementById('reloadGame').onclick = () => { frame.srcdoc = gameHTML; };
+    document.getElementById('seedLegacy').onclick = () => {
+      memory.set('ai-matrix-lab-v1-test-2', JSON.stringify({ pixels: [0,1,0,1,1,1,0,1,0], pixelEdit: true, numberEdit: true, legacyMarker: 'preserve-me' }));
+      frame.srcdoc = gameHTML;
+    };
+    document.getElementById('seedLegacy3').onclick = () => {
+      memory.set('ai-matrix-lab-v1-test-3', JSON.stringify({ amount: 200, mode: 'add', seenAdd: true, seenMultiply: true, clipped: true, legacyMarker: 'preserve-me' }));
+      frame.srcdoc = gameHTML;
+    };
+    document.getElementById('seedResearch3').onclick = () => {
+      memory.set('ai-company-math-v1', JSON.stringify({
+        balance: 1000000, solved: 0, level: 1, history: [], factories: { matrix: 'active' },
+        instances: [{ uid: 'qa-matrix', type: 'matrix', status: 'active', cell: 154, level: 2, invested: 41000 }],
+        testCreditGranted: true, mapVersion: 2, gridCols: 21, land: [4],
+        unlocked: ['matrix'], upgradeResearch: ['matrix:2']
+      }));
+      frame.srcdoc = gameHTML;
+    };
+    document.getElementById('seedLegacy4').onclick = () => {
+      memory.set('ai-matrix-lab-v1-test-4', JSON.stringify({ weights: [2,-1,2,-1], sample: 1, checked: [true,true], imageLessonV4: { step: 4, choice: 'left', revealed: true }, sorterLessonV1: { step: 4, choice: 'weights', named: true }, legacyMarker: 'preserve-me' }));
+      frame.srcdoc = gameHTML;
+    };
+    document.getElementById('seedResearch4').onclick = () => {
+      memory.set('ai-company-math-v1', JSON.stringify({
+        balance: 10000000, solved: 0, level: 1, history: [], factories: { matrix: 'active' },
+        instances: [{ uid: 'qa-matrix', type: 'matrix', status: 'active', cell: 154, level: 3, invested: 341000 }],
+        testCreditGranted: true, mapVersion: 2, gridCols: 21, land: [4],
+        unlocked: ['matrix'], upgradeResearch: ['matrix:2', 'matrix:3']
+      }));
+      frame.srcdoc = gameHTML;
+    };
+    document.getElementById('seedLegacy5').onclick = () => {
+      memory.set('ai-matrix-lab-v1-test-5', JSON.stringify({
+        order: [0, 1, 2], focusRow: 2, focusCol: 1, matched: [0, 1, 2], ran: true,
+        legacyMarker: 'preserve-me'
+      }));
+      frame.srcdoc = gameHTML;
+    };
+    document.getElementById('seedResearch5').onclick = () => {
+      memory.set('ai-company-math-v1', JSON.stringify({
+        balance: 0, solved: 0, level: 1, history: [], factories: { matrix: 'active' },
+        instances: [{ uid: 'qa-matrix', type: 'matrix', status: 'active', cell: 219, level: 4,
+          spent: { matrix: 84200, language: 0, gradient: 0, cluster: 0 } }],
+        economyVersion: 1, resources: { matrix: 2000000, language: 123, gradient: 456, cluster: 789 },
+        centerPaid: { matrix: 0, language: 0, gradient: 0, cluster: 0 },
+        testCreditGranted: true, mapVersion: 3, gridCols: 21, land: [4],
+        unlocked: ['matrix'], upgradeResearch: ['matrix:2', 'matrix:3', 'matrix:4']
+      }));
+      frame.srcdoc = gameHTML;
+    };
+    document.getElementById('auditStorage').onclick = () => {
+      document.getElementById('storageAudit').textContent = JSON.stringify(Object.fromEntries([...memory].map(([key, value]) => [key, JSON.parse(value)])), null, 2);
+    };
+    fetch('../index.html').then(response => response.text()).then(html => {
+      const base = new URL('../', location.href).href;
+      const setup = `<base href="${base}"><script>
+        Object.defineProperty(window, 'localStorage', { value: parent.qaStorage });
+        addEventListener('error', event => parent.qaError(event.message || 'Resource error: ' + event.target.src), true);
+        addEventListener('unhandledrejection', event => parent.qaError(String(event.reason)));
+      <\/script>`;
+      gameHTML = html.replace('<head>', '<head>' + setup);
+      frame.srcdoc = gameHTML;
+      resize(1366, 768);
+    }).catch(error => window.qaError(String(error)));
+  </script>
+</body>
+</html>

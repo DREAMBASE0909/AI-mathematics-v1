@@ -1,0 +1,28 @@
+/* Reused in grayscale/color zoom and the Lv.4/Lv.5 column machines. */
+.matrix-zoom { transform: scale(.55); transition: transform 1.2s ease; }
+.matrix-zoom .px-grid > span, .matrix-zoom .color-grid > span {
+  color: transparent !important; border-color: transparent;
+  transition: color .6s .5s, border-color .6s .5s;
+}
+.matrix-zoom.expanded { transform: scale(1); }
+.matrix-zoom.expanded .px-grid > span, .matrix-zoom.expanded .color-grid > span {
+  color: inherit !important; border-color: #9aa5a0;
+}
+.matrix-zoom.expanded span[style*="color:#fff"] { color: #fff !important; }
+.flip-lamps {
+  display: grid; grid-template-columns: repeat(var(--machine-size, 3), 1fr);
+  aspect-ratio: 1; gap: 3px; margin: auto;
+}
+.flip-lamps > * {
+  display: grid; place-items: center; min-width: 0; padding: 0;
+  color: #5b665d; background: #e6e9df; border: 1px solid #aab5a2;
+  border-radius: 6px; font: bold 17px ui-monospace, monospace;
+}
+.flip-lamps .is-on { background: #ffe086; color: #594214; border: 2px solid #ac801a; }
+.flip-lamps button { touch-action: manipulation; cursor: pointer; }
+.flip-lamps button:focus-visible { outline: 3px solid #3265cb; outline-offset: 1px; }
+.flip-lamps.mc-labelled { grid-template-columns: 18px repeat(var(--machine-size, 3), 1fr); grid-template-rows: 18px repeat(var(--machine-size, 3), 1fr); }
+.flip-lamps .mc-axis { background: none; border: 0; font-size: 11px; }
+@media (prefers-reduced-motion: reduce) {
+  .matrix-zoom, .matrix-zoom span { transition: none; }
+}
