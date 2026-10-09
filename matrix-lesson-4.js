@@ -261,9 +261,9 @@
     {
       title: 'ㄱ을 ㄴ으로',
       speech: '좌우와 상하를 모두 뒤집으려면 기계를 어디에 놓아야 할까요?',
-      html: '<div id="flipQuizIntro"><p><strong>ㄱ을 ㄴ으로 바꾸려면 어떻게 곱해야 할까요?</strong></p><div class="flip-equation">'
+      html: '<div class="flip-quiz-preview"><div id="flipQuizIntro"><p><strong>ㄱ을 ㄴ으로 바꾸려면 어떻게 곱해야 할까요?</strong></p><div class="flip-equation">'
         + picture(A, '원본 ㄱ') + '<b>→</b>' + picture(results.both, '목표 ㄴ') + '</div></div>'
-        + '<div id="flipChoices" class="flip-buttons"></div><div id="flipAnswerResult" hidden></div>'
+        + '<div id="flipAnswerResult" hidden></div></div><div id="flipChoices" class="flip-buttons"></div>'
         + '<div id="flipCelebration" hidden><p><strong>사진 1장 → 학습 데이터 4장!</strong></p><div id="flipGallery"></div><div id="flipBonus"></div></div>',
       onMount: mountQuiz, isComplete: () => data.choice === 'both'
     }

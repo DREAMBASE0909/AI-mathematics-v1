@@ -51,11 +51,16 @@
 #flipBonus { margin: 8px 0; }
 #flipBonus .px-grid { width: 98px; }
 #flipBonus .px-grid span { font-size: 7px; }
+.flip-quiz-preview { display: flex; justify-content: center; align-items: center; gap: 18px; }
 #flipAnswerResult .px-grid { width: 66px; }
 #flipAnswerResult .px-grid span { font-size: 8px; }
 @media (max-height: 780px) and (min-width: 650px) {
   #learningDialog.matrix-level-four > .card { padding: 10px; }
   .matrix-level-four #learningQuestion[data-step="3"] .flip-status { font-size: 12px; line-height: 1.35; }
+  #learningQuestion[data-step="2"] .flip-equation .px-grid,
+  #learningQuestion[data-step="2"] .flip-lamps { width: 96px; }
+  .flip-builder-footer { margin: 5px 0; }
+  #flipQuizIntro .px-grid { width: 90px; }
   #flipOrderActivity { display: grid; grid-template-columns: 180px 1fr; align-items: center; gap: 2px 8px; }
   #flipOrderActivity[hidden] { display: none; }
   #flipComparison { grid-row: 1/4; gap: 12px; }
@@ -82,6 +87,9 @@
   .flip-buttons { flex-wrap: wrap; gap: 5px; }
   .flip-buttons button { min-width: 115px; }
   #flipPredictions button { min-width: 0; }
+  #flipComparison .px-grid { width: 42px; }
+  #flipMoveStage .px-grid, #flipMoveStage .flip-lamps { width: 72px; }
+  .flip-quiz-preview { flex-wrap: wrap; gap: 4px; }
   #flipGallery { gap: 7px; }
   #flipGallery .px-grid { width: 61px; }
   #flipGallery .px-grid span { font-size: 8px; }
