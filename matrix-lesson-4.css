@@ -62,7 +62,7 @@
 #sortResults > div { display: flex; align-items: center; gap: 4px; border: 1px solid #b9c6b0; padding: 3px; font-size: 9px; text-align: left; }
 #sortResults .px-grid { width: 30px; flex-shrink: 0; margin: 0; }
 .sort-error { color: #a42d28; outline: 2px dashed #c3443b; outline-offset: -2px; }
-.sort-names-layout { display: flex; justify-content: center; gap: 22px; align-items: center; }
+.sort-names-layout { display: flex; justify-content: center; gap: 18px; align-items: center; }
 .sort-names-layout .sort-receipt { width: 210px; font-size: 11px; margin: 0; }
 .sort-names-layout .sort-receipt th, .sort-names-layout .sort-receipt td { padding: 2px 5px; }
 .sort-names-layout .sort-receipt caption { padding: 3px; }
@@ -75,6 +75,7 @@
 #sortMatrices.sort-unfolded #sortNameImage span { height: 18px; }
 #sortMatrices.sort-unfolded #sortNameBoard .mi-weights { width: 18px; grid-template-columns: 18px !important; gap: 1px; }
 #sortMatrices.sort-unfolded #sortNameBoard span { height: 18px; border-radius: 0; }
+#sortNamingText { width: 245px; flex-shrink: 0; text-align: left; }
 #sortNamingText p { line-height: 1.4; }
 #sortNamingText small { display: block; line-height: 1.3; color: #5b6957; }
 #sortChoices { display: flex; justify-content: center; gap: 7px; }
@@ -82,6 +83,10 @@
 @media (max-height: 780px) and (min-width: 650px) {
   #learningDialog.matrix-level-four > .card { padding: 10px; }
   .sort-receipt th, .sort-receipt td { padding: 5px 10px; }
+  #learningQuestion[data-step="1"] .sort-answer { display: inline-flex; margin-right: 12px; vertical-align: middle; }
+  #sortHorizontal:not([hidden]) { display: inline-flex; vertical-align: middle; }
+  .matrix-level-four #learningQuestion .sort-reaction { padding: 5px 8px; line-height: 1.3; }
+  .matrix-level-four #learningQuestion #sortStatus { margin: 3px 0; }
   #sortMatrices { min-height: 162px; }
   #sortMatrices.sort-unfolded #sortNameBoard span { height: 16px; }
 }
@@ -110,7 +115,8 @@
   #sortResults .px-grid { width: 24px; }
   .sort-hints { line-height: 1.3; }
   .matrix-level-four #learningQuestion .sort-reaction { font-size: 11px; line-height: 1.4; }
-  .sort-names-layout { gap: 10px; }
+  .sort-names-layout { gap: 8px 10px; flex-wrap: wrap; }
+  #sortNamingText { width: 100%; flex-basis: 100%; }
   .sort-names-layout .sort-receipt { width: 126px; font-size: 9px; }
   .sort-names-layout .sort-receipt th, .sort-names-layout .sort-receipt td { padding: 2px; }
   #sortLabels { grid-template-columns: 1fr; font-size: 9px; gap: 2px; margin: 4px 0; }
