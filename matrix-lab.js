@@ -1,9 +1,9 @@
 /* Matrix activities: arithmetic is automatic; progress follows student actions. */
 (() => {
   'use strict';
-  const titles = ['의뢰를 가지런히', '숫자로 그리는 그림', '어두운 사진 복원', '무늬 판별기 조정', '한꺼번에 처리하기'];
+  const titles = ['연립방정식을 행렬로', '숫자로 그리는 그림', '어두운 사진 복원', '무늬 판별기 조정', '한꺼번에 처리하기'];
   const goals = [
-    '의뢰에서 같은 역할의 숫자를 골라 같은 열에 놓아 보세요.',
+    'x, y, z가 들어간 세 식을 행렬 하나로 정리해 보세요. 계산은 하지 않아도 됩니다.',
     '픽셀과 행렬을 오가며 배송 상자의 + 표시를 완성해 보세요.',
     '더하기와 곱하기를 비교하고, 무늬를 살려 사진을 밝혀 보세요.',
     '중요하게 볼 픽셀을 바꿔 가로선과 세로선을 구분해 보세요.',
@@ -16,7 +16,7 @@
   const el = id => document.getElementById(id);
   let level = 1, testing = false, data, complete, opener, cost = 0;
   const key = () => `ai-matrix-lab-v1-${testing ? 'test' : 'play'}-${level}`;
-  const fresh = () => ({slots:Array(6).fill(null),selected:null,row:false,col:false,pixels:Array(9).fill(0),pixelEdit:false,numberEdit:false,amount:0,mode:'add',seenAdd:false,seenMultiply:false,clipped:false,weights:[0,0,0,0],sample:0,checked:[],order:[],focusRow:null,focusCol:null,matched:[],ran:false});
+  const fresh = () => ({slots:Array(6).fill(null),selected:null,equationCols:[],equationRow:false,equationCol:false,equationChanged:false,equationFocus:null,row:false,col:false,pixels:Array(9).fill(0),pixelEdit:false,numberEdit:false,amount:0,mode:'add',seenAdd:false,seenMultiply:false,clipped:false,weights:[0,0,0,0],sample:0,checked:[],order:[],focusRow:null,focusCol:null,matched:[],ran:false});
   const persist = () => {try {localStorage.setItem(key(),JSON.stringify(data));el('mlSave').textContent=testing?'테스트에서는 자금·공장·연구 기록이 바뀌지 않습니다.':'조작한 내용은 자동 저장됩니다.';} catch {el('mlSave').textContent='이 브라우저에서는 활동을 저장할 수 없습니다.';}};
   function start(l, options={}) {
     opener=document.activeElement; level=l; testing=options.test===true; complete=options.onComplete; cost=options.cost||0;
@@ -32,19 +32,30 @@
   function update(ready, message) {el('mlStatus').textContent=message;el('mlStatus').className=ready?'ml-success':'';el('mlFinish').disabled=!ready;el('mlFinish').textContent=testing?'체험 완료':level===1?'설계 완료 · 공장 가동':`연구 완료 · ${cost.toLocaleString('ko-KR')}원으로 업그레이드`;persist();}
   function draw(){el('mlBody').innerHTML='';[arrange,pixels,brightness,weights,batch][level-1]();}
   function arrange(){
-    const cards=[{v:2,label:'A · x의 계수 2'},{v:1,label:'A · 상수항 1'},{v:7,label:'A · 결과 7'},{v:3,label:'B · x의 계수 3'},{v:4,label:'B · 상수항 4'},{v:10,label:'B · 결과 10'}];
-    el('mlBody').innerHTML=`<div class="ml-two">${panel('01 · 의뢰 카드','<p class="ml-equation">A　2x + 1 = 7<br>B　3x + 4 = 10</p><p>숫자 카드를 누른 뒤 알맞은 칸을 누르세요. 식을 풀 필요는 없어요.</p><div id="mlCards" class="ml-chips"></div>')}${panel('02 · 같은 역할끼리 정리','<div class="ml-table-scroll"><table class="ml-table"><thead><tr><th>의뢰</th><th>x의 계수</th><th>상수항</th><th>결과</th></tr></thead><tbody id="mlSlots"></tbody></table></div><p id="mlArrangeHint" role="status"></p>')}</div><div id="mlInspect" class="ml-panel" hidden><h3>정리한 숫자가 행렬이 됩니다</h3><div class="ml-chips"><button id="mlRow" class="ml-chip">A 의뢰의 행 보기</button><button id="mlCol" class="ml-chip">계수의 열 보기</button></div><p id="mlAxis">가로줄과 세로줄을 각각 눌러 보세요.</p></div>`;
-    [4,0,5,2,1,3].forEach(i=>{if(data.slots.includes(i))return;const b=button(cards[i].label,()=>{data.selected=i;draw();});b.setAttribute('aria-pressed',String(data.selected===i));el('mlCards').append(b);});
-    for(let row=0;row<2;row++){const tr=document.createElement('tr');tr.innerHTML=`<th>${row?'B':'A'}</th>`;for(let col=0;col<3;col++){const i=row*3+col,td=document.createElement('td');const b=button(data.slots[i]===null?'＋':String(cards[data.slots[i]].v),()=>{if(data.selected===null){el('mlArrangeHint').textContent='왼쪽에서 숫자 카드를 먼저 선택하세요.';return;}if(data.selected!==i){el('mlArrangeHint').textContent='의뢰 이름과 숫자의 역할을 확인해 보세요.';return;}data.slots[i]=data.selected;data.selected=null;draw();});b.setAttribute('aria-label',`${row?'B':'A'} 의뢰 ${['계수','상수항','결과'][col]} 칸`);td.append(b);tr.append(td);}el('mlSlots').append(tr);}
-    const filled=data.slots.every((v,i)=>v===i);el('mlInspect').hidden=!filled;
-    const inspect=axis=>{data[axis]=true;el('mlAxis').textContent=axis==='row'?'행은 가로줄입니다. 첫째 행 [2, 1, 7]은 A 의뢰 하나를 나타냅니다.':'열은 세로줄입니다. 첫째 열 [2, 3]은 두 의뢰의 x 계수를 모은 것입니다.';el('mlSlots').querySelectorAll('td').forEach((td,i)=>td.classList.toggle('ml-highlight',axis==='row'?i<3:i%3===0));update(data.row&&data.col,'행과 열의 역할을 확인했습니다. 숫자를 직사각형으로 배열한 것을 행렬이라고 합니다.');};
-    el('mlRow').onclick=()=>inspect('row');el('mlCol').onclick=()=>inspect('col');
-    update(filled&&data.row&&data.col,filled?(data.row&&data.col?'행과 열의 역할을 확인했습니다.':'행과 열을 각각 눌러 역할을 확인하세요.'):`숫자 카드 ${data.slots.filter(v=>v!==null).length} / 6개 배치`);
+    const vars=['x','y','z'], coefficients=[[1,1,1],[2,data.equationChanged?2:-1,0],[0,2,3]], rhs=[6,0,13];
+    const filled=data.equationCols.length===3;
+    const bracket=(values,label,extra='')=>`<div class="ml-bracket ${extra}" role="group" aria-label="${label}" style="--matrix-cols:${values[0].length}">${values.map((row,r)=>row.map((v,c)=>`<span data-mrow="${r}" data-mcol="${c}">${v}</span>`).join('')).join('')}</div>`;
+    el('mlBody').innerHTML=`<div class="ml-two">${panel('01 · 세 미지수가 들어간 연립방정식',`<div class="ml-system" aria-label="연립방정식"><div data-eq="0">z + x + y = 6</div><div data-eq="1">${data.equationChanged?'2y + 2x = 0':'−y + 2x = 0'}</div><div data-eq="2">2y + 3z = 13</div></div><p>식마다 문자 순서가 다르거나 빠져 있습니다. 같은 문자의 계수를 한 열에 모으면 비교하기 쉽습니다.</p><div id="mlCollect" class="ml-chips"></div>`)}${panel('02 · 계수만 모은 행렬 A',`<div class="ml-coefficient-head"><span>x의 계수</span><span>y의 계수</span><span>z의 계수</span></div><div id="mlCoefficient">${bracket(coefficients.map(row=>row.map((v,c)=>data.equationCols.includes(c)?v:'?')),'계수 행렬 A')}</div><p>가로 한 줄은 식 하나, 세로 한 줄은 같은 문자의 계수입니다. 숫자를 직사각형으로 배열하고 큰 대괄호로 묶습니다.</p>`)}</div><p id="mlCollectHint" class="ml-note">${filled?'계수 정리 완료! 문자 앞에 숫자가 없으면 1, −y는 −1, 빠진 문자의 계수는 0입니다.':'x, y, z 버튼을 각각 눌러 계수를 모으세요. 문자 앞의 1과 빠진 문자의 0은 자동으로 표시됩니다.'}</p><section id="mlInspect" class="ml-panel" ${filled?'':'hidden'}><h3>세 식을 한 번에: A × 미지수 벡터 = 상수 벡터</h3><div class="ml-equation-matrices"><div><span class="ml-matrix-caption">계수 행렬 A</span>${bracket(coefficients,'완성된 계수 행렬','ml-result-a')}</div><b aria-hidden="true">×</b><div><span class="ml-matrix-caption">미지수</span>${bracket([['x'],['y'],['z']],'미지수 벡터')}</div><b aria-hidden="true">=</b><div><span class="ml-matrix-caption">오른쪽 상수</span>${bracket(rhs.map(v=>[v]),'상수 벡터')}</div></div><p>계수만으로는 식 전체를 나타낼 수 없습니다. 미지수와 오른쪽 상수도 함께 묶으면 원래 연립방정식과 같은 뜻이 됩니다.</p><div class="ml-chips"><button id="mlRow" class="ml-chip">첫째 식의 행 보기</button><button id="mlCol" class="ml-chip">y 계수의 열 비교</button></div><p id="mlAxis" role="status">행과 열을 눌러 식과 행렬이 어떻게 연결되는지 확인하세요.</p><div class="ml-change"><strong>조건이 바뀌었다면?</strong><p>둘째 식의 y 계수를 −1에서 2로 바꿔 보세요. 행렬에서는 둘째 행, 둘째 열 한 칸을 바꾸면 됩니다.</p><button id="mlChangeCoefficient" class="ml-chip">둘째 식의 y 계수 −1 → 2</button><p id="mlChangeResult" role="status"></p></div></section>`;
+    const ready=()=>filled&&data.equationRow&&data.equationCol&&data.equationChanged;
+    const progress=()=>update(ready(),ready()?'완료! 같은 문자의 계수를 한 열에서 비교하고, 바뀐 계수의 위치를 바로 찾았습니다.':!filled?`계수 열 ${data.equationCols.length} / 3개 정리`:'행 보기 → 열 비교 → 계수 변경을 체험해 보세요.');
+    vars.forEach((v,c)=>{const done=data.equationCols.includes(c);const btn=button(`${done?'✓ ':''}${v} 계수 모으기`,()=>{if(!data.equationCols.includes(c))data.equationCols.push(c);draw();});btn.disabled=done;el('mlCollect').append(btn);});
+    const highlight=mode=>{
+      document.querySelectorAll('#mlCoefficient [data-mrow],.ml-result-a [data-mrow]').forEach(n=>n.classList.toggle('ml-highlight',mode==='row'?n.dataset.mrow==='0':mode==='change'?n.dataset.mrow==='1'&&n.dataset.mcol==='1':n.dataset.mcol==='1'));
+      document.querySelectorAll('[data-eq]').forEach(n=>n.classList.toggle('ml-highlight',mode==='row'?n.dataset.eq==='0':mode==='change'?n.dataset.eq==='1':false));
+      el('mlAxis').textContent=mode==='row'?'첫째 행 [1, 1, 1]은 첫째 식의 x, y, z 계수입니다. 행렬에서도 x → y → z 순서를 유지합니다.':mode==='col'?`둘째 열 [1, ${data.equationChanged?2:-1}, 2]은 세 식의 y 계수입니다. 긴 식을 다시 읽지 않고 한 열에서 비교할 수 있습니다.`:'둘째 행·둘째 열을 바꾸자 둘째 식의 y 계수도 바뀌었습니다. 다른 계수는 그대로입니다.';
+    };
+    el('mlRow').onclick=()=>{data.equationRow=true;data.equationFocus='row';highlight('row');progress();};
+    el('mlCol').onclick=()=>{data.equationCol=true;data.equationFocus='col';highlight('col');progress();};
+    el('mlChangeCoefficient').disabled=data.equationChanged;
+    el('mlChangeCoefficient').onclick=()=>{data.equationChanged=true;data.equationFocus='change';draw();};
+    if(data.equationChanged)el('mlChangeResult').textContent='한 칸 수정 완료: a₂₂ = 2. 문자를 반복해서 쓰지 않아도 각 숫자의 역할을 행과 열로 알 수 있습니다. 식이 바뀌었으므로 해도 달라질 수 있습니다.';
+    if(data.equationFocus)highlight(data.equationFocus);
+    progress();
   }
   const target=[0,1,0,1,1,1,0,1,0];
   function grid(values,interactive,label,onClick){const div=document.createElement('div');div.className='ml-pixels';div.setAttribute('role','group');div.setAttribute('aria-label',label);values.forEach((v,i)=>{const b=document.createElement(interactive?'button':'span');b.className='ml-pixel';b.style.background=`rgb(${v*255},${v*255},${v*255})`;b.setAttribute('aria-label',`${Math.floor(i/3)+1}행 ${i%3+1}열 ${v?'흰색':'검정'}`);if(interactive){b.type='button';b.setAttribute('aria-pressed',String(!!v));b.onclick=()=>onClick(i);}div.append(b);});return div;}
   function pixels(){
-    el('mlBody').innerHTML=`<div class="ml-three">${panel('목표 · 배송 표시','<div id="mlTarget"></div><p>0 = 검정 / 1 = 흰색</p>')}${panel('01 · 픽셀 칠하기','<div id="mlPaint"></div><p>칸을 누르면 색이 바뀝니다.</p>')}${panel('02 · 숫자로 수정하기','<div id="mlNumbers" class="ml-numbers"></div><p>숫자를 누르면 0 ↔ 1로 바뀝니다.</p>')}</div><p class="ml-note">그림의 위치와 행렬의 위치가 같습니다. 픽셀과 숫자 양쪽에서 한 번 이상 바꿔 목표를 완성하세요.</p>`;
+    el('mlBody').innerHTML=`<div class="ml-three">${panel('목표 · 배송 표시','<div id="mlTarget"></div><p>0 = 검정 / 1 = 흰색</p>')}${panel('01 · 픽셀 칠하기','<div id="mlPaint"></div><p>칸을 누르면 색이 바뀝니다.</p>')}${panel('02 · 숫자로 수정하기','<div id="mlNumbers" class="ml-numbers ml-notation"></div><p>숫자를 누르면 0 ↔ 1로 바뀝니다.</p>')}</div><p class="ml-note">그림의 위치와 행렬의 위치가 같습니다. 픽셀과 숫자 양쪽에서 한 번 이상 바꿔 목표를 완성하세요.</p>`;
     el('mlTarget').append(grid(target,false,'목표 더하기 표시'));
     el('mlPaint').append(grid(data.pixels,true,'직접 그리는 이미지',i=>{data.pixels[i]=1-data.pixels[i];data.pixelEdit=true;draw();}));
     data.pixels.forEach((v,i)=>{const b=button(String(v),()=>{data.pixels[i]=1-v;data.numberEdit=true;draw();});b.setAttribute('aria-label',`${Math.floor(i/3)+1}행 ${i%3+1}열 값 ${v} 변경`);el('mlNumbers').append(b);});
