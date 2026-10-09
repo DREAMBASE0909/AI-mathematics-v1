@@ -1,22 +1,20 @@
 /* Matrix activities: arithmetic is automatic; progress follows student actions. */
 (() => {
   'use strict';
-  const titles = ['연립방정식을 행렬로', '숫자로 그리는 그림', '어두운 사진 복원', '무늬 판별기 조정', '한꺼번에 처리하기'];
+  const titles = ['계수 정리', '숫자로 그리는 그림', '어두운 사진 복원', '무늬 판별기 조정', '한꺼번에 처리하기'];
   const goals = [
-    'x, y, z가 들어간 세 식을 행렬 하나로 정리해 보세요. 계산은 하지 않아도 됩니다.',
+    '행렬 공장 Lv.1 · 목표 1분 30초',
     '픽셀과 행렬을 오가며 배송 상자의 + 표시를 완성해 보세요.',
     '더하기와 곱하기를 비교하고, 무늬를 살려 사진을 밝혀 보세요.',
     '중요하게 볼 픽셀을 바꿔 가로선과 세로선을 구분해 보세요.',
     '입력 이미지를 행으로 묶고, 각 이미지의 판별 점수가 어디에 나오는지 찾아보세요.'
   ];
-  const root = document.createElement('dialog');
-  root.id = 'matrixLab'; root.setAttribute('aria-labelledby', 'mlTitle');
-  root.innerHTML = `<div class="ml-top"><span>행렬 연구실</span><button type="button" class="secondary" id="mlClose">나중에 하기 ✕</button></div><div class="ml-heading"><span id="mlBadge"></span><h2 id="mlTitle"></h2><p id="mlGoal"></p></div><nav id="mlTabs" aria-label="행렬 테스트 단계"></nav><div id="mlBody"></div><aside id="mlDialogue" class="ml-dialogue"><div class="ml-speech"><strong>드림이</strong><p id="mlDreamText" aria-live="polite"></p><div id="mlSceneControls" class="ml-chips"></div></div><div class="ml-dream-placeholder" role="img" aria-label="드림이 캐릭터 임시 자리">드림이</div></aside><div class="ml-bottom"><p id="mlStatus" role="status" aria-live="polite"></p><button id="mlFinish" class="primary" disabled></button><div class="ml-foot"><span id="mlSave">조작한 내용은 자동 저장됩니다.</span><button class="secondary" id="mlRestart">이 활동 다시 시작</button></div></div>`;
-  document.body.append(root);
+  const shell=LearningShell.create();
+  const root=shell.root;
   const el = id => document.getElementById(id);
   let level = 1, testing = false, data, complete, opener, cost = 0;
   const key = () => `ai-matrix-lab-v1-${testing ? 'test' : 'play'}-${level}`;
-  const fresh = () => ({slots:Array(6).fill(null),selected:null,equationRow:false,equationCol:false,equationChanged:false,equationFocus:null,solverSeen:false,scene:0,row:false,col:false,pixels:Array(9).fill(0),pixelEdit:false,numberEdit:false,amount:0,mode:'add',seenAdd:false,seenMultiply:false,clipped:false,weights:[0,0,0,0],sample:0,checked:[],order:[],focusRow:null,focusCol:null,matched:[],ran:false});
+  const fresh = () => ({coefficients:['','','',''],hint:0,slots:Array(6).fill(null),selected:null,equationRow:false,equationCol:false,equationChanged:false,equationFocus:null,solverSeen:false,scene:0,row:false,col:false,pixels:Array(9).fill(0),pixelEdit:false,numberEdit:false,amount:0,mode:'add',seenAdd:false,seenMultiply:false,clipped:false,weights:[0,0,0,0],sample:0,checked:[],order:[],focusRow:null,focusCol:null,matched:[],ran:false});
   const persist = () => {try {localStorage.setItem(key(),JSON.stringify(data));el('mlSave').textContent=testing?'테스트에서는 자금·공장·연구 기록이 바뀌지 않습니다.':'조작한 내용은 자동 저장됩니다.';} catch {el('mlSave').textContent='이 브라우저에서는 활동을 저장할 수 없습니다.';}};
   function start(l, options={}) {
     opener=document.activeElement; level=l; testing=options.test===true; complete=options.onComplete; cost=options.cost||0;
@@ -25,42 +23,14 @@
     el('mlTitle').textContent=titles[level-1];el('mlGoal').textContent=goals[level-1];
     el('mlTabs').hidden=!testing;el('mlTabs').innerHTML=titles.map((t,i)=>`<button data-level="${i+1}" aria-current="${level===i+1?'step':'false'}">Lv.${i+1}</button>`).join('');
     el('mlTabs').querySelectorAll('button').forEach(b=>b.onclick=()=>start(Number(b.dataset.level),{test:true}));
-    draw();if(!root.open)root.showModal();el('mlClose').focus();
+    draw();if(!root.open)root.showModal();if(level===1)el('mlBody').querySelector('input')?.focus();else el('mlClose').focus();
   }
   const button=(label,fn,cls='ml-chip')=>{const b=document.createElement('button');b.type='button';b.className=cls;b.textContent=label;b.onclick=fn;return b;};
   const panel=(title,content)=>`<section class="ml-panel"><h3>${title}</h3>${content}</section>`;
-  function update(ready, message) {el('mlStatus').textContent=message;el('mlStatus').className=ready?'ml-success':'';el('mlFinish').disabled=!ready;el('mlFinish').textContent=testing?'체험 완료':level===1?'설계 완료 · 공장 가동':`연구 완료 · ${cost.toLocaleString('ko-KR')}원으로 업그레이드`;persist();}
-  function draw(){window.MatrixSolver?.stop();el('mlSceneControls').replaceChildren();el('mlDreamText').textContent=goals[level-1];root.classList.toggle('ml-story-mode',level===1);el('mlBody').innerHTML='';[arrange,pixels,brightness,weights,batch][level-1]();}
-  function arrange(){
-    const scene=Math.max(0,Math.min(4,Number(data.scene)||0));data.scene=scene;
-    const coefficients=[[1,1,1],[2,-1,0],[0,2,3]],rhs=[6,0,13];
-    const bracket=(values,label)=>`<div class="ml-bracket" role="group" aria-label="${label}" style="--matrix-cols:${values[0].length}">${values.map((row,r)=>row.map((v,c)=>`<span data-mrow="${r}" data-mcol="${c}">${v}</span>`).join('')).join('')}</div>`;
-    const equations='<div class="ml-system"><div>x + y + z = 6</div><div>2x − y = 0</div><div>2y + 3z = 13</div></div>';
-    const names=['세 개의 방정식','행렬로 묶어 보기','식 전체를 한 번에','컴퓨터의 행 연산','답을 읽어 보기'];
-    const lines=[
-      '세 식을 모두 만족하는 x, y, z를 찾으려고 해요. 식이 많아질수록 길어지죠? 행렬로 정리하면 같은 위치의 숫자를 한꺼번에 다룰 수 있어요.',
-      '이 대괄호 안의 숫자 배열이 행렬이에요. 가로 한 줄은 식 하나, 세로 한 줄은 같은 문자의 계수예요. 아래 버튼으로 행과 열을 살펴볼까요?',
-      '계수 행렬에 미지수 묶음을 곱하면 오른쪽 상수 묶음이 돼요. 이 한 줄은 처음의 세 방정식과 같은 뜻이에요!',
-      '이제 컴퓨터가 계산할 차례예요. 오른쪽 상수도 붙이고, 행 전체를 곱하거나 다른 행의 배수를 더해요. 재생을 눌러 변화를 지켜보세요.',
-      '왼쪽이 단위행렬이 되면 각 행에 미지수가 하나씩 남아요. 답은 x = 1, y = 2, z = 3! 컴퓨터는 이렇게 정해진 행 연산을 반복해서 답을 찾아요.'
-    ];
-    el('mlBody').innerHTML=`<div class="ml-scene-progress">${names.map((n,i)=>`<span class="${i===scene?'is-current':''}">${i+1}<span>${n}</span></span>`).join('')}</div><section class="ml-stage" aria-label="학습 장면"><h3 tabindex="-1" id="mlSceneTitle">${names[scene]}</h3><div id="mlScene"></div></section>`;
-    el('mlDreamText').textContent=lines[scene];
-    const host=el('mlScene');
-    if(scene===0)host.innerHTML=`<div class="ml-scene-equations">${equations}</div><p class="ml-stage-caption">세 식을 동시에 만족하는 x, y, z는?</p>`;
-    if(scene===1){
-      host.innerHTML=`<div class="ml-two"><div>${equations}</div><div><div class="ml-coefficient-head"><span>x</span><span>y</span><span>z</span></div>${bracket(coefficients,'계수 행렬')}</div></div><div class="ml-chips"><button class="ml-chip" id="mlRow">첫째 행 보기</button><button class="ml-chip" id="mlCol">y의 열 보기</button></div><p class="ml-stage-caption">문자 앞의 숫자가 없으면 1, −y는 −1, 빠진 문자는 0</p>`;
-      for(const [id,mode] of [['mlRow','row'],['mlCol','col']])el(id).onclick=()=>{host.querySelectorAll('[data-mrow]').forEach(n=>n.classList.toggle('ml-highlight',mode==='row'?n.dataset.mrow==='0':n.dataset.mcol==='1'));el('mlDreamText').textContent=mode==='row'?'첫째 행 [1, 1, 1]은 첫째 식의 x, y, z 계수예요. 행 하나에 식 하나가 담겨 있어요.':'둘째 열 [1, −1, 2]은 세 식의 y 계수예요. 같은 문자의 계수를 한 열에서 비교할 수 있죠!';};
-    }
-    if(scene===2)host.innerHTML=`<div class="ml-equation-matrices"><div><span class="ml-matrix-caption">계수 행렬 A</span>${bracket(coefficients,'계수 행렬')}</div><b>×</b><div><span class="ml-matrix-caption">미지수</span>${bracket([['x'],['y'],['z']],'미지수 벡터')}</div><b>=</b><div><span class="ml-matrix-caption">상수</span>${bracket(rhs.map(v=>[v]),'상수 벡터')}</div></div><p class="ml-stage-caption">여러 방정식을 하나의 행렬 식으로 표현해요.</p>`;
-    const prev=button('← 이전 장면',()=>go(scene-1));prev.disabled=scene===0;
-    const next=button(scene===4?'마지막 장면':'다음 장면 →',()=>go(scene+1));next.disabled=scene===4||(scene===3&&!data.solverSeen);
-    el('mlSceneControls').append(prev,next);
-    function go(n){data.scene=n;draw();el('mlSceneTitle').focus();}
-    if(scene===3)MatrixSolver.mount(host,coefficients.map((r,i)=>[...r,rhs[i]]),{onNarrate:message=>{el('mlDreamText').textContent=message;},onDone:()=>{data.solverSeen=true;next.disabled=false;persist();}});
-    if(scene===4){host.innerHTML=`<div class="ml-equation-matrices"><div>${bracket([[1,0,0],[0,1,0],[0,0,1]],'단위행렬')}</div><b>×</b><div>${bracket([['x'],['y'],['z']],'미지수')}</div><b>=</b><div>${bracket([[1],[2],[3]],'해')}</div></div><div class="ms-answer">x = 1　 ·　 y = 2　 ·　 z = 3</div><p class="ml-stage-caption">확인: 1 + 2 + 3 = 6　 /　 2 × 1 − 2 = 0　 /　 2 × 2 + 3 × 3 = 13</p>`;}
-    update(scene===4&&data.solverSeen,scene===4&&data.solverSeen?'학습 완료! 행렬로 식을 정리하고 컴퓨터가 해를 찾는 과정을 확인했어요.':`${scene+1} / 5 장면 · 드림이와 함께 행렬을 살펴보세요.`);
-  }
+  let activityReady=false;
+  function update(ready, message) {activityReady=ready;el('mlStatus').textContent=message;el('mlStatus').className=ready?'ml-success':'';el('mlFinish').disabled=!ready;el('mlFinish').textContent=level===1?(testing?'완료하고 가동하기 → (테스트)':'완료하고 가동하기 →'):testing?'체험 완료':`연구 완료 · ${cost.toLocaleString('ko-KR')}원으로 업그레이드`;persist();}
+  function draw(){activityReady=false;window.MatrixSolver?.stop();el('mlSceneControls').replaceChildren();el('mlDreamText').textContent=goals[level-1];root.classList.toggle('ml-coefficient-mode',level===1);root.classList.remove('ml-story-mode');el('mlBody').innerHTML='';[arrange,pixels,brightness,weights,batch][level-1]();}
+  function arrange(){MatrixLevelOne.mount({host:el('mlBody'),shell,state:data,onChange:persist,onReady:update});}
   const target=[0,1,0,1,1,1,0,1,0];
   function grid(values,interactive,label,onClick){const div=document.createElement('div');div.className='ml-pixels';div.setAttribute('role','group');div.setAttribute('aria-label',label);values.forEach((v,i)=>{const b=document.createElement(interactive?'button':'span');b.className='ml-pixel';b.style.background=`rgb(${v*255},${v*255},${v*255})`;b.setAttribute('aria-label',`${Math.floor(i/3)+1}행 ${i%3+1}열 ${v?'흰색':'검정'}`);if(interactive){b.type='button';b.setAttribute('aria-pressed',String(!!v));b.onclick=()=>onClick(i);}div.append(b);});return div;}
   function pixels(){
@@ -106,7 +76,7 @@
     el('mlRunBatch').disabled=data.order.length!==3;el('mlRunBatch').onclick=()=>{data.ran=true;draw();};el('mlBatchCompare').textContent=data.ran?'개별: A [2, 0] · B [0, 2] · C [2, 0] = 행렬곱의 각 행 ✓':'이미지 3개를 먼저 쌓아 주세요.';
     update(data.matched.length===3,data.ran?`이미지 ${data.matched.length} / 3개의 출력 위치 확인`:`입력 ${data.order.length} / 3개 배치`);
   }
-  el('mlFinish').onclick=()=>{if(el('mlFinish').disabled)return;if(testing){el('mlStatus').textContent='체험 완료! 위의 다른 레벨을 누르거나 닫아 게임으로 돌아가세요.';return;}const result=complete?.();if(result===false){el('mlStatus').textContent='업그레이드할 자금이나 공장 상태를 확인해 주세요. 활동 내용은 저장되어 있습니다.';return;}root.close();};
+  shell.setCompletion(()=>activityReady&&(level!==1||MatrixLevelOne.correct(data?.coefficients)),()=>{if(testing){el('mlStatus').textContent='체험 완료! 위의 다른 레벨을 누르거나 닫아 게임으로 돌아가세요.';return;}const result=complete?.();if(result===false){el('mlStatus').textContent='업그레이드할 자금이나 공장 상태를 확인해 주세요. 활동 내용은 저장되어 있습니다.';return;}root.close();});
   el('mlClose').onclick=()=>root.close();root.addEventListener('close',()=>{window.MatrixSolver?.stop();persist();if(opener?.isConnected)opener.focus();});
   el('mlRestart').onclick=()=>{data=fresh();draw();};
   window.MatrixLab={start,clear:()=>{for(let l=1;l<=5;l++)for(const m of ['test','play'])try{localStorage.removeItem(`ai-matrix-lab-v1-${m}-${l}`);}catch{}}};
