@@ -63,7 +63,7 @@
 #pxQuizMatrix .px-grid { width: 170px; }
 #pxQuizMatrix span { background: transparent !important; color: #20382a !important; border: 0; font-size: 19px; }
 #pxQuizMatrix { border-left: 2px solid; border-right: 2px solid; padding: 5px; }
-#pxChoices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+#pxChoices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 #pxChoices button { padding: 5px; border: 1px solid #91a087; background: #f4f6f0; border-radius: 6px; }
 #pxChoices .px-grid { width: 88px; }
 #pxChoices b { display: block; font-size: 12px; }
@@ -74,7 +74,7 @@
   .px-quiz { gap: 12px; }
   #pxQuizMatrix .px-grid { width: 112px; }
   #pxQuizMatrix span { font-size: 13px; }
-  #pxChoices { gap: 6px; }
+  #pxChoices { grid-template-columns: 1fr 1fr; gap: 6px; }
   #pxChoices .px-grid { width: 66px; }
 }
 @media (max-height: 780px) and (min-width: 650px) {
