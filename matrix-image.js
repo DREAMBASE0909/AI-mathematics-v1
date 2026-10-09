@@ -17,9 +17,26 @@
   }
   // Precomputed integer brightness mapping for A = 0.4 O.
   const darkValues = { 0: 0, 85: 34, 170: 68, 255: 102 };
+  const patterns = Object.freeze({
+    left: Object.freeze([1, 0, 1, 0]),
+    right: Object.freeze([0, 1, 0, 1]),
+    top: Object.freeze([1, 1, 0, 0]),
+    white: Object.freeze([1, 1, 1, 1])
+  });
+  const order = Object.freeze(['1행 1열', '1행 2열', '2행 1열', '2행 2열']);
+  const format = value => String(value).replace('-', '−');
+  const dot = (row, column) => row.reduce((sum, value, i) => sum + value * column[i], 0);
+  function weightMap(values) {
+    return '<div class="mi-weights">' + values.map((value, i) => {
+      const alpha = Math.abs(value) / 3 * 0.65 + 0.2;
+      const color = value > 0 ? `rgba(40,105,200,${alpha})`
+        : value < 0 ? `rgba(193,48,53,${alpha})` : '#858c90';
+      return `<span style="background:${color}" aria-label="${order[i]} 가중치 ${format(value)}">${format(value)}</span>`;
+    }).join('') + '</div>';
+  }
   window.MatrixImage = Object.freeze({
     face: Object.freeze(face),
     dark: Object.freeze(face.map(value => darkValues[value])),
-    clip, grid
+    clip, grid, patterns, order, format, dot, weightMap
   });
 })();
