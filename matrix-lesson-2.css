@@ -79,6 +79,9 @@
 }
 @media (max-height: 780px) and (min-width: 650px) {
   .px-paint-layout .px-grid { width: 133px; }
+  #pxBrushes { grid-template-columns: repeat(4, 1fr); }
+  #pxBrushes button { font-size: 11px; padding: 0; }
+  #pxBrushes button::before { width: 10px; height: 10px; margin-right: 2px; }
   .px-paint-layout h4 { font-size: 12px; margin: 2px 0; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -89,9 +92,6 @@
   #learningDialog.matrix-level-two #learningQuestion { padding: 10px; }
   .matrix-level-two #learningForm + p { display: none; }
   .px-paint-layout .px-grid { width: 126px; }
-  #pxBrushes { grid-template-columns: repeat(4, 1fr); }
-  #pxBrushes button { font-size: 11px; padding: 0; }
-  #pxBrushes button::before { width: 10px; height: 10px; margin-right: 2px; }
   .px-zoom { height: 190px; }
   #pxZoomImage .px-grid { width: 182px; }
   #pxSample { width: 96px; height: 96px; }
