@@ -17,6 +17,11 @@
   const fresh = () => ({coefficients:['','','',''],hint:0,slots:Array(6).fill(null),selected:null,equationRow:false,equationCol:false,equationChanged:false,equationFocus:null,solverSeen:false,scene:0,row:false,col:false,pixels:Array(9).fill(0),pixelEdit:false,numberEdit:false,amount:0,mode:'add',seenAdd:false,seenMultiply:false,clipped:false,weights:[0,0,0,0],sample:0,checked:[],order:[],focusRow:null,focusCol:null,matched:[],ran:false});
   const persist = () => {try {localStorage.setItem(key(),JSON.stringify(data));el('mlSave').textContent=testing?'테스트에서는 자금·공장·연구 기록이 바뀌지 않습니다.':'조작한 내용은 자동 저장됩니다.';} catch {el('mlSave').textContent='이 브라우저에서는 활동을 저장할 수 없습니다.';}};
   function start(l, options={}) {
+    if (l === 1) {
+      if (root.open) root.close();
+      startMatrixLesson(null, true);
+      return;
+    }
     opener=document.activeElement; level=l; testing=options.test===true; complete=options.onComplete; cost=options.cost||0;
     data=fresh();try {const saved=JSON.parse(localStorage.getItem(key()));if(saved&&Array.isArray(saved.slots)&&saved.slots.length===6&&Array.isArray(saved.pixels)&&saved.pixels.length===9&&Array.isArray(saved.weights)&&saved.weights.length===4)data={...data,...saved};}catch{}
     el('mlBadge').textContent=`${testing?'자유 테스트 · ':''}Lv.${level} / 5`;

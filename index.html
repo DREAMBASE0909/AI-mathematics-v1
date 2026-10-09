@@ -489,9 +489,5 @@ const dismissHint=document.createElement('span');dismissHint.className='mt-dismi
 $('mtGuide').setAttribute('role','button');$('mtGuide').setAttribute('tabindex','0');$('mtGuide').setAttribute('aria-label','드림이 대사 닫고 학습 계속');$('mtGuide').setAttribute('aria-describedby','mtSpeech');
 $('mtGuide').addEventListener('click',e=>{e.stopPropagation();dismissMatrixSpeech();});
 $('mtGuide').addEventListener('keydown',e=>{if(['Enter',' ','Escape'].includes(e.key)){e.preventDefault();e.stopPropagation();dismissMatrixSpeech();}});
-const previousMatrixStart=MatrixLab.start;
-MatrixLab.start=function(level,options={}){if(level===1){if(document.getElementById('matrixLab').open)document.getElementById('matrixLab').close();startMatrixLesson(null,true);return;}return previousMatrixStart(level,options);};
-document.getElementById('testMatrixLab').onclick=()=>startMatrixLesson(null,true);
-document.getElementById('mlTabs').addEventListener('click',e=>{const b=e.target.closest('[data-level="1"]');if(b){e.preventDefault();e.stopImmediatePropagation();document.getElementById('matrixLab').close();startMatrixLesson(null,true);}},true);
 for(let l=1;l<=5;l++){const b=document.createElement('button');b.type='button';b.className='mt-button';b.textContent='Lv.'+l;b.onclick=()=>{if(l===1)startMatrixLesson(null,true);else{$('learningDialog').close();MatrixLab.start(l,{test:true});}};$('mtTestLevels').append(b);}
 </script></body></html>
