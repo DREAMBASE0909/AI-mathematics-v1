@@ -1,0 +1,24 @@
+const assert = require('node:assert/strict');
+global.window = {};
+require('../matrix-image.js');
+const { colorFace, colorGrid, multiply, identity, flip } = window.MatrixImage;
+const average = [[1/3], [1/3], [1/3]];
+const photo = [[240,0,0],[240,240,0],[0,210,0],[90,150,210],[255,255,255],[0,0,0]];
+assert.deepEqual(multiply(photo, average).flat(), [80,160,70,150,255,0]);
+assert.deepEqual(multiply([[90,150,60]], average), [[100]]);
+const eye = [[0,255,255]];
+const RG = [[0,1,0],[1,0,0],[0,0,1]];
+const GB = [[1,0,0],[0,0,1],[0,1,0]];
+assert.deepEqual(multiply(eye, identity(3)), eye);
+assert.deepEqual(multiply(eye, RG), [[255,0,255]]);
+assert.deepEqual(multiply(eye, GB), eye);
+assert.deepEqual(multiply(eye, flip(3)), [[255,255,0]]);
+// Duplicate source columns are valid: the task checks eye color, not a unique matrix.
+assert.deepEqual(multiply(eye, [[0,1,0],[1,0,1],[0,0,0]]), [[255,0,255]]);
+assert.deepEqual(colorFace[0], [255,255,255]);
+assert.deepEqual(colorFace[1], [180,200,220]);
+assert.deepEqual(colorFace[8], [20,30,60]);
+assert.deepEqual(colorFace[16], eye[0]);
+assert.equal(multiply(colorFace, average).length, 49);
+assert.equal((colorGrid(photo, 3, true).match(/aria-label=/g) || []).length, 6);
+console.log('RGB filters, batch grayscale, shared face and alternative pink machines: passed');

@@ -17,7 +17,7 @@
     let timer = null;
     let tapStart = null;
     let tapMoved = false;
-    const interactive = 'button,input,select,textarea,a,label,form,[data-lesson-speech]';
+    const interactive = 'button,input,select,textarea,a,label,form,details,summary,[data-lesson-speech]';
 
     function stop() {
       clearTimeout(timer);

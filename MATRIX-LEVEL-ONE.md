@@ -140,3 +140,14 @@ Lv.2는 기존 `ai-matrix-lab-v1-{test|play}-2` 키에 `imageLessonV2` 필드를
 - 영수증·점수판·컨베이어 코드와 사용처가 없어진 3×3 `parts`는 삭제했다. Lv.2의 `MatrixPaint.bind`는 유지한다. `order(size=2)`·`weightMap(values,size=2)`의 API 및 Lv.5의 2×2 `patterns`와 `batch()`는 변경하지 않았다.
 - 숫자 칸은 버튼이므로 Tab·Enter·Space로 조작할 수 있다. 모션 감소 설정에서는 기계 이동 결과를 즉시 보여 준다. 모달 종료나 단계 이동 시 이동 애니메이션을 취소한다.
 - `node tests/matrix-transform.test.cjs`: 네 가지 변환, 직사각형 곱셈, 차원 오류, 7×7 얼굴 변환 및 기존 공유 데이터를 검증한다. `tests/viewport.html`은 실제 저장 기록을 건드리지 않는 격리된 화면·연구 검증용이다.
+
+## Lv.5 드림이의 사진 필터
+
+`MatrixLab.start(5, options)`는 `MatrixLessonFive.start(options)`로 비용 문자열과 완료 콜백을 그대로 전달한다. 게임의 `completeUpgrade(true)`가 현재 자원 비용을 재검사하고 결제하므로 레슨은 재화나 공장을 직접 수정하지 않는다. 테스트 완료는 콜백을 호출하지 않는다.
+
+- 색 섞기 → 흑백 변환 → 픽셀 일괄 계산 → 색 채널 기계 → 노랑 눈 퀴즈로 진행한다. 계산을 강제하지 않는 원칙에 따라 2단계는 100 입력과 ‘흑백으로 바꿔 보기’ 모두 인정한다. ‘왜 그럴까?’는 항상 접힌 상태로 시작하며 완료 조건과 무관하다. 공통 진행기의 터치 제외 대상에 details/summary를 추가해 펼치다가 다음 단계로 넘어가지 않는다.
+- `matrix-controls.js` / `.css`: Lv.2·5의 1.2초 확대와 Lv.4·5의 램프 표시·열별 1 이동. 행·열 라벨을 인자로 받는다. 모션 감소 시 확대를 즉시 완료한다.
+- `matrix-image.js`: 공유 얼굴 위치로부터 `colorFace`를 생성하고, `colorGrid(pixels, cols, showNumbers)`로 컬러 격자를 그린다. 흑백 및 색 채널 결과는 모두 `multiply`로 계산한다. GPU는 행렬 계산에 쓰인다고 설명하며 ‘행렬 전용 칩’으로 한정하지 않는다.
+- Lv.5 저장 키는 유지하고 `filterLessonV1`만 추가한다. 예전 order/focusRow/matched 등은 지우지 않는다. 진행 중 닫은 쌓기·접기는 미완료 상태로 다시 시작한다.
+- 사용처를 확인한 뒤 옛 `batch()`, batchInputs/batchWeights, 2×2 patterns를 제거했다. Lv.2~5 모두 StepLesson을 사용하므로 LearningShell을 여는 학습 경로는 없다. 요청에 따라 `learning-shell.js`, `matrix-lab.css`, 셸 생성과 닫기 연결은 남겼다. 다음 정리 작업에서 제거할 수 있다.
+- 검증: `node tests/matrix-filter.test.cjs`. `tests/viewport.html`의 새 Lv.5 도구로 이전 저장 호환성과 자원 연구 완료를 실제 기록과 분리해 검증한다.
