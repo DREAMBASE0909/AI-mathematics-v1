@@ -42,6 +42,11 @@
       MatrixLessonTwo.start(options);
       return;
     }
+    if (l === 3) {
+      if (root.open) root.close();
+      MatrixLessonThree.start(options);
+      return;
+    }
     const lesson = el('learningDialog');
     if (lesson.open) lesson.close();
     opener=document.activeElement; level=l; testing=options.test===true; complete=options.onComplete; cost=options.cost||0;
@@ -56,21 +61,7 @@
   const panel=(title,content)=>`<section class="ml-panel"><h3>${title}</h3>${content}</section>`;
   let activityReady=false;
   function update(ready, message) {activityReady=ready;el('mlStatus').textContent=message;el('mlStatus').className=ready?'ml-success':'';el('mlFinish').disabled=!ready;el('mlFinish').textContent=testing?'체험 완료':`연구 완료 · ${cost.toLocaleString('ko-KR')}원으로 업그레이드`;persist();}
-  function draw(){activityReady=false;el('mlSceneControls').replaceChildren();el('mlDreamText').textContent=goals[level-1];el('mlBody').innerHTML='';[brightness,weights,batch][level-3]();}
-  const dark=[20,60,20,60,100,60,20,60,20];
-  function brightness(){
-    el('mlBody').innerHTML=`<div class="ml-two">${panel('원본 · 어두운 사진','<div id="mlDark" class="ml-tones"></div><p>밝기 범위: 0(검정) ~ 255(흰색)</p>')}${panel('조정한 사진','<div id="mlBright" class="ml-tones"></div><p id="mlBrightnessInfo"></p>')}</div><section class="ml-panel"><div class="ml-chips"><button class="ml-chip" id="mlAdd">일정한 값 더하기</button><button class="ml-chip" id="mlMultiply">일정한 배수 곱하기</button></div><label class="ml-slider" for="mlAmount"><span id="mlAmountLabel"></span><input id="mlAmount" type="range" min="0" max="250" step="10"><output id="mlAmountValue"></output></label><p id="mlFormula" class="ml-formula"></p><div id="mlBrightChecks" class="ml-checks"></div></section>`;
-    const tone=(host,vs)=>{host.replaceChildren();vs.forEach(v=>{const s=document.createElement('span');s.style.background=`rgb(${v},${v},${v})`;s.style.color=v>140?'#182730':'#fff';s.textContent=String(v);host.append(s);});};tone(el('mlDark'),dark);
-    const updateBright=()=>{const multiply=data.mode==='multiply',raw=dark.map(v=>multiply?v*data.amount:v+data.amount),vs=raw.map(v=>Math.min(255,Math.round(v)));tone(el('mlBright'),vs);const clipped=raw.some(v=>v>255);if(clipped)data.clipped=true;
-      el('mlAmountLabel').textContent=multiply?'곱할 배수':'더할 밝기';el('mlAmountValue').textContent=data.amount+(multiply?'배':'');el('mlFormula').textContent=multiply?`중앙 픽셀: 100 × ${data.amount} = ${Math.round(raw[4])}${raw[4]>255?' → 255로 제한':''}`:`중앙 픽셀: 100 + ${data.amount} = ${raw[4]}${raw[4]>255?' → 255로 제한':''}`;
-      el('mlBrightnessInfo').textContent=clipped?'255를 넘는 값은 모두 흰색이 됩니다. 밝은 부분의 차이가 사라질 수 있어요.':`중앙 밝기 ${vs[4]} / 목표 180~240 · 중앙과 모서리 차이 ${vs[4]-vs[0]} / 목표 100 이상`;
-      el('mlBrightChecks').textContent=`${data.seenAdd?'✓':'○'} 더하기 실험　${data.seenMultiply?'✓':'○'} 곱하기 실험　${data.clipped?'✓':'○'} 밝기 범위 초과 관찰`;
-      const ready=data.seenAdd&&data.seenMultiply&&data.clipped&&!clipped&&vs[4]>=180&&vs[4]<=240&&vs[4]-vs[0]>=100;
-      update(ready,ready?'복원 완료! 곱하기는 픽셀 사이의 밝기 차이도 바꿉니다.':'두 방식을 시험하고 밝기 한계를 넘겨 보세요. 마지막에는 중앙 밝기 180~240, 중앙과 모서리 밝기 차이 100 이상으로 복원하세요.');
-    };
-    const setMode=mode=>{data.mode=mode;data.amount=mode==='add'?0:1;draw();};el('mlAdd').onclick=()=>setMode('add');el('mlMultiply').onclick=()=>setMode('multiply');el('mlAdd').setAttribute('aria-pressed',String(data.mode==='add'));el('mlMultiply').setAttribute('aria-pressed',String(data.mode==='multiply'));
-    const slider=el('mlAmount');if(data.mode==='multiply'){slider.max='4';slider.min='1';slider.step='0.1';}slider.value=String(data.amount);slider.oninput=()=>{data.amount=Number(slider.value);if(data.mode==='add'&&data.amount>0)data.seenAdd=true;if(data.mode==='multiply'&&data.amount>1)data.seenMultiply=true;updateBright();};updateBright();
-  }
+  function draw(){activityReady=false;el('mlSceneControls').replaceChildren();el('mlDreamText').textContent=goals[level-1];el('mlBody').innerHTML='';[weights,batch][level-4]();}
   const samples=[[1,0,1,0],[1,1,0,0]],sampleNames=['세로선','가로선'];
   const dot=(a,b)=>a.reduce((sum,v,i)=>sum+v*b[i],0);
   function weights(){
