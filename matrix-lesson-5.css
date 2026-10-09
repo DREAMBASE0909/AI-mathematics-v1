@@ -1,0 +1,114 @@
+/* Color filter lesson. Each stage fits the shared fixed-height learning frame. */
+.color-grid { display: grid; grid-template-columns: repeat(var(--cols), 1fr); width: 140px; margin: auto; }
+.color-grid > span, .color-grid > button {
+  display: grid; place-items: center; aspect-ratio: 1; min-width: 0; min-height: 0;
+  padding: 0; border: 1px solid #84968d; border-radius: 0;
+  font: 10px/1.15 ui-monospace, monospace;
+}
+#learningDialog.matrix-level-five #learningQuestion { display: block; text-align: center; padding: 10px; scrollbar-gutter: auto; }
+.matrix-level-five #learningForm + p { display: none; }
+.matrix-level-five h3 { margin: 3px 0 7px; }
+.matrix-level-five h4 { margin: 2px 0 5px; font-size: 12px; }
+.matrix-level-five #learningQuestion p { margin: 6px 0; font-size: 13px; }
+.matrix-level-five .mt-button { min-height: 34px; padding: 5px 10px; font-size: 12px; }
+.cf-status { padding: 5px 8px; border-radius: 5px; background: #edf3e7; color: #37583e; }
+.cf-status:empty { display: none; }
+.cf-color-layout { display: flex; align-items: center; justify-content: center; gap: 26px; }
+.cf-zoom-area { width: 224px; height: 224px; display: grid; place-items: center; }
+#cfZoomImage .color-grid { width: 224px; }
+#cfZoomImage span { font-size: 8px; }
+.cf-slider { display: flex; align-items: center; gap: 7px; font: bold 13px ui-monospace, monospace; }
+.cf-slider input { min-width: 0; width: 165px; height: 34px; }
+.cf-slider output { width: 3ch; }
+.cf-mix-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 6px; }
+#cfMix { width: 40px; height: 40px; border: 1px solid #879589; }
+#cfMixValue { font-size: 13px; }
+.cf-swatches { display: flex; justify-content: center; gap: 10px; font-size: 11px; }
+.cf-swatches i, .cf-target i { display: inline-block; width: 17px; height: 17px; border: 1px solid #788676; vertical-align: middle; margin-right: 4px; }
+.cf-swatches small { display: block; font-size: 9px; }
+.cf-gray-layout { display: flex; align-items: center; justify-content: center; gap: 24px; margin: 10px 0; }
+#cfGrayPixel { width: 95px; height: 95px; border: 1px solid #879589; transition: background-color .5s; }
+#cfGrayAnswer { width: 72px; min-height: 34px; border: 1px solid #91a087; border-radius: 5px; text-align: center; }
+.cf-why { text-align: left; font-size: 12px; border: 1px solid #c0ccba; border-radius: 5px; padding: 5px 9px; margin-top: 6px; }
+.cf-why summary { cursor: pointer; font-weight: bold; min-height: 24px; }
+.matrix-level-five #learningQuestion .cf-why p { margin: 3px 0; font-size: 11px; }
+.matrix-level-five #learningQuestion .cf-note { font-size: 11px; color: #5b6957; }
+.cf-batch-layout { display: flex; justify-content: center; align-items: center; gap: 22px; }
+#cfPhoto .color-grid, #cfBatchOutput .color-grid { width: 99px; }
+.cf-batch-buttons { display: flex; gap: 5px; margin: 6px 0; }
+#cfBatchOutput { margin-top: 6px; }
+.cf-batch-equation { display: flex; align-items: center; gap: 10px; }
+.cf-row { display: flex; align-items: center; gap: 7px; height: 25px; font: 12px ui-monospace, monospace; padding: 0 4px; }
+.cf-row b { color: #6d7b69; font-size: 10px; }
+.cf-row i { width: 16px; height: 16px; border: 1px solid #71836c; }
+.cf-average { font: 15px/1.8 ui-monospace, monospace; border-inline: 2px solid #809075; padding: 3px 8px; }
+#cfColumn span { display: grid; place-items: center; height: 25px; font: 12px ui-monospace, monospace; }
+.cf-selected { outline: 3px solid #d77922; outline-offset: -3px; }
+#cfBatchFace:not([hidden]) { display: flex; justify-content: center; align-items: center; gap: 10px; margin: 6px 0; }
+#cfBatchFace .color-grid { width: 49px; }
+#cfBatchFace h4 { font-size: 10px; }
+.cf-machine-equation { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.cf-machine-equation .color-grid { width: 126px; }
+#cfMachine .flip-lamps { width: 132px; }
+#cfSources { display: flex; justify-content: center; gap: 7px; margin: 8px 0; font-size: 11px; }
+#cfSources span { padding: 3px 6px; background: #fff3ce; border: 1px solid #d5c586; border-radius: 4px; }
+.cf-hints { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 8px 0; font-size: 12px; }
+.cf-hints button { flex-shrink: 0; }
+.cf-target { white-space: nowrap; }
+.cf-target i { background: #ff0; }
+#cfChoices { display: flex; justify-content: center; gap: 12px; margin: 8px 0; }
+#cfChoices > button { border: 1px solid #91a087; background: #f4f6ef; border-radius: 5px; padding: 5px; }
+#cfChoices > button[aria-pressed="true"] { outline: 3px solid #517742; outline-offset: -3px; }
+#cfChoices .flip-lamps { width: 96px; }
+#cfChoices .flip-lamps > * { font-size: 12px; }
+#cfQuizResults:not([hidden]) { display: flex; justify-content: center; gap: 36px; }
+#cfQuizResults .color-grid { width: 77px; }
+#cfQuizResults h4 { font-size: 11px; }
+@media (max-height: 780px) and (min-width: 650px) {
+  #learningDialog.matrix-level-five > .card { padding: 10px; }
+  .cf-zoom-area, #cfZoomImage .color-grid { width: 189px; height: 189px; }
+  #cfZoomImage span { font-size: 7px; }
+  #cfBatchFace:not([hidden]) { position: absolute; right: 12px; bottom: 64px; flex-direction: column; gap: 2px; margin: 0; }
+  .matrix-level-five #learningQuestion[data-step="2"] { position: relative; }
+  .cf-batch-layout { padding-right: 70px; }
+  #cfBatchFace .color-grid { width: 42px; }
+  #cfChoices .flip-lamps { width: 81px; }
+  #cfQuizResults .color-grid { width: 63px; }
+  #cfQuizResults:not([hidden]) { gap: 39px; }
+}
+@media (max-width: 649px) {
+  .matrix-level-five #learningTitle { font-size: 19px; }
+  .cf-color-layout { flex-direction: column; gap: 5px; }
+  .cf-zoom-area, #cfZoomImage .color-grid { width: 175px; height: 175px; }
+  #cfZoomImage span { font-size: 6px; }
+  .cf-color-layout > section:first-child { display: flex; align-items: center; gap: 8px; }
+  .cf-slider input { width: 195px; height: 28px; }
+  .cf-color-layout .cf-mix-row { display: inline-flex; margin: 4px 7px; }
+  #cfMix { width: 27px; height: 27px; }
+  .cf-swatches { gap: 8px; }
+  .cf-gray-layout { gap: 12px; }
+  #cfGrayPixel { width: 77px; height: 77px; }
+  .cf-batch-layout { flex-direction: column; gap: 8px; }
+  .cf-batch-layout > section { display: grid; grid-template-columns: 90px 1fr 90px; align-items: center; gap: 5px; }
+  .cf-batch-layout > section > h4 { grid-column: 1/-1; }
+  #cfPhoto .color-grid, #cfBatchOutput .color-grid { width: 81px; }
+  .cf-batch-buttons { flex-direction: column; gap: 4px; }
+  .cf-batch-buttons .mt-button { padding: 4px; font-size: 10px; }
+  .cf-batch-equation { gap: 7px; }
+  .cf-row { height: 23px; font-size: 11px; gap: 4px; }
+  #cfColumn span { height: 23px; }
+  #cfBatchFace .color-grid { width: 42px; }
+  .cf-machine-equation { gap: 5px; }
+  .cf-machine-equation .color-grid { width: 77px; }
+  #cfMachine .flip-lamps { width: 126px; }
+  .cf-machine-equation h4 { font-size: 10px; }
+  #cfSources { flex-direction: column; gap: 4px; max-width: 190px; margin-inline: auto; }
+  #cfChoices { display: grid; grid-template-columns: repeat(2, 94px); gap: 5px; }
+  #cfChoices .flip-lamps { width: 81px; }
+  #cfQuizResults:not([hidden]) { gap: 9px; }
+  #cfQuizResults .color-grid { width: 63px; }
+  #cfQuizResults h4 { font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #cfGrayPixel { transition: none; }
+}

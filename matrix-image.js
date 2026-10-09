@@ -15,14 +15,20 @@
     return `<div class="px-grid ${numbers ? 'px-numbers' : ''}" style="--n:${size}">`
       + values.map(v => `<span style="background:rgb(${v},${v},${v});color:${v < 140 ? '#fff' : '#182730'}">${numbers ? v : ''}</span>`).join('') + '</div>';
   }
+  function colorGrid(pixels, cols, showNumbers = false) {
+    return `<div class="color-grid" style="--cols:${cols}">` + pixels.map(pixel => {
+      const values = pixel.map(value => Math.round(clip(value)));
+      const light = values[0] * .2126 + values[1] * .7152 + values[2] * .0722;
+      return `<span style="background:rgb(${values.join(',')});color:${light < 140 ? '#fff' : '#182730'}" aria-label="RGB ${values.join(', ')}">`
+        + (showNumbers ? `[${values.join('<br>')}]` : '') + '</span>';
+    }).join('') + '</div>';
+  }
+  const colorFace = face.map((value, i) => Object.freeze(
+    [0, 6, 42, 48].includes(i) ? [255, 255, 255]
+      : value === 170 ? [180, 200, 220]
+      : value === 0 ? [20, 30, 60] : [0, 255, 255]));
   // Precomputed integer brightness mapping for A = 0.4 O.
   const darkValues = { 0: 0, 85: 34, 170: 68, 255: 102 };
-  const patterns = Object.freeze({
-    left: Object.freeze([1, 0, 1, 0]),
-    right: Object.freeze([0, 1, 0, 1]),
-    top: Object.freeze([1, 1, 0, 0]),
-    white: Object.freeze([1, 1, 1, 1])
-  });
   const order = (size = 2) => Array.from({ length: size * size }, (_, i) =>
     `${Math.floor(i / size) + 1}행 ${i % size + 1}열`);
   // Matrix arithmetic uses row arrays; image markup continues to use flat values.
@@ -59,6 +65,7 @@
   window.MatrixImage = Object.freeze({
     face: Object.freeze(face),
     dark: Object.freeze(face.map(value => darkValues[value])),
-    clip, grid, patterns, order, format, dot, weightMap, identity, flip, multiply
+    colorFace: Object.freeze(colorFace),
+    clip, grid, colorGrid, order, format, dot, weightMap, identity, flip, multiply
   });
 })();
