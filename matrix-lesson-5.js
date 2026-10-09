@@ -42,9 +42,9 @@
     try { localStorage.setItem(key, JSON.stringify(record)); } catch { /* Optional storage. */ }
   }
   function changed() { persist(); controller.refresh(); }
-  function say(message) {
+  function say(message, narrate = true) {
     get('cfStatus').textContent = message;
-    controller.say(message);
+    if (narrate) controller.say(message);
   }
   const status = '<p id="cfStatus" class="cf-status" role="status"></p>';
   const why = content => `<details class="cf-why"><summary>왜 그럴까?</summary><div>${content}</div></details>`;
@@ -53,16 +53,16 @@
     get('cfZoomImage').innerHTML = colorGrid(colorFace, 7, true);
     bindZoom({ image: get('cfZoomImage'), button: get('cfZoom'), complete: data.zoomDone,
       controller: api, onComplete() { data.zoomDone = true; changed(); } });
-    function render() {
+    function render(narrate = false) {
       get('cfMix').style.background = `rgb(${data.rgb.join(',')})`;
       get('cfMixValue').textContent = `[${data.rgb.join(', ')}]`;
       channels.forEach((c, i) => { get('cfValue' + c).textContent = data.rgb[i]; });
-      say(yellow() ? '빨강과 초록 빛을 섞으면 노랑이 돼요! 화면 속 모든 색은 이 숫자 3개로 만들어요.' : '노랑을 만들어 보세요. 빨강과 초록 빛을 올려 볼까요?');
+      say(yellow() ? '빨강과 초록 빛을 섞으면 노랑이 돼요! 화면 속 모든 색은 이 숫자 3개로 만들어요.' : '노랑을 만들어 보세요. 빨강과 초록 빛을 올려 볼까요?', narrate);
     }
     channels.forEach((c, i) => {
       const slider = get('cf' + c);
       slider.value = data.rgb[i];
-      slider.oninput = () => { data.rgb[i] = Number(slider.value); render(); changed(); };
+      slider.oninput = () => { data.rgb[i] = Number(slider.value); render(true); changed(); };
     });
     render();
   }
@@ -190,15 +190,15 @@
   }
   function mountMachine() {
     get('cfMachine').innerHTML = lamps(data.machine, { ...axes, editable: true });
-    function draw() {
+    function draw(narrate = false) {
       const output = multiply(colorFace, data.machine);
       get('cfFiltered').innerHTML = colorGrid(output, 7);
       get('cfSources').innerHTML = channels.map((c, i) => `<span>결과 ${c} ← 원본 ${channels[data.machine.findIndex(row => row[i] === 1)]}</span>`).join('');
       get('cfEyeColor').textContent = `눈 색 [${multiply([[0, 255, 255]], data.machine)[0].join(', ')}]`;
-      say(pink() ? '사진 앱의 필터도 이렇게 색을 섞는 행렬이에요.' : '드림이 눈을 분홍 [255, 0, 255]으로 바꿔 보세요.');
+      say(pink() ? '사진 앱의 필터도 이렇게 색을 섞는 행렬이에요.' : '드림이 눈을 분홍 [255, 0, 255]으로 바꿔 보세요.', narrate);
       changed();
     }
-    bindMachine(get('cfMachine'), data.machine, () => { data.choice = null; draw(); });
+    bindMachine(get('cfMachine'), data.machine, () => { data.choice = null; draw(true); });
     get('cfHint').onclick = () => {
       const hints = ['분홍은 빨강과 파랑이 255, 초록이 0이에요. 지금 눈은 빨강이 0이에요.', 'R과 G를 서로 바꿔 보세요.'];
       get('cfHintText').textContent = hints[Math.min(data.hint++, 1)];

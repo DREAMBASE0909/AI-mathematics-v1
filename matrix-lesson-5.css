@@ -72,6 +72,7 @@
   .matrix-level-five #learningQuestion[data-step="2"] { position: relative; }
   .cf-batch-layout { padding-right: 70px; }
   #cfBatchFace .color-grid { width: 42px; }
+  #cfQuizEnding br { display: none; }
   #cfChoices .flip-lamps { width: 81px; }
   #cfQuizResults .color-grid { width: 63px; }
   #cfQuizResults:not([hidden]) { gap: 39px; }
