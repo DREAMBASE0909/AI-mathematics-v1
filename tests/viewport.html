@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>학습 화면 크기 검증</title>
+  <style>
+    body { margin: 12px; font: 14px sans-serif; background: #ddd; }
+    nav { display: flex; gap: 10px; margin-bottom: 8px; align-items: center; }
+    button { padding: 10px; }
+    iframe { display: block; border: 0; transform-origin: top left; }
+    #stage { overflow: hidden; }
+    #errors { color: #a00; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <nav>
+    <button data-size="1366,768">1366 × 768</button>
+    <button data-size="1280,720">1280 × 720</button>
+    <button data-size="390,844">390 × 844</button>
+    <span>격리 테스트 · 실제 학생 저장 기록에 접근하지 않습니다.</span>
+  </nav>
+  <output id="size"></output>
+  <pre id="errors" aria-live="polite"></pre>
+  <div id="stage"><iframe id="game" title="검증용 게임"></iframe></div>
+  <script>
+    // Memory storage belongs only to this QA page; the game still uses its original keys/schema.
+    const memory = new Map();
+    const errors = document.getElementById('errors');
+    window.qaStorage = {
+      getItem: key => memory.get(key) ?? null,
+      setItem: (key, value) => memory.set(key, String(value)),
+      removeItem: key => memory.delete(key)
+    };
+    window.qaError = message => { errors.textContent += message + '\n'; };
+    const frame = document.getElementById('game');
+    function resize(width, height) {
+      frame.style.width = width + 'px';
+      frame.style.height = height + 'px';
+      const scale = Math.min(1, (innerWidth - 24) / width, (innerHeight - 100) / height);
+      frame.style.transform = `scale(${scale})`;
+      document.getElementById('stage').style.height = height * scale + 'px';
+      document.getElementById('size').textContent = `${width} × ${height} CSS px`;
+    }
+    document.querySelectorAll('[data-size]').forEach(button => {
+      button.onclick = () => resize(...button.dataset.size.split(',').map(Number));
+    });
+    fetch('../index.html').then(response => response.text()).then(html => {
+      const base = new URL('../', location.href).href;
+      const setup = `<base href="${base}"><script>
+        Object.defineProperty(window, 'localStorage', { value: parent.qaStorage });
+        addEventListener('error', event => parent.qaError(event.message || 'Resource error: ' + event.target.src), true);
+        addEventListener('unhandledrejection', event => parent.qaError(String(event.reason)));
+      <\/script>`;
+      frame.srcdoc = html.replace('<head>', '<head>' + setup);
+      resize(1366, 768);
+    }).catch(error => window.qaError(String(error)));
+  </script>
+</body>
+</html>
