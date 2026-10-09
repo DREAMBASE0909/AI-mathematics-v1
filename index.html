@@ -39,126 +39,33 @@ button{text-align:center}
 .placement-help:has(#placementStatus:empty):has(#resumeLearning[hidden]){display:none}
 .sidebar > .request-dock{width:100%;margin:0;grid-column:1/-1}.sidebar > .request-dock .primary{display:block;width:100%;max-width:none;min-width:0;box-sizing:border-box;padding:14px 12px;font-size:15px;border-radius:16px}.sidebar > .request-dock small{margin-top:5px;font-size:10px;line-height:1.5}
 
-/* Matrix first-purchase lesson: local styles; no additional dependencies. */
-#learningDialog.matrix-tutorial{width:790px;max-height:94dvh;overflow-y:auto;padding:16px;background:#f7f8f0}.matrix-tutorial .card{padding:18px}.matrix-tutorial #learningTitle{margin:6px 0;font-size:24px}.matrix-tutorial #learningDescription{margin:4px 0 10px}.matrix-tutorial .learning-question{white-space:normal;margin:12px 0;padding:18px;background:#fff;border-color:#d9e3d0;min-height:230px;line-height:1.55}.matrix-tutorial h3{font-size:18px;margin:6px 0 16px;color:#38573e}.mt-progress{font-size:11px;color:#718667}.mt-order{padding:12px;background:#fff8df;border-radius:10px;font-size:18px;line-height:1.9}.mt-caption{font-size:12px!important;color:#6e7c65!important;margin:10px 0}.mt-equations{font-size:27px;line-height:1.8;text-align:center;color:#304d3a;font-variant-numeric:tabular-nums}.mt-aligned{display:grid;grid-template-columns:1fr 30px 1fr 30px 1fr;gap:12px;max-width:460px;margin:20px auto;text-align:center;align-items:center}.mt-aligned b{font-size:27px;padding:8px;border-radius:8px}.mt-x{color:#286291;background:#e7f2fd;border-bottom:2px solid #528bb5}.mt-y{color:#805c24;background:#fff1ce;border-bottom:2px dashed #bb8c40}.mt-transform-row{display:grid;grid-template-columns:35px 25px 30px 35px 25px 30px 50px;align-items:center;justify-content:center;text-align:center;font-size:28px;margin:14px 0}.mt-transform-row i{font-style:normal;transition:opacity .4s}.mt-transform-row .mt-faded{opacity:0}.mt-grid-only .mt-transform-row{grid-template-columns:60px 60px 60px}.mt-grid-only i{display:none}.mt-grid-only b{padding:8px;background:#edf3e5;border:1px solid #d6e1cc}.mt-matrix-equation{display:flex;justify-content:center;align-items:center;gap:15px}.mt-bracket{position:relative;display:grid;grid-template-columns:repeat(var(--cols),minmax(27px,1fr));gap:8px 16px;padding:10px 15px;font-size:27px;text-align:center;font-variant-numeric:tabular-nums}.mt-bracket:before,.mt-bracket:after{content:'';position:absolute;top:0;bottom:0;width:8px;border-top:3px solid #456247;border-bottom:3px solid #456247}.mt-bracket:before{left:0;border-left:3px solid #456247}.mt-bracket:after{right:0;border-right:3px solid #456247}.matrix-tutorial pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#edf3e5;font-size:15px;line-height:1.5;padding:10px;border-radius:8px;white-space:pre-wrap}.mt-rules{list-style:none;padding:0;margin:0;display:grid;gap:10px}.mt-rules li{padding:10px;background:#f4f6ec;border-radius:8px}.mt-rules strong,.mt-rules span{display:block}.mt-rules strong{font-size:14px}.mt-rules span{font-size:21px}.mt-rules small{font-size:11px}.mt-quiz{font-size:35px;text-align:center;padding:20px}.mt-quiz strong{color:#9d6d22;background:#fff0ba;padding:4px 16px;border-radius:8px}.mt-button{border:1px solid #bccda9;border-radius:8px;background:#eff4e6;color:#3d5833;padding:10px 16px;min-height:44px}.mt-button:disabled{opacity:.45;cursor:default}#mtNav{display:flex;justify-content:space-between;gap:12px;margin-top:12px}#mtGuide{display:flex;gap:16px;align-items:center;background:#edf3e5;border:1px solid #c6d5b7;border-radius:12px;padding:12px 16px}#mtGuide>div:first-child{flex:1}#mtSpeech{margin:6px 0 0;font-size:14px;line-height:1.6}#mtGuide .ml-dream-character{flex-basis:72px;width:72px;align-self:center}.matrix-tutorial #learningFeedback{min-height:0;margin:8px 0}.matrix-tutorial #learningForm label{display:block;text-align:center;padding:12px}.matrix-tutorial #learningForm+p{margin:12px 0 0}#mtTestLevels{display:flex;gap:6px;margin-top:10px}#mtTestLevels .mt-button{padding:6px 12px;min-height:34px}.matrix-tutorial button.primary:disabled{opacity:.5}
-@media(max-width:420px){#learningDialog.matrix-tutorial{padding:9px;max-width:calc(100% - 16px)}.matrix-tutorial .card{padding:12px}.matrix-tutorial .learning-question{padding:12px}.mt-order{font-size:14px;padding:8px}.mt-equations{font-size:21px}.mt-aligned{gap:6px;grid-template-columns:1fr 18px 1fr 18px 1fr}.mt-aligned b{font-size:23px;padding:5px}.mt-matrix-equation{gap:7px}.mt-bracket{font-size:22px;gap:6px 8px;padding:8px 10px;grid-template-columns:repeat(var(--cols),23px)}.mt-transform-row{font-size:23px;grid-template-columns:28px 21px 24px 28px 21px 24px 38px}#mtGuide{padding:10px;gap:9px}#mtGuide .ml-dream-character{flex-basis:58px;width:58px}#mtSpeech{font-size:12px}.mt-rules span{font-size:18px}.matrix-tutorial h3{font-size:16px}.matrix-tutorial pre{font-size:13px}}
-@media(prefers-reduced-motion:reduce){.mt-transform-row i{transition:none}}
-
-/* Dialogue scene: a free-standing portrait overlaps the lower text panel. */
-#learningDialog.matrix-tutorial{width:960px;background:#f3f5ed}#learningDialog.matrix-tutorial .card{overflow:visible}#learningDialog #mtGuide,#matrixLab .ml-dialogue{position:relative;display:block;overflow:visible;margin-top:102px;min-height:152px;padding:28px 238px 20px 24px;background:linear-gradient(115deg,rgba(28,39,62,.97),rgba(46,55,77,.95));border:2px solid #a7b6ca;border-radius:8px;box-shadow:inset 0 0 0 3px #e6eef011,0 8px 22px #26372e20;color:#f0f5ff;isolation:isolate}#learningDialog #mtGuide>div:first-child>strong,#matrixLab .ml-speech>strong{position:absolute;left:20px;top:-20px;display:block;background:#425673;border:1px solid #b2c8de;border-radius:4px;padding:7px 24px;font-size:16px;letter-spacing:2px;color:#fff;box-shadow:0 3px 8px #14213a33;z-index:3}#learningDialog #mtSpeech,#matrixLab .ml-speech #mlDreamText{color:#f1f6ff;font-size:16px;line-height:1.85;min-height:56px;margin:4px 0 12px;word-break:keep-all;text-shadow:0 1px 2px #132138}#learningDialog #mtGuide .ml-dream-character,#matrixLab .ml-dialogue .ml-dream-character{position:absolute;right:14px;bottom:18px;width:210px;height:239px;aspect-ratio:auto;overflow:visible;background:none;border:0;border-radius:0;box-shadow:none;z-index:2;pointer-events:none;animation:mtPortraitEnter .35s ease-out}#learningDialog #mtGuide .ml-dream-character img,#matrixLab .ml-dialogue .ml-dream-character img{position:static;display:block;width:100%;height:100%;max-width:100%;object-fit:contain;left:auto;top:auto;filter:drop-shadow(0 7px 6px #14283b40)}#learningDialog #mtNav{margin-top:12px;gap:16px}#learningDialog #mtNav .mt-button,#matrixLab .ml-dialogue .ml-chip{color:#eef5ff;border-color:#8ba2bb;background:#ffffff0a;min-height:40px;padding:8px 16px}#learningDialog #mtNav .mt-button:hover:not(:disabled),#matrixLab .ml-dialogue .ml-chip:hover:not(:disabled){background:#ffffff22}#learningDialog #mtNext{margin-left:auto;font-weight:700}#learningDialog #mtNext::after{content:' ▸';color:#b6e7f2}#learningDialog #mtGuide [hidden]{display:none!important}@keyframes mtPortraitEnter{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:translateX(0)}}
-@media(max-width:650px){#learningDialog #mtGuide,#matrixLab .ml-dialogue{margin-top:78px;padding:24px 145px 14px 16px;min-height:150px}#learningDialog #mtGuide .ml-dream-character,#matrixLab .ml-dialogue .ml-dream-character{width:140px;height:160px;right:4px;bottom:55px}#learningDialog #mtSpeech,#matrixLab .ml-speech #mlDreamText{font-size:14px;line-height:1.7}#learningDialog #mtNav{gap:6px;flex-wrap:wrap}#learningDialog #mtNav .mt-button{font-size:12px;padding:8px 10px}}
-@media(max-width:420px){#learningDialog #mtGuide,#matrixLab .ml-dialogue{margin-top:62px;padding:24px 94px 12px 12px;min-height:158px}#learningDialog #mtGuide .ml-dream-character,#matrixLab .ml-dialogue .ml-dream-character{width:112px;height:128px;right:-7px;bottom:97px}#learningDialog #mtSpeech,#matrixLab .ml-speech #mlDreamText{font-size:13px;min-height:70px}#learningDialog #mtGuide>div:first-child>strong,#matrixLab .ml-speech>strong{left:12px;padding:6px 18px;font-size:14px}#learningDialog #mtNav{margin-right:-74px}#learningDialog #mtNext{margin-left:auto}}
-@media(prefers-reduced-motion:reduce){#learningDialog #mtGuide .ml-dream-character,#matrixLab .ml-dialogue .ml-dream-character{animation:none}}
-
-/* Keep one stage footprint; animate the original number nodes into their matrix positions. */
-#learningDialog.matrix-tutorial #learningQuestion{height:390px;min-height:390px;max-height:390px;overflow:auto;scrollbar-gutter:stable}#mtMorph{position:relative;height:145px;max-width:560px;margin:8px auto 0;font-variant-numeric:tabular-nums;font-size:29px;color:#304d3a}#mtMorph .mt-number,#mtMorph .mt-glyph{position:absolute;left:var(--from);top:calc(18px + var(--row)*57px);transform:translateX(-50%);font-style:normal;line-height:36px;transition:left 950ms cubic-bezier(.22,.7,.22,1),top 950ms cubic-bezier(.22,.7,.22,1),opacity 300ms ease}#mtMorph .mt-glyph{font-weight:400}#mtMorph .mt-faded{opacity:0}#mtMorph.mt-formed .mt-number{left:var(--to);top:calc(20px + var(--row)*57px)}.mt-outline{position:absolute;top:9px;height:111px;opacity:0;transition:opacity 600ms ease;pointer-events:none}.mt-outline:before,.mt-outline:after{content:'';position:absolute;top:0;bottom:0;width:8px;border-top:3px solid #456247;border-bottom:3px solid #456247}.mt-outline:before{left:0;border-left:3px solid #456247}.mt-outline:after{right:0;border-right:3px solid #456247}.mt-a{left:16%;width:25%}.mt-v{left:49%;width:12%}.mt-b{left:70%;width:18%}.mt-new{position:absolute;opacity:0;transition:opacity 600ms ease;transform:translateX(-50%);line-height:36px}.mt-vx{left:55%;top:20px}.mt-vy{left:55%;top:77px}.mt-times{left:45%;top:48px;font-size:22px}.mt-equals{left:65%;top:48px;font-size:22px}#mtMorph.mt-revealed .mt-outline,#mtMorph.mt-revealed .mt-new{opacity:1}.mt-storage{opacity:0;visibility:hidden;transition:opacity 500ms ease}.mt-storage.mt-visible{opacity:1;visibility:visible}.matrix-tutorial .mt-storage pre{margin:6px 0;font-size:14px;padding:8px 12px}.matrix-tutorial .mt-storage p{font-size:13px;margin:8px 0;line-height:1.5}#learningDialog #mtTransformNote{min-height:20px;margin:5px 0}
-@media(max-width:420px){#learningDialog.matrix-tutorial #learningQuestion{height:420px;min-height:420px;max-height:420px}#mtMorph{font-size:25px;height:145px}.mt-outline:before,.mt-outline:after{width:6px}.matrix-tutorial .mt-storage p{font-size:12px}.matrix-tutorial .mt-storage pre{font-size:12px}}
-@media(prefers-reduced-motion:reduce){#mtMorph *, .mt-storage{transition:none!important}}
-
-.mt-final-system{font-size:21px;line-height:1.65;text-align:center;color:#304d3a;font-variant-numeric:tabular-nums}.mt-final-matrices{display:flex;align-items:center;justify-content:center;gap:12px}.mt-final-matrices .mt-bracket{font-size:23px;gap:6px 12px;align-items:center}.mt-final-matrices .mt-bracket>span{display:grid;place-items:center;height:44px}.mt-final-a input{width:48px;height:44px;min-width:0;border:2px dashed #a79259;border-radius:7px;background:#fff6d9;font-size:23px;color:#304d3a;text-align:center;padding:2px}.mt-final-a input:not(:placeholder-shown){border-style:solid}.mt-final-a input[aria-invalid=true]{border-style:double;border-width:3px}.mt-final-matrices>b{font-size:21px}
-@media(max-width:420px){.mt-final-system{font-size:18px}.mt-final-matrices{gap:5px}.mt-final-matrices .mt-bracket{font-size:18px;gap:5px 4px;padding:8px;grid-template-columns:repeat(var(--cols),minmax(22px,1fr))}.mt-final-a input{width:36px;height:44px;font-size:19px}.mt-final-matrices .mt-bracket>span{height:44px}.mt-final-matrices>b{font-size:17px}}
 .ground-decor{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}.ground-decor svg{display:block;width:100%;height:100%;pointer-events:none}
 .income-pop.expense-pop{color:#d44040;text-shadow:0 2px #fff0e8}
-</style><link rel="stylesheet" href="matrix-lab.css"><style>
-/* Viewport-sized lessons and tablet touch layout. Keep navigation outside the scroll area. */
-body:has(dialog[open]){overflow:hidden}
+</style><link rel="stylesheet" href="matrix-lab.css"><style>body:has(dialog[open]){overflow:hidden}
 button{touch-action:manipulation}
-#learningDialog.matrix-tutorial{height:min(940px,96dvh);max-height:96dvh;padding:12px;overflow:hidden}
-#learningDialog.matrix-tutorial[open]{display:flex;flex-direction:column}
-#learningDialog.matrix-tutorial>.dialog-top{flex:none;min-height:44px;padding:0 8px 6px}
-#learningDialog.matrix-tutorial>.card{display:flex;flex:1;flex-direction:column;min-height:0;padding:14px;overflow:hidden}
-#learningDialog.matrix-tutorial #learningTitle{font-size:22px;margin:3px 0}
-#learningDialog.matrix-tutorial #learningDescription{margin:3px 0 6px}
-#learningDialog.matrix-tutorial #learningQuestion{flex:1;min-height:0;height:auto;max-height:none;margin:10px 0 0;padding:14px;overscroll-behavior:contain;scroll-padding:12px}
-#learningDialog.matrix-tutorial #mtGuide{flex:none;margin-top:26px;min-height:124px;padding:16px 154px 12px 18px}
-#learningDialog.matrix-tutorial #mtGuide .ml-dream-character{width:140px;height:160px;right:6px;bottom:6px}
-#learningDialog.matrix-tutorial #mtSpeech{font-size:15px;line-height:1.65;min-height:48px;margin:4px 0 8px}
-#learningDialog.matrix-tutorial #mtNav{margin-top:6px;margin-right:0}
-#learningDialog.matrix-tutorial #mtNav .mt-button{min-height:44px}
-#learningDialog.matrix-tutorial #learningForm{flex:none}
-#learningDialog.matrix-tutorial #learningFeedback{margin:5px 0;line-height:1.5}
-#learningDialog.matrix-tutorial #learningForm+p{margin:6px 0 0;line-height:1.4}
-#learningDialog.matrix-tutorial #mtTestLevels{margin-top:4px}
-#learningDialog.matrix-tutorial #mtTestLevels button{min-height:44px}
-#learningDialog.matrix-tutorial .mt-final-a input{width:48px;min-height:48px;font-size:22px}
-#learningDialog.matrix-tutorial .mt-final-matrices .mt-bracket>span{height:48px}
-#learningDialog.matrix-tutorial .mt-final-system{line-height:1.8}
-@media(min-width:650px){
- #learningQuestion[data-step="4"]{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);align-content:center;column-gap:18px}
- #learningQuestion[data-step="4"]>.mt-progress,#learningQuestion[data-step="4"]>h3{grid-column:1/-1}
- #learningQuestion[data-step="4"]>.mt-final-system{grid-column:1;grid-row:3;align-self:center;font-size:22px}
- #learningQuestion[data-step="4"]>.mt-caption{grid-column:1;grid-row:4;align-self:start}
- #learningQuestion[data-step="4"]>.mt-final-matrices{grid-column:2;grid-row:3/5;gap:8px}
- .mt-final-matrices .mt-bracket{gap:5px 8px;padding:8px 10px}
-}
-@media(max-width:1100px){
- main{padding:0 20px}.layout{grid-template-columns:1fr;gap:20px}
- .intro{height:auto;min-height:80px}.intro h1{font-size:29px}
- .sidebar{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:0}
- .sidebar .wallet{grid-column:1;grid-row:1}.sidebar .owned-panel{grid-column:2;grid-row:1;min-height:180px}
- .sidebar>.request-dock{grid-column:2;grid-row:2}.sidebar .mission{grid-column:1;grid-row:2}
- .map-scroll{padding-bottom:100px}.map-stage,.factory-grid{min-width:0}
- #shop .shop-item{min-height:72px;padding:10px 6px}#shop .shop-item strong{font-size:14px}#shop .shop-item span{font-size:12px}#shop .shop-item em{font-size:11px}
- #placementActions button,#placementActions #sellFactory{width:44px;height:44px}
- .secondary,.owned-row button,.test-tools button{min-height:44px}
- .owned-row button{font-size:12px}.dialog-top .secondary{font-size:13px}
-}
-@media(max-width:649px){
- #learningDialog.matrix-tutorial{width:100%;max-width:100%;height:100dvh;max-height:100dvh;margin:0;border-radius:0;padding:8px;border-width:0}
- #learningDialog.matrix-tutorial>.card{padding:10px}
- #learningDialog.matrix-tutorial #learningTitle{font-size:20px}
- #learningDialog.matrix-tutorial #learningQuestion{padding:12px}
- #learningDialog.matrix-tutorial #mtGuide{padding:16px 90px 10px 12px;min-height:124px;margin-top:22px}
- #learningDialog.matrix-tutorial #mtGuide .ml-dream-character{width:88px;height:102px;right:0;bottom:36px}
- #learningDialog.matrix-tutorial #mtSpeech{font-size:14px;min-height:0}
- #learningDialog.matrix-tutorial #mtNav{margin-right:-70px}
- #learningDialog.matrix-tutorial .mt-final-system{font-size:18px;line-height:1.5}
- #learningDialog.matrix-tutorial .mt-final-a input{width:44px}
- #learningDialog.matrix-tutorial .mt-final-matrices{gap:5px}
- #learningDialog.matrix-tutorial .mt-final-matrices .mt-bracket{font-size:18px;gap:4px;padding:7px;grid-template-columns:repeat(var(--cols),minmax(22px,1fr))}
- #learningDialog.matrix-tutorial #learningForm+p{display:none}
- .map-stage,.factory-grid{min-width:550px}
- .sidebar{grid-template-columns:1fr}.sidebar .wallet,.sidebar .owned-panel,.sidebar>.request-dock,.sidebar .mission{grid-column:1;grid-row:auto}
- #shop{grid-template-columns:1fr 1fr}
-}
-@media(max-height:700px) and (min-width:650px){
- #learningDialog.matrix-tutorial>.card{padding:8px 12px}
- #learningDialog.matrix-tutorial #learningTitle{font-size:19px}
- #learningDialog.matrix-tutorial #learningDescription{font-size:12px}
- #learningDialog.matrix-tutorial #mtGuide{margin-top:20px;min-height:100px;padding-top:10px;padding-bottom:8px}
- #learningDialog.matrix-tutorial #mtSpeech{min-height:0;font-size:14px;margin-bottom:4px}
- #learningDialog.matrix-tutorial #mtGuide .ml-dream-character{width:115px;height:132px}
- #learningDialog.matrix-tutorial #learningForm+p{display:none}
-}
-
-/* Full-screen dialogue scene: tap the dimmed screen to return to the lesson. */
-#learningDialog.matrix-tutorial #mtGuide{
- position:fixed;inset:0;z-index:100;margin:0;width:100vw;height:100dvh;min-height:0;
- padding:0;border:0;border-radius:0;box-shadow:none;cursor:pointer;
- background:linear-gradient(to bottom,rgba(0,0,0,.43) 0%,rgba(0,0,0,.5) 44%,rgba(0,0,0,.84) 68%,#000 88%);
- animation:mtSceneIn .24s ease-out;
-}
-#learningDialog.matrix-tutorial #mtGuide>div:first-child{position:absolute;left:max(6vw,24px);right:34vw;bottom:max(6dvh,24px);z-index:3}
-#learningDialog.matrix-tutorial #mtGuide>div:first-child>strong{position:static;display:block;padding:0;margin:0 0 16px;background:none;border:0;border-radius:0;box-shadow:none;font-size:24px;letter-spacing:2px;color:#a9e9ff;text-shadow:0 2px 5px #000}
-#learningDialog.matrix-tutorial #mtSpeech{font-size:clamp(18px,2.1vw,26px);line-height:1.9;min-height:0;margin:0;color:white;word-break:keep-all;text-shadow:0 2px 5px #000}
-#learningDialog.matrix-tutorial #mtGuide .ml-dream-character{width:clamp(180px,32vw,390px);height:clamp(210px,38vw,450px);right:3vw;bottom:3dvh;animation:mtPortraitEnter .3s ease-out}
-.mt-dismiss-hint{display:block;margin-top:24px;color:#c3c8d1;font-size:13px;letter-spacing:.5px}
-#learningDialog.matrix-tutorial #mtNav{flex:none;margin:12px 0 0;align-items:center}
-#learningDialog.matrix-tutorial #mtNav .mt-button{color:#3d5833;border-color:#bccda9;background:#eff4e6;min-height:44px}
-#mtReplay{margin-left:auto}
-#learningDialog.matrix-tutorial #mtNext{margin-left:0}
-#learningDialog.matrix-tutorial #mtNext::after{color:#557440}
-@keyframes mtSceneIn{from{opacity:0}to{opacity:1}}
-@media(max-width:649px){
- #learningDialog.matrix-tutorial #mtGuide>div:first-child{left:24px;right:24px;bottom:5dvh}
- #learningDialog.matrix-tutorial #mtGuide .ml-dream-character{width:180px;height:210px;right:10px;bottom:30dvh;opacity:.95}
- #learningDialog.matrix-tutorial #mtGuide>div:first-child>strong{font-size:21px;margin-bottom:12px}
- #learningDialog.matrix-tutorial #mtSpeech{font-size:18px;line-height:1.75}
- #learningDialog.matrix-tutorial #mtNav{margin-right:0;gap:6px;flex-wrap:wrap}
- .mt-dismiss-hint{margin-top:16px}
-}
-@media(prefers-reduced-motion:reduce){#learningDialog.matrix-tutorial #mtGuide{animation:none}}
-</style></head><body>
+@media(max-width:1100px){main{padding:0 20px}
+.layout{grid-template-columns:1fr;gap:20px}
+.intro{height:auto;min-height:80px}
+.intro h1{font-size:29px}
+.sidebar{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:0}
+.sidebar .wallet{grid-column:1;grid-row:1}
+.sidebar .owned-panel{grid-column:2;grid-row:1;min-height:180px}
+.sidebar>.request-dock{grid-column:2;grid-row:2}
+.sidebar .mission{grid-column:1;grid-row:2}
+.map-scroll{padding-bottom:100px}
+.map-stage,.factory-grid{min-width:0}
+#shop .shop-item{min-height:72px;padding:10px 6px}
+#shop .shop-item strong{font-size:14px}
+#shop .shop-item span{font-size:12px}
+#shop .shop-item em{font-size:11px}
+#placementActions button,#placementActions #sellFactory{width:44px;height:44px}
+.secondary,.owned-row button,.test-tools button{min-height:44px}
+.owned-row button{font-size:12px}
+.dialog-top .secondary{font-size:13px}}
+@media(max-width:649px){.map-stage,.factory-grid{min-width:550px}
+.sidebar{grid-template-columns:1fr}
+.sidebar .wallet,.sidebar .owned-panel,.sidebar>.request-dock,.sidebar .mission{grid-column:1;grid-row:auto}
+#shop{grid-template-columns:1fr 1fr}}</style><link rel="stylesheet" href="matrix-lesson.css"></head><body>
 <div class="world-scenery" aria-hidden="true"><div class="sun"></div><div class="cloud"></div><div class="cloud c2"></div><div class="cloud c3"></div><div class="hill"></div><div class="hill h2"></div><div class="hill h3"></div></div><header><div class="brand"><span>ai</span> AI COMPANY</div><div class="tag">AI × MATH · TYCOON</div></header>
 <main><section class="intro"><div><div class="eyebrow">BUILD YOUR OWN AI COMPANY</div><h1>나의 AI 회사</h1><p>의뢰를 해결하고, 공장을 하나씩 가동해 보세요.</p></div><span class="badge">LEVEL 01 · 신입 창업가</span></section>
 <div class="layout"><section class="campus"><div class="campus-head"><div><h2>나의 공장 단지</h2><span class="mini">작은 공장 하나에서 시작하는 AI 회사</span></div></div><div class="placement-tools"><div id="shop"></div><div class="placement-help"><span id="placementStatus" role="status"></span><button id="resumeLearning" class="secondary" hidden>선택한 공장 학습</button></div></div><div class="map-scroll"><div class="map-stage"><div id="factories" class="factory-grid" tabindex="0" aria-label="21열 18행 배치 지도. 방향키로 이동, Enter로 확정, Escape로 취소"></div><div id="placementActions" hidden><button id="moveFactory" aria-label="공장 이동" title="이동" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M2 12h20M8 6l4-4 4 4M8 18l4 4 4-4M6 8l-4 4 4 4M18 8l4 4-4 4"/></svg></button><button id="confirmPlacement" aria-label="배치 확정"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4L19 6"/></svg></button><button id="cancelPlacement" aria-label="배치 취소"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><button id="upgradeFactory" aria-label="공장 업그레이드" aria-expanded="false" aria-controls="upgradeOffer" hidden><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button><button id="sellFactory" type="button" aria-label="공장 판매" aria-expanded="false" aria-controls="sellOffer" hidden><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/></svg></button><button id="sellOffer" type="button" hidden></button><button id="upgradeOffer" type="button" hidden></button></div></div></div><i class="tree" aria-hidden="true"></i><i class="tree t2" aria-hidden="true"></i><i class="tree t3" aria-hidden="true"></i></section>
@@ -168,7 +75,7 @@ button{touch-action:manipulation}
 <span class="mini">입문 의뢰 · x + a = b</span>
 <div class="problem"><p>다음 식을 만족하는 x를 구하세요.</p><div id="equation" class="equation"></div><form id="form"><label class="answer" for="answer">x = <input id="answer" type="text" inputmode="decimal" autocomplete="off" aria-describedby="feedback" placeholder="정답" required></label><div class="feedback" id="feedback" role="status" aria-live="polite">천천히 풀어도 괜찮아요. 시간 제한은 없어요.</div><div id="hint" class="hint" hidden></div><button id="submit" class="primary" type="submit">정답 제출하기 →</button></form></div>
 <div class="actions"><button class="secondary" id="hintButton">💡 힌트 보기</button><button class="secondary" id="skip">다른 문제 풀기 ↗</button></div><div class="desk"><span class="desk-icon" aria-hidden="true">🧑‍💻</span><div><strong>오늘은 기초 자금을 모으는 날</strong><p>정답을 맞히면 보상이 바로 입금돼요. 틀려도 돈이 줄지 않아요.</p></div></div></section></dialog>
-<dialog id="learningDialog" aria-labelledby="learningTitle"><div class="dialog-top"><span>공장 설계 · 학습</span><button class="secondary" data-close="learningDialog">나중에 하기 ✕</button></div><section class="card"><div class="eyebrow">LEARNING LAB</div><h2 id="learningTitle"></h2><p id="learningDescription"></p><nav id="mtTestLevels" hidden aria-label="행렬 테스트 레벨"></nav><div id="learningQuestion" class="learning-question"></div><aside id="mtGuide" hidden><div><strong>드림이</strong><p id="mtSpeech" aria-live="polite"></p></div><div class="ml-dream-character" role="img" aria-label="드림이"><img src="assets/dreamy-dialogue.webp" alt="" draggable="false"></div></aside><div id="mtNav" hidden><button type="button" id="mtPrev" class="mt-button">← 이전</button><span id="mtTapHint" aria-live="polite" style="font-size:13px;color:#627657">화면을 터치하면 다음으로 ▸</span><button type="button" id="mtNext" class="mt-button">다음 →</button></div><form id="learningForm"><label for="learningAnswer" hidden>정답 <input id="learningAnswer" inputmode="decimal" autocomplete="off" required></label><p id="learningFeedback" role="status"></p><button class="primary">완료하고 가동하기 →</button></form><p class="mini">종류별로 한 번만 학습합니다. 같은 종류의 학습 대기 공장도 함께 가동됩니다.</p></section></dialog>
+<dialog id="learningDialog" aria-labelledby="learningTitle"><div class="dialog-top"><span>공장 설계 · 학습</span><button class="secondary" data-close="learningDialog">나중에 하기 ✕</button></div><section class="card"><div class="eyebrow">LEARNING LAB</div><h2 id="learningTitle"></h2><p id="learningDescription"></p><nav id="mtTestLevels" hidden aria-label="행렬 테스트 레벨"></nav><div id="learningQuestion" class="learning-question"></div><aside id="mtGuide" hidden><div><strong>드림이</strong><p id="mtSpeech" aria-live="polite"></p><span class="mt-dismiss-hint">화면을 터치하거나 Enter를 눌러 계속 ▾</span></div><div class="ml-dream-character" role="img" aria-label="드림이"><img src="assets/dreamy-dialogue.webp" alt="" draggable="false"></div></aside><div id="mtNav" hidden><button type="button" id="mtPrev" class="mt-button">← 이전</button><span id="mtTapHint" aria-live="polite" style="font-size:13px;color:#627657">화면을 터치하면 다음으로 ▸</span><button type="button" id="mtReplay" class="mt-button">대사 다시 보기</button></div><form id="learningForm"><label for="learningAnswer" hidden>정답 <input id="learningAnswer" inputmode="decimal" autocomplete="off" required></label><p id="learningFeedback" role="status"></p><button class="primary">완료하고 가동하기 →</button></form><p class="mini">종류별로 한 번만 학습합니다. 같은 종류의 학습 대기 공장도 함께 가동됩니다.</p></section></dialog>
 <dialog id="landDialog" aria-labelledby="landTitle"><div class="dialog-top"><span>부지 확장</span><button class="secondary" data-close="landDialog" aria-label="닫기">✕</button></div><div class="land-content"><div id="landPreview" aria-hidden="true"></div><h2 id="landTitle">회사를 더 넓혀 볼까요?</h2><p>7 × 6 · 공장을 놓을 공간 42칸 추가</p><strong id="landPrice"></strong><p id="landAfter" role="status"></p><button id="confirmLand" class="primary"></button><button class="secondary" data-close="landDialog">다음에 할게요</button></div></dialog><dialog id="upgradeDialog" aria-labelledby="upgradeTitle"><div class="dialog-top"><span>공장 업그레이드</span><button class="secondary" data-close="upgradeDialog">닫기 ✕</button></div><section class="card"><h2 id="upgradeTitle"></h2><p id="upgradeTopic"></p><div id="upgradePlaceholder" class="upgrade-placeholder">(학습 요소)</div><p id="upgradeSummary"></p><p id="upgradeFeedback" role="status"></p><button id="completeUpgrade" class="primary">완료하고 업그레이드</button><p class="mini">프로토타입: 버튼을 누르면 학습을 완료한 것으로 처리합니다.</p></section></dialog><script>
 'use strict';
 const KEY='ai-company-math-v1', $=id=>document.getElementById(id), names=['','입문','기본','도전'], rewards=[0,100,150,250];
@@ -185,7 +92,7 @@ $('form').addEventListener('submit',e=>{e.preventDefault();if(state.problem.done
 $('hintButton').addEventListener('click',()=>{const p=state.problem,h=$('hint');h.hidden=!h.hidden;h.textContent=state.level===1?'양변에서 '+p.b+'을 빼 보세요. x = '+p.d+' − '+p.b:state.level===2?'양변에서 '+p.b+'을 빼면 '+p.a+'x = '+(p.d-p.b)+'입니다. 이제 양변을 '+p.a+'로 나누세요.':'양변에서 '+p.c+'x와 '+p.b+'을 빼면 '+(p.a-p.c)+'x = '+(p.d-p.b)+'입니다. 양변을 '+(p.a-p.c)+'로 나누세요.'});
 
 const factories=[
-{id:'matrix',name:'행렬 공장',learnAnswers:[0,-2],learnHints:['둘째 식에 y가 없으므로 y의 계수는 0이에요.','셋째 식의 −2y에서 빼기 부호도 계수에 포함돼요.'],cost:1000,rate:30,period:1000,payout:30,description:'여러 입력에 가중치를 곱하고 더하면 신경망의 출력 하나를 계산할 수 있어요.',question:'입력 벡터: [2, 3]\n가중치: [4, 1]\n출력 = 2 × 4 + 3 × 1 = ?',answer:11,hint:'두 곱셈을 먼저 계산한 뒤 더하세요.'},
+{id:'matrix',name:'행렬 공장',cost:1000,rate:30,period:1000,payout:30,description:'여러 입력에 가중치를 곱하고 더하면 신경망의 출력 하나를 계산할 수 있어요.',question:'입력 벡터: [2, 3]\n가중치: [4, 1]\n출력 = 2 × 4 + 3 × 1 = ?',answer:11,hint:'두 곱셈을 먼저 계산한 뒤 더하세요.'},
 {id:'language',name:'자연어 공장',cost:10000,rate:400,period:500,payout:200,description:'단어가 나온 횟수를 세어 문장을 숫자 벡터로 나타내는 방법을 체험해요.',question:'단어 집합: [사과, 바나나]\n문장: “사과 바나나 사과”\n빈도 벡터 [?, 1]에서 ?는?',answer:2,hint:'문장에서 사과가 몇 번 나왔는지 세어 보세요.'},
 {id:'gradient',name:'경사하강법 공장',cost:100000,rate:5000,period:3000,payout:15000,description:'현재 기울기의 반대 방향으로 조금 이동하며 손실을 줄여요.',question:'새 가중치 = 현재 가중치 − 학습률 × 기울기\n현재 가중치 5, 학습률 0.1, 기울기 4\n새 가중치는?',answer:4.6,hint:'5 − 0.1 × 4를 계산하세요.'},
 {id:'cluster',name:'군집화 공장',cost:1000000,rate:60000,period:250,payout:15000,description:'K-means는 같은 군집에 속한 점들의 평균으로 중심을 갱신해요.',question:'같은 군집의 세 점: (2, 0), (4, 0), (6, 0)\n새 중심의 x좌표는?',answer:4,hint:'x좌표 2, 4, 6의 평균을 구하세요.'}
@@ -376,84 +283,43 @@ $('factories').addEventListener('keydown',e=>{if(e.target.closest('[data-land]')
 $('moveFactory').addEventListener('click',()=>{const item=state.instances.find(v=>v.uid===selectedBuilding);if(!item)return;moving=item.uid;selectedBuilding=null;placing=null;preview=item.cell;dragging=false;renderBoard();$('factories').focus()});
 $('confirmPlacement').addEventListener('click',confirmPlacement);
 // Matrix Lv.1 tutorial lives in index.html; other factory lessons keep their flow.
-const MATRIX_LESSON_STEPS=[
- {title:'주문서를 식으로',speech:'부품 A와 B의 무게를 각각 x, y라고 해 볼까요?',html:'<div class="mt-order">부품 A 2개 + 부품 B 3개 = 13kg<br>부품 A 1개 + 부품 B 1개 = 5kg</div><p class="mt-caption">x: 부품 A 한 개의 무게 · y: 부품 B 한 개의 무게 (kg)</p><div class="mt-equations">2x + 3y = 13<br>x + y = 5</div>'},
- {title:'같은 변수끼리 줄 맞추기',speech:'같은 변수끼리 세로로 줄을 세워요. 이 세로줄이 행렬의 ‘열’이 돼요.',html:'<div class="mt-aligned"><span class="mt-x">x항</span><span></span><span class="mt-y">y항</span><span></span><span>상수</span><b class="mt-x">2x</b><span>+</span><b class="mt-y">3y</b><span>=</span><b>13</b><b class="mt-x">x</b><span>+</span><b class="mt-y">y</b><span>=</span><b>5</b></div>'},
- {title:'글자 대신 숫자 격자로',speech:'x, y 순서를 기억하면서 글자를 지우고, 남은 숫자들을 행렬 자리로 옮겨 볼게요.',html:'<div id="mtMorph" role="group" aria-label="방정식에서 행렬로 바뀌는 과정"><b class="mt-number" style="--from:24%;--to:23%;--row:0">2</b><b class="mt-number" style="--from:46%;--to:34%;--row:0">3</b><b class="mt-number" style="--from:78%;--to:79%;--row:0">13</b><i class="mt-glyph" data-fade="0" style="left:30%;--row:0">x</i><i class="mt-glyph" data-fade="2" style="left:38%;--row:0">+</i><i class="mt-glyph" data-fade="1" style="left:52%;--row:0">y</i><i class="mt-glyph" data-fade="3" style="left:65%;--row:0">=</i><b class="mt-number" style="--from:24%;--to:23%;--row:1">1</b><b class="mt-number" style="--from:46%;--to:34%;--row:1">1</b><b class="mt-number" style="--from:78%;--to:79%;--row:1">5</b><i class="mt-glyph" data-fade="0" style="left:30%;--row:1">x</i><i class="mt-glyph" data-fade="2" style="left:38%;--row:1">+</i><i class="mt-glyph" data-fade="1" style="left:52%;--row:1">y</i><i class="mt-glyph" data-fade="3" style="left:65%;--row:1">=</i><span class="mt-outline mt-a"></span><span class="mt-outline mt-v"></span><span class="mt-outline mt-b"></span><span class="mt-new mt-vx">x</span><span class="mt-new mt-vy">y</span><span class="mt-new mt-times">×</span><span class="mt-new mt-equals">=</span></div><p id="mtTransformNote" class="mt-caption">생략된 계수 1도 표시했어요. 숫자의 움직임을 따라가 보세요.</p><div id="mtMatrixResult" class="mt-storage" aria-hidden="true"><pre>A = [[2, 3], [1, 1]]\nb = [13, 5]</pre><p>변수 순서를 정하면 계수 A와 상수 b를 숫자로 저장할 수 있어요. 변수가 늘어나도 같은 방식으로 표현해요.</p></div>'},
- {title:'바꿀 때 확인할 세 가지',speech:'생략된 1, 없는 변수의 0, 그리고 빼기 부호를 놓치지 마세요.',html:'<ul class="mt-rules"><li><strong>생략된 계수는 1</strong><span>x + y → [1, 1]</span></li><li><strong>없는 변수는 0</strong><span>x − z = 4 → [1, 0, −1] <small>(x, y, z 순서)</small></span></li><li><strong>빼기 부호도 숫자에 포함</strong><span>3x − 2y → [3, −2]</span></li></ul>'},
- {title:'세 방정식을 행렬로 바꿔 볼까요?',speech:'열의 순서는 x, y, z예요. 두 빈칸에 들어갈 계수를 채워서 세 방정식을 완성해 주세요.',html:'<div class="mt-final-system"><div>2x + 3y + z = 8</div><div>x − z = 1</div><div>3x − 2y + z = 5</div></div><p class="mt-caption">왼쪽부터 x · y · z의 계수예요. 빈칸 두 개를 채워 주세요.</p><div class="mt-final-matrices"><div class="mt-bracket mt-final-a" style="--cols:3" role="group" aria-label="계수 행렬 A"><span>2</span><span>3</span><span>1</span><span>1</span><input id="mtAnswerZero" form="learningForm" aria-label="둘째 식 y의 계수" inputmode="text" autocomplete="off" placeholder="?" required><span>−1</span><span>3</span><input id="mtAnswerNegative" form="learningForm" aria-label="셋째 식 y의 계수" inputmode="text" autocomplete="off" placeholder="?" required><span>1</span></div><b>×</b><div class="mt-bracket" style="--cols:1" aria-label="미지수 벡터"><span>x</span><span>y</span><span>z</span></div><b>=</b><div class="mt-bracket" style="--cols:1" aria-label="상수 벡터"><span>8</span><span>1</span><span>5</span></div></div>'},
- {title:'신경망 계산과 연결하기',speech:'행렬은 식을 저장할 때도, 여러 입력에 가중치를 곱하고 더할 때도 쓰여요.',html:'<div class="mt-equations">[2, 3] · [x, y] = 2x + 3y</div><p>2와 3을 가중치, x와 y를 입력으로 보면 <strong>입력 × 가중치의 합</strong>이에요.</p><p>이 계산은 신경망 뉴런의 <strong>가중합</strong>과 같은 형태예요. 뉴런은 여기에 편향을 더하고 활성화 함수를 적용하기도 해요.</p><p class="mt-caption">방정식 자체가 뉴런인 것은 아니에요.</p>'}
-];
-let matrixLessonStep=0,matrixLessonTest=false,matrixLessonVerified=false,matrixLessonTimer=null,matrixLessonAnimating=false,matrixLessonReturn=null;
-function stopMatrixLessonAnimation(){clearTimeout(matrixLessonTimer);matrixLessonTimer=null;matrixLessonAnimating=false;}
-function startMatrixLesson(uid,test=false){
- stopMatrixLessonAnimation();matrixLessonReturn=document.activeElement;matrixLessonStep=0;matrixLessonTest=test;matrixLessonVerified=false;selectedInstance=uid;selectedFactory='matrix';
- $('learningDialog').classList.add('matrix-tutorial');$('learningTitle').textContent='행렬 공장 설계';$('learningDescription').textContent='Lv.1 · 연립방정식을 숫자 격자로';$('learningAnswer').value='';
- $('mtGuide').hidden=false;$('mtNav').hidden=false;$('mtTestLevels').hidden=!test;
- renderMatrixLesson();if(!$('learningDialog').open)$('learningDialog').showModal();$('mtStepTitle').focus();
-}
-function renderMatrixLesson(){
- stopMatrixLessonAnimation();const step=MATRIX_LESSON_STEPS[matrixLessonStep];$('learningQuestion').dataset.step=String(matrixLessonStep);
- $('learningQuestion').innerHTML='<div class="mt-progress">'+(matrixLessonStep+1)+' / '+MATRIX_LESSON_STEPS.length+'</div><h3 id="mtStepTitle" tabindex="-1">'+step.title+'</h3>'+step.html;
- $('mtSpeech').textContent=step.speech;$('learningFeedback').textContent='';$('learningForm').hidden=matrixLessonStep<4;
- $('learningForm').querySelector('label').hidden=true;$('learningAnswer').hidden=true;$('learningAnswer').required=false;
- $('learningForm').querySelector('button').textContent=matrixLessonStep===4?'정답 확인 →':matrixLessonTest?'체험 완료 →':'완료하고 가동하기 →';
- $('mtPrev').hidden=false;$('mtPrev').disabled=matrixLessonStep===0;$('mtNext').hidden=true;$('mtTapHint').hidden=matrixLessonStep>=4;$('mtTapHint').textContent=matrixLessonStep===2?'숫자의 움직임을 지켜보세요':'화면을 터치하면 다음으로 ▸';$('mtNext').disabled=matrixLessonStep===2;
- showMatrixSpeech();
-}
-function showMatrixSpeech(){
- $('mtGuide').hidden=false;
- for(const child of $('learningDialog').querySelector('.card').children)if(child.id!=='mtGuide')child.inert=true;
- $('learningDialog').querySelector('.dialog-top').inert=true;
- queueMicrotask(()=>{if($('learningDialog').open&&!$('mtGuide').hidden)$('mtGuide').focus({preventScroll:true});});
-}
-function dismissMatrixSpeech(){
- $('mtGuide').hidden=true;
- for(const child of $('learningDialog').querySelector('.card').children)child.inert=false;
- $('learningDialog').querySelector('.dialog-top').inert=false;
- if(matrixLessonStep===2&&!$('mtMorph').classList.contains('mt-formed')&&!matrixLessonAnimating){matrixLessonTimer=setTimeout(animateMatrixLesson,150);}
- const target=matrixLessonStep===4?$('mtAnswerZero'):matrixLessonStep===5?$('learningForm').querySelector('button'):$('mtStepTitle');target.focus({preventScroll:true});
-}
-function showMatrixLessonResult(){
- $('mtMorph').classList.add('mt-formed','mt-revealed');$('mtMatrixResult').classList.add('mt-visible');$('mtMatrixResult').setAttribute('aria-hidden','false');
- $('mtTransformNote').textContent='같은 숫자가 자리를 옮겼어요. 두 방정식과 같은 뜻이에요.';
- $('mtNext').disabled=false;$('mtTapHint').textContent='화면을 터치하면 다음으로 ▸';matrixLessonAnimating=false;$('mtSpeech').textContent='숫자들이 행렬로 모였어요. 왼쪽에는 계수, 오른쪽에는 상수가 남았고, x와 y는 하나의 묶음으로 표현해요.';
-}
-function animateMatrixLesson(){
- if(matrixLessonAnimating||!$('learningDialog').open||matrixLessonStep!==2)return;matrixLessonAnimating=true;$('mtNext').disabled=true;
- if(matchMedia('(prefers-reduced-motion: reduce)').matches){$('mtMorph').querySelectorAll('.mt-glyph').forEach(n=>n.classList.add('mt-faded'));showMatrixLessonResult();return;}
- let group=0;const tick=()=>{if(!$('learningDialog').open||matrixLessonStep!==2)return;
-  if(group<4){$('mtMorph').querySelectorAll('[data-fade="'+group+'"]').forEach(n=>n.classList.add('mt-faded'));group++;matrixLessonTimer=setTimeout(tick,310);}
-  else{$('mtMorph').classList.add('mt-formed');matrixLessonTimer=setTimeout(()=>{$('mtMorph').classList.add('mt-revealed');matrixLessonTimer=setTimeout(showMatrixLessonResult,650);},1000);}
- };tick();
-}
-$('mtPrev').onclick=()=>{if(matrixLessonStep>0){matrixLessonStep--;renderMatrixLesson();$('mtStepTitle').focus();}};
-$('mtNext').onclick=()=>{if(matrixLessonStep<4&&!$('mtNext').disabled){matrixLessonStep++;renderMatrixLesson();if(matrixLessonStep===4)$('mtAnswerZero').focus();else $('mtStepTitle').focus();}};
-// Ignore controls, text selection and swipe gestures; one tap advances one scene.
-let matrixTapStart=null,matrixTapMoved=false;
-const matrixInteractive='button,input,select,textarea,a,label,form,#mtGuide';
-$('learningDialog').addEventListener('pointerdown',e=>{matrixTapStart={x:e.clientX,y:e.clientY};matrixTapMoved=false;});
-$('learningDialog').addEventListener('pointermove',e=>{if(matrixTapStart&&Math.hypot(e.clientX-matrixTapStart.x,e.clientY-matrixTapStart.y)>12)matrixTapMoved=true;});
-$('learningDialog').addEventListener('pointercancel',()=>{matrixTapMoved=true;});
-function canTapMatrix(e){return $('learningDialog').classList.contains('matrix-tutorial')&&$('mtGuide').hidden&&!e.target.closest(matrixInteractive)&&matrixLessonStep<4&&!$('mtNext').disabled;}
-$('learningDialog').addEventListener('click',e=>{if(canTapMatrix(e)&&!matrixTapMoved&&!window.getSelection()?.toString())$('mtNext').onclick();matrixTapStart=null;});
-$('learningDialog').addEventListener('keydown',e=>{if(['Enter',' '].includes(e.key)&&!e.repeat&&canTapMatrix(e)){e.preventDefault();$('mtNext').onclick();}});
-$('learningDialog').addEventListener('close',()=>{stopMatrixLessonAnimation();$('mtGuide').hidden=true;for(const node of $('learningDialog').querySelectorAll('[inert]'))node.inert=false;if(matrixLessonReturn?.isConnected)matrixLessonReturn.focus();matrixLessonReturn=null;});
 function openLearning(uid){
  const item=state.instances.find(v=>v.uid===uid);if(!item||item.status!=='learning')return;
- if(item.type==='matrix'){startMatrixLesson(uid);return;}
- for(const node of $('learningDialog').querySelectorAll('[inert]'))node.inert=false;stopMatrixLessonAnimation();matrixLessonTest=false;$('learningDialog').classList.remove('matrix-tutorial');$('mtGuide').hidden=true;$('mtNav').hidden=true;$('mtTestLevels').hidden=true;$('learningForm').hidden=false;$('learningForm').querySelector('label').hidden=true;$('learningForm').querySelector('button').textContent='완료하고 가동하기 →';
+ if (item.type === 'matrix') {
+   MatrixLesson.start({
+     canSubmit: () => state.instances.some(current => current.uid === uid && current.status === 'learning'),
+     onComplete: () => activateLearnedFactory(item)
+   });
+   return;
+ }
+ MatrixLesson.deactivate();
+ $('learningDialog').classList.remove('matrix-tutorial');$('mtGuide').hidden=true;$('mtNav').hidden=true;$('mtTestLevels').hidden=true;$('learningForm').hidden=false;$('learningForm').querySelector('label').hidden=true;$('learningForm').querySelector('button').textContent='완료하고 가동하기 →';
  const f=factories.find(v=>v.id===item.type);selectedInstance=uid;selectedFactory=f.id;$('learningTitle').textContent=f.name+' 설계';$('learningDescription').textContent='Lv.1 · '+TOPICS[item.type][0];$('learningQuestion').textContent='(학습 요소)';$('learningAnswer').value=String(f.answer);$('learningAnswer').hidden=true;$('learningAnswer').required=false;$('learningFeedback').textContent='한 번 학습하면 같은 종류의 공장은 다음 구매부터 바로 가동돼요.';if(!$('learningDialog').open)$('learningDialog').showModal();$('learningForm').querySelector('button').focus();
 }
-$('learningForm').addEventListener('submit',e=>{
- e.preventDefault();const isMatrix=selectedFactory==='matrix',item=state.instances.find(v=>v.uid===selectedInstance),f=factories.find(v=>v.id===selectedFactory);
- if(!f||(!matrixLessonTest&&(!item||item.status!=='learning')))return;
- if(isMatrix){
-  if(matrixLessonStep===4){const inputs=[$('mtAnswerZero'),$('mtAnswerNegative')];const bad=inputs.findIndex((input,i)=>{const value=input.value.trim().replace('−','-');return value===''||!Number.isFinite(Number(value))||Number(value)!==f.learnAnswers[i];});if(bad!==-1){$('learningFeedback').textContent=f.learnHints[bad];inputs[bad].setAttribute('aria-invalid','true');inputs[bad].focus();return;}matrixLessonVerified=true;matrixLessonStep=5;renderMatrixLesson();$('learningFeedback').textContent='정답이에요! 둘째 식의 y 계수는 0, 셋째 식의 y 계수는 −2입니다.';$('mtStepTitle').focus();return;}
-  if(matrixLessonStep!==5||!matrixLessonVerified)return;
-  if(matrixLessonTest){$('learningDialog').close();return;}
- }else{const value=$('learningAnswer').value.trim();if(!value||!Number.isFinite(Number(value))||Math.abs(Number(value)-f.answer)>1e-9){$('learningFeedback').textContent='다시 풀어 보세요. '+f.hint;return;}}
- if(!state.unlocked.includes(item.type))state.unlocked.push(item.type);for(const other of state.instances)if(other.type===item.type)other.status='active';save();renderBoard();$('learningDialog').close();selectedInstance=null;selectedFactory=null;
+function activateLearnedFactory(item) {
+  if (!state.unlocked.includes(item.type)) state.unlocked.push(item.type);
+  for (const other of state.instances) {
+    if (other.type === item.type) other.status = 'active';
+  }
+  save();
+  renderBoard();
+  $('learningDialog').close();
+  selectedInstance = null;
+  selectedFactory = null;
+}
+
+$('learningForm').addEventListener('submit', event => {
+  if ($('learningDialog').classList.contains('matrix-tutorial')) return;
+  event.preventDefault();
+  const item = state.instances.find(value => value.uid === selectedInstance);
+  const factory = factories.find(value => value.id === selectedFactory);
+  if (!factory || !item || item.status !== 'learning') return;
+  const value = $('learningAnswer').value.trim();
+  if (!value || !Number.isFinite(Number(value)) || Math.abs(Number(value) - factory.answer) > 1e-9) {
+    $('learningFeedback').textContent = '다시 풀어 보세요. ' + factory.hint;
+    return;
+  }
+  activateLearnedFactory(item);
 });
 $('cancelPlacement').addEventListener('click',cancelPlacement);$('resumeLearning').addEventListener('click',()=>openLearning(selectedBuilding||moving));
 const schedules=new Map();
@@ -479,14 +345,9 @@ function showReward(amount){moneyPop(amount);const coin=document.createElement('
 $('request').addEventListener('click',()=>{$('questDialog').showModal();$('answer').focus()});document.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>$(button.dataset.close).close()));
 setInterval(()=>processIncome(),50);document.addEventListener('visibilitychange',()=>{schedules.clear();if(!document.hidden)syncSchedules()});
 $('skip').addEventListener('click',newProblem);$('addTestMoney').addEventListener('click',()=>{state.balance+=10000000;save();updateMoney();renderPreview();moneyPop(10000000)});$('reset').addEventListener('click',()=>{if(confirm('자금, 공장, 해금·연구 및 의뢰 기록을 모두 초기화할까요? 자금 0원으로 다시 시작합니다.')){MatrixLab.clear();state={balance:0,solved:0,level:1,history:[],problem:null,factories:{},instances:[],testCreditGranted:true,mapVersion:2,gridCols:21,land:[4],unlocked:[],upgradeResearch:[]};placing=null;moving=null;preview=null;dragging=false;selectedBuilding=null;upgradeOfferFor=null;sellOfferFor=null;selectedFactory=null;selectedInstance=null;upgradeTarget=null;upgradeFrom=null;schedules.clear();document.querySelectorAll("dialog[open]").forEach(d=>d.close());document.querySelectorAll(".income-pop,.factory-income-pop,.coin-burst").forEach(n=>n.remove());newProblem()}});if(!state.problem)newProblem();else{render();save()}
-</script><script src="learning-shell.js"></script><script src="matrix-lab.js"></script><script>
-// Route the existing Lv.1 test entry to the same lesson as first purchase.
-document.querySelectorAll('.ml-dream-character img').forEach(img=>{img.src='assets/dreamy-dialogue.webp';});
-// Dialogue is a full-screen layer, separate from persistent lesson controls.
-const replaySpeech=document.createElement('button');replaySpeech.id='mtReplay';replaySpeech.type='button';replaySpeech.className='mt-button';replaySpeech.textContent='대사 다시 보기';replaySpeech.onclick=showMatrixSpeech;$('mtNav').insertBefore(replaySpeech,$('mtNext'));
-const dismissHint=document.createElement('span');dismissHint.className='mt-dismiss-hint';dismissHint.textContent='화면을 터치하거나 Enter를 눌러 계속 ▾';$('mtGuide').firstElementChild.append(dismissHint);
-$('mtGuide').setAttribute('role','button');$('mtGuide').setAttribute('tabindex','0');$('mtGuide').setAttribute('aria-label','드림이 대사 닫고 학습 계속');$('mtGuide').setAttribute('aria-describedby','mtSpeech');
-$('mtGuide').addEventListener('click',e=>{e.stopPropagation();dismissMatrixSpeech();});
-$('mtGuide').addEventListener('keydown',e=>{if(['Enter',' ','Escape'].includes(e.key)){e.preventDefault();e.stopPropagation();dismissMatrixSpeech();}});
-for(let l=1;l<=5;l++){const b=document.createElement('button');b.type='button';b.className='mt-button';b.textContent='Lv.'+l;b.onclick=()=>{if(l===1)startMatrixLesson(null,true);else{$('learningDialog').close();MatrixLab.start(l,{test:true});}};$('mtTestLevels').append(b);}
-</script></body></html>
+</script>
+<script src="learning-shell.js"></script>
+<script src="step-lesson.js"></script>
+<script src="matrix-lesson.js"></script>
+<script src="matrix-lab.js"></script>
+</body></html>

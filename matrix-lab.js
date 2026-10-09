@@ -34,7 +34,7 @@
   function start(l, options={}) {
     if (l === 1) {
       if (root.open) root.close();
-      startMatrixLesson(null, true);
+      MatrixLesson.start({ test: true });
       return;
     }
     opener=document.activeElement; level=l; testing=options.test===true; complete=options.onComplete; cost=options.cost||0;
