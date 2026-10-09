@@ -115,26 +115,13 @@
   border-radius:10px;
   padding:14px 18px;
 }
-.ml-pixels,.ml-numbers,.ml-tones {
+.ml-tones {
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:4px;
   width:100%;
   max-width:190px;
   margin:0 auto;
-}
-.ml-pixel {
-  aspect-ratio:1;
-  display:block;
-  border:1px solid #b1bfb6;
-  border-radius:5px;
-  min-width:0;
-}
-.ml-numbers .ml-chip {
-  aspect-ratio:1;
-  padding:0;
-  font-size:23px;
-  font-variant-numeric:tabular-nums;
 }
 .ml-tones span {
   aspect-ratio:1;
@@ -285,7 +272,7 @@
   .ml-panel {
     padding:16px;
   }
-  .ml-pixels,.ml-numbers,.ml-tones {
+  .ml-tones {
     max-width:170px;
   }
   .ml-slider {

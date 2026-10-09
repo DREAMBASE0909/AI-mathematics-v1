@@ -37,6 +37,13 @@
       MatrixLesson.start({ test: true });
       return;
     }
+    if (l === 2) {
+      if (root.open) root.close();
+      MatrixLessonTwo.start(options);
+      return;
+    }
+    const lesson = el('learningDialog');
+    if (lesson.open) lesson.close();
     opener=document.activeElement; level=l; testing=options.test===true; complete=options.onComplete; cost=options.cost||0;
     data=fresh();try {const saved=JSON.parse(localStorage.getItem(key()));if(saved&&Array.isArray(saved.slots)&&saved.slots.length===6&&Array.isArray(saved.pixels)&&saved.pixels.length===9&&Array.isArray(saved.weights)&&saved.weights.length===4)data={...data,...saved};}catch{}
     el('mlBadge').textContent=`${testing?'자유 테스트 · ':''}Lv.${level} / 5`;
@@ -49,16 +56,7 @@
   const panel=(title,content)=>`<section class="ml-panel"><h3>${title}</h3>${content}</section>`;
   let activityReady=false;
   function update(ready, message) {activityReady=ready;el('mlStatus').textContent=message;el('mlStatus').className=ready?'ml-success':'';el('mlFinish').disabled=!ready;el('mlFinish').textContent=testing?'체험 완료':`연구 완료 · ${cost.toLocaleString('ko-KR')}원으로 업그레이드`;persist();}
-  function draw(){activityReady=false;el('mlSceneControls').replaceChildren();el('mlDreamText').textContent=goals[level-1];el('mlBody').innerHTML='';[pixels,brightness,weights,batch][level-2]();}
-  const target=[0,1,0,1,1,1,0,1,0];
-  function grid(values,interactive,label,onClick){const div=document.createElement('div');div.className='ml-pixels';div.setAttribute('role','group');div.setAttribute('aria-label',label);values.forEach((v,i)=>{const b=document.createElement(interactive?'button':'span');b.className='ml-pixel';b.style.background=`rgb(${v*255},${v*255},${v*255})`;b.setAttribute('aria-label',`${Math.floor(i/3)+1}행 ${i%3+1}열 ${v?'흰색':'검정'}`);if(interactive){b.type='button';b.setAttribute('aria-pressed',String(!!v));b.onclick=()=>onClick(i);}div.append(b);});return div;}
-  function pixels(){
-    el('mlBody').innerHTML=`<div class="ml-three">${panel('목표 · 배송 표시','<div id="mlTarget"></div><p>0 = 검정 / 1 = 흰색</p>')}${panel('01 · 픽셀 칠하기','<div id="mlPaint"></div><p>칸을 누르면 색이 바뀝니다.</p>')}${panel('02 · 숫자로 수정하기','<div id="mlNumbers" class="ml-numbers ml-notation"></div><p>숫자를 누르면 0 ↔ 1로 바뀝니다.</p>')}</div><p class="ml-note">그림의 위치와 행렬의 위치가 같습니다. 픽셀과 숫자 양쪽에서 한 번 이상 바꿔 목표를 완성하세요.</p>`;
-    el('mlTarget').append(grid(target,false,'목표 더하기 표시'));
-    el('mlPaint').append(grid(data.pixels,true,'직접 그리는 이미지',i=>{data.pixels[i]=1-data.pixels[i];data.pixelEdit=true;draw();}));
-    data.pixels.forEach((v,i)=>{const b=button(String(v),()=>{data.pixels[i]=1-v;data.numberEdit=true;draw();});b.setAttribute('aria-label',`${Math.floor(i/3)+1}행 ${i%3+1}열 값 ${v} 변경`);el('mlNumbers').append(b);});
-    const same=data.pixels.every((v,i)=>v===target[i]);update(same&&data.pixelEdit&&data.numberEdit,same?(data.pixelEdit&&data.numberEdit?'완성! 픽셀 하나가 행렬의 숫자 하나에 대응합니다.':'픽셀 화면과 숫자 화면에서 모두 값을 바꿔 보세요.'):'픽셀과 숫자 양쪽을 사용해 목표 표시를 완성하세요.');
-  }
+  function draw(){activityReady=false;el('mlSceneControls').replaceChildren();el('mlDreamText').textContent=goals[level-1];el('mlBody').innerHTML='';[brightness,weights,batch][level-3]();}
   const dark=[20,60,20,60,100,60,20,60,20];
   function brightness(){
     el('mlBody').innerHTML=`<div class="ml-two">${panel('원본 · 어두운 사진','<div id="mlDark" class="ml-tones"></div><p>밝기 범위: 0(검정) ~ 255(흰색)</p>')}${panel('조정한 사진','<div id="mlBright" class="ml-tones"></div><p id="mlBrightnessInfo"></p>')}</div><section class="ml-panel"><div class="ml-chips"><button class="ml-chip" id="mlAdd">일정한 값 더하기</button><button class="ml-chip" id="mlMultiply">일정한 배수 곱하기</button></div><label class="ml-slider" for="mlAmount"><span id="mlAmountLabel"></span><input id="mlAmount" type="range" min="0" max="250" step="10"><output id="mlAmountValue"></output></label><p id="mlFormula" class="ml-formula"></p><div id="mlBrightChecks" class="ml-checks"></div></section>`;

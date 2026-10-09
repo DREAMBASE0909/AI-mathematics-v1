@@ -224,7 +224,6 @@
     button.className = 'mt-button';
     button.textContent = 'Lv.' + level;
     button.onclick = () => {
-      if (level !== 1) root.close();
       MatrixLab.start(level, { test: true });
     };
     get('mtTestLevels').append(button);
