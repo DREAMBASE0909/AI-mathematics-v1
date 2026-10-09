@@ -386,7 +386,6 @@ const MATRIX_LESSON_STEPS=[
 ];
 let matrixLessonStep=0,matrixLessonTest=false,matrixLessonVerified=false,matrixLessonTimer=null,matrixLessonAnimating=false,matrixLessonReturn=null;
 function stopMatrixLessonAnimation(){clearTimeout(matrixLessonTimer);matrixLessonTimer=null;matrixLessonAnimating=false;}
-function matrixBracket(rows,label){return '<div class="mt-bracket" role="group" aria-label="'+label+'" style="--cols:'+rows[0].length+'">'+rows.flat().map(v=>'<span>'+v+'</span>').join('')+'</div>';}
 function startMatrixLesson(uid,test=false){
  stopMatrixLessonAnimation();matrixLessonReturn=document.activeElement;matrixLessonStep=0;matrixLessonTest=test;matrixLessonVerified=false;selectedInstance=uid;selectedFactory='matrix';
  $('learningDialog').classList.add('matrix-tutorial');$('learningTitle').textContent='행렬 공장 설계';$('learningDescription').textContent='Lv.1 · 연립방정식을 숫자 격자로';$('learningAnswer').value='';
@@ -480,7 +479,7 @@ function showReward(amount){moneyPop(amount);const coin=document.createElement('
 $('request').addEventListener('click',()=>{$('questDialog').showModal();$('answer').focus()});document.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>$(button.dataset.close).close()));
 setInterval(()=>processIncome(),50);document.addEventListener('visibilitychange',()=>{schedules.clear();if(!document.hidden)syncSchedules()});
 $('skip').addEventListener('click',newProblem);$('addTestMoney').addEventListener('click',()=>{state.balance+=10000000;save();updateMoney();renderPreview();moneyPop(10000000)});$('reset').addEventListener('click',()=>{if(confirm('자금, 공장, 해금·연구 및 의뢰 기록을 모두 초기화할까요? 자금 0원으로 다시 시작합니다.')){MatrixLab.clear();state={balance:0,solved:0,level:1,history:[],problem:null,factories:{},instances:[],testCreditGranted:true,mapVersion:2,gridCols:21,land:[4],unlocked:[],upgradeResearch:[]};placing=null;moving=null;preview=null;dragging=false;selectedBuilding=null;upgradeOfferFor=null;sellOfferFor=null;selectedFactory=null;selectedInstance=null;upgradeTarget=null;upgradeFrom=null;schedules.clear();document.querySelectorAll("dialog[open]").forEach(d=>d.close());document.querySelectorAll(".income-pop,.factory-income-pop,.coin-burst").forEach(n=>n.remove());newProblem()}});if(!state.problem)newProblem();else{render();save()}
-</script><script src="matrix-solver.js"></script><script src="learning-shell.js"></script><script src="matrix-level-one.js"></script><script src="matrix-lab.js"></script><script>
+</script><script src="learning-shell.js"></script><script src="matrix-lab.js"></script><script>
 // Route the existing Lv.1 test entry to the same lesson as first purchase.
 document.querySelectorAll('.ml-dream-character img').forEach(img=>{img.src='assets/dreamy-dialogue.webp';});
 // Dialogue is a full-screen layer, separate from persistent lesson controls.

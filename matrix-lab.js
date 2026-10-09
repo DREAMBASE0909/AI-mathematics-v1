@@ -14,7 +14,22 @@
   const el = id => document.getElementById(id);
   let level = 1, testing = false, data, complete, opener, cost = 0;
   const key = () => `ai-matrix-lab-v1-${testing ? 'test' : 'play'}-${level}`;
-  const fresh = () => ({coefficients:['','','',''],hint:0,slots:Array(6).fill(null),selected:null,equationRow:false,equationCol:false,equationChanged:false,equationFocus:null,solverSeen:false,scene:0,row:false,col:false,pixels:Array(9).fill(0),pixelEdit:false,numberEdit:false,amount:0,mode:'add',seenAdd:false,seenMultiply:false,clipped:false,weights:[0,0,0,0],sample:0,checked:[],order:[],focusRow:null,focusCol:null,matched:[],ran:false});
+  // Persist these historical fields unchanged; no activity reads them anymore.
+  const legacyDefaults = () => ({
+    coefficients: ['', '', '', ''],
+    hint: 0,
+    slots: Array(6).fill(null),
+    selected: null,
+    equationRow: false,
+    equationCol: false,
+    equationChanged: false,
+    equationFocus: null,
+    solverSeen: false,
+    scene: 0,
+    row: false,
+    col: false
+  });
+  const fresh = () => ({...legacyDefaults(),pixels:Array(9).fill(0),pixelEdit:false,numberEdit:false,amount:0,mode:'add',seenAdd:false,seenMultiply:false,clipped:false,weights:[0,0,0,0],sample:0,checked:[],order:[],focusRow:null,focusCol:null,matched:[],ran:false});
   const persist = () => {try {localStorage.setItem(key(),JSON.stringify(data));el('mlSave').textContent=testing?'테스트에서는 자금·공장·연구 기록이 바뀌지 않습니다.':'조작한 내용은 자동 저장됩니다.';} catch {el('mlSave').textContent='이 브라우저에서는 활동을 저장할 수 없습니다.';}};
   function start(l, options={}) {
     if (l === 1) {
@@ -28,14 +43,13 @@
     el('mlTitle').textContent=titles[level-1];el('mlGoal').textContent=goals[level-1];
     el('mlTabs').hidden=!testing;el('mlTabs').innerHTML=titles.map((t,i)=>`<button data-level="${i+1}" aria-current="${level===i+1?'step':'false'}">Lv.${i+1}</button>`).join('');
     el('mlTabs').querySelectorAll('button').forEach(b=>b.onclick=()=>start(Number(b.dataset.level),{test:true}));
-    draw();if(!root.open)root.showModal();if(level===1)el('mlBody').querySelector('input')?.focus();else el('mlClose').focus();
+    draw();if(!root.open)root.showModal();el('mlClose').focus();
   }
   const button=(label,fn,cls='ml-chip')=>{const b=document.createElement('button');b.type='button';b.className=cls;b.textContent=label;b.onclick=fn;return b;};
   const panel=(title,content)=>`<section class="ml-panel"><h3>${title}</h3>${content}</section>`;
   let activityReady=false;
-  function update(ready, message) {activityReady=ready;el('mlStatus').textContent=message;el('mlStatus').className=ready?'ml-success':'';el('mlFinish').disabled=!ready;el('mlFinish').textContent=level===1?(testing?'완료하고 가동하기 → (테스트)':'완료하고 가동하기 →'):testing?'체험 완료':`연구 완료 · ${cost.toLocaleString('ko-KR')}원으로 업그레이드`;persist();}
-  function draw(){activityReady=false;window.MatrixSolver?.stop();el('mlSceneControls').replaceChildren();el('mlDreamText').textContent=goals[level-1];root.classList.toggle('ml-coefficient-mode',level===1);root.classList.remove('ml-story-mode');el('mlBody').innerHTML='';[arrange,pixels,brightness,weights,batch][level-1]();}
-  function arrange(){MatrixLevelOne.mount({host:el('mlBody'),shell,state:data,onChange:persist,onReady:update});}
+  function update(ready, message) {activityReady=ready;el('mlStatus').textContent=message;el('mlStatus').className=ready?'ml-success':'';el('mlFinish').disabled=!ready;el('mlFinish').textContent=testing?'체험 완료':`연구 완료 · ${cost.toLocaleString('ko-KR')}원으로 업그레이드`;persist();}
+  function draw(){activityReady=false;el('mlSceneControls').replaceChildren();el('mlDreamText').textContent=goals[level-1];el('mlBody').innerHTML='';[pixels,brightness,weights,batch][level-2]();}
   const target=[0,1,0,1,1,1,0,1,0];
   function grid(values,interactive,label,onClick){const div=document.createElement('div');div.className='ml-pixels';div.setAttribute('role','group');div.setAttribute('aria-label',label);values.forEach((v,i)=>{const b=document.createElement(interactive?'button':'span');b.className='ml-pixel';b.style.background=`rgb(${v*255},${v*255},${v*255})`;b.setAttribute('aria-label',`${Math.floor(i/3)+1}행 ${i%3+1}열 ${v?'흰색':'검정'}`);if(interactive){b.type='button';b.setAttribute('aria-pressed',String(!!v));b.onclick=()=>onClick(i);}div.append(b);});return div;}
   function pixels(){
@@ -81,8 +95,8 @@
     el('mlRunBatch').disabled=data.order.length!==3;el('mlRunBatch').onclick=()=>{data.ran=true;draw();};el('mlBatchCompare').textContent=data.ran?'개별: A [2, 0] · B [0, 2] · C [2, 0] = 행렬곱의 각 행 ✓':'이미지 3개를 먼저 쌓아 주세요.';
     update(data.matched.length===3,data.ran?`이미지 ${data.matched.length} / 3개의 출력 위치 확인`:`입력 ${data.order.length} / 3개 배치`);
   }
-  shell.setCompletion(()=>activityReady&&(level!==1||MatrixLevelOne.correct(data?.coefficients)),()=>{if(testing){el('mlStatus').textContent='체험 완료! 위의 다른 레벨을 누르거나 닫아 게임으로 돌아가세요.';return;}const result=complete?.();if(result===false){el('mlStatus').textContent='업그레이드할 자금이나 공장 상태를 확인해 주세요. 활동 내용은 저장되어 있습니다.';return;}root.close();});
-  el('mlClose').onclick=()=>root.close();root.addEventListener('close',()=>{window.MatrixSolver?.stop();persist();if(opener?.isConnected)opener.focus();});
+  shell.setCompletion(()=>activityReady,()=>{if(testing){el('mlStatus').textContent='체험 완료! 위의 다른 레벨을 누르거나 닫아 게임으로 돌아가세요.';return;}const result=complete?.();if(result===false){el('mlStatus').textContent='업그레이드할 자금이나 공장 상태를 확인해 주세요. 활동 내용은 저장되어 있습니다.';return;}root.close();});
+  el('mlClose').onclick=()=>root.close();root.addEventListener('close',()=>{persist();if(opener?.isConnected)opener.focus();});
   el('mlRestart').onclick=()=>{data=fresh();draw();};
   window.MatrixLab={start,clear:()=>{for(let l=1;l<=5;l++)for(const m of ['test','play'])try{localStorage.removeItem(`ai-matrix-lab-v1-${m}-${l}`);}catch{}}};
   const testButton=button('행렬 학습 테스트',()=>start(1,{test:true}));testButton.id='testMatrixLab';document.querySelector('.test-tools').prepend(testButton);
