@@ -15,11 +15,11 @@
 #wlFlat.wl-normalized span { border-style: solid; background: #daead0; }
 #wlHandwriting { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 14px; font-size: 13px; }
 #wlHandwriting[hidden] { display: none; }
-.wl-product { position: relative; width: 360px; height: 195px; margin: 0 auto; }
+.wl-product { position: relative; width: 100%; max-width: 360px; height: 195px; margin: 0 auto; }
 .wl-product svg { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke-width: 2; }
-.wl-input-row { position: absolute; top: 26px; left: 15px; }
-.wl-weight-column { position: absolute; top: 28px; left: 274px; grid-template-columns: 30px; }
-.wl-times { position: absolute; top: 35px; left: 212px; }
+.wl-input-row { position: absolute; top: 26px; left: 4.167%; width: 49.44%; box-sizing: border-box; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.wl-weight-column { position: absolute; top: 28px; left: 76.11%; grid-template-columns: 30px; }
+.wl-times { position: absolute; top: 35px; left: 58.9%; }
 .wl-equals { position: absolute; top: 85px; right: 0; }
 .wl-row [data-pair="0"] { color: #1975bd; border-bottom: 2px solid; }
 .wl-row [data-pair="1"] { color: #b13e2b; border-bottom: 2px dashed; }
@@ -60,7 +60,9 @@
   .matrix-level-four #learningTitle { font-size: 19px; }
   .wl-flatten { gap: 6px; }
   #wlFlat { grid-template-columns: repeat(4, 34px); }
-  .wl-product { width: 320px; transform: scale(.9); transform-origin: top left; margin-bottom: -15px; }
+  .wl-product { height: 185px; }
+  .wl-weight-column { grid-template-columns: 25px; }
+  .wl-row span { font-size: 16px; }
   #wlSliders { grid-template-columns: repeat(2, 102px); }
   .wl-tuning { gap: 10px; }
   .wl-tuning .mi-weights { width: 70px; }

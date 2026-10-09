@@ -27,6 +27,8 @@
     <button id="seedLegacy">예전 Lv.2 기록 넣고 새로 열기</button>
     <button id="seedLegacy3">예전 Lv.3 기록 넣고 새로 열기</button>
     <button id="seedResearch3">Lv.3 연구용 공장 준비</button>
+    <button id="seedLegacy4">예전 Lv.4 기록 넣고 새로 열기</button>
+    <button id="seedResearch4">Lv.4 연구용 공장 준비</button>
     <button id="reloadGame">게임만 다시 열기</button>
     <button id="auditStorage">격리 저장 기록 확인</button>
     <pre id="storageAudit"></pre>
@@ -69,6 +71,19 @@
         instances: [{ uid: 'qa-matrix', type: 'matrix', status: 'active', cell: 154, level: 2, invested: 41000 }],
         testCreditGranted: true, mapVersion: 2, gridCols: 21, land: [4],
         unlocked: ['matrix'], upgradeResearch: ['matrix:2']
+      }));
+      frame.srcdoc = gameHTML;
+    };
+    document.getElementById('seedLegacy4').onclick = () => {
+      memory.set('ai-matrix-lab-v1-test-4', JSON.stringify({ weights: [2,-1,2,-1], sample: 1, checked: [true,true], legacyMarker: 'preserve-me' }));
+      frame.srcdoc = gameHTML;
+    };
+    document.getElementById('seedResearch4').onclick = () => {
+      memory.set('ai-company-math-v1', JSON.stringify({
+        balance: 10000000, solved: 0, level: 1, history: [], factories: { matrix: 'active' },
+        instances: [{ uid: 'qa-matrix', type: 'matrix', status: 'active', cell: 154, level: 3, invested: 341000 }],
+        testCreditGranted: true, mapVersion: 2, gridCols: 21, land: [4],
+        unlocked: ['matrix'], upgradeResearch: ['matrix:2', 'matrix:3']
       }));
       frame.srcdoc = gameHTML;
     };

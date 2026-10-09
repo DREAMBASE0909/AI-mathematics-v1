@@ -129,3 +129,11 @@ Lv.2는 기존 `ai-matrix-lab-v1-{test|play}-2` 키에 `imageLessonV2` 필드를
 - `MatrixLab.start(3, options)`는 비용과 완료 콜백을 그대로 새 레슨으로 전달한다. 기존 brightness 활동과 전용 CSS는 제거했다.
 - 기존 Lv.3 저장 키를 유지하고 `imageLessonV3`만 추가한다. 기존 amount/mode/seenAdd 등은 보존한다. 선택지 순서는 처음 무작위로 정하고 저장·재진입 시 유지한다.
 - 같은 값을 더하면 클리핑 전 밝기 차이는 102다. c=160에서 실제 차이는 255−160=95다. 따라서 두 막대를 구분한다. k=3도 계산상 차이306, 표시상 차이255로 구분한다. 눈과 틀이 함께 잘리는 것은 c≥190이다.
+
+## Lv.4 무늬 판별기
+
+`matrix-lesson-4.js` / `.css`가 펼치기, 행×열 가중합, 지도 접기, 수동 가중치 조정, 점수 예측을 담당한다. Lv.4 연구는 `MatrixLab.start(4, options)`에서 같은 비용·완료 콜백으로 열린다. 기존 weights 활동과 전용 CSS는 제거했다.
+
+`MatrixImage.patterns`와 `order`가 Lv.4·5의 2×2 이미지 및 행 우선 순서를 정의한다. Lv.5의 입력은 left/top/left를 참조하며 값과 화면은 이전과 같다. 이미지는 0/255, 계산 입력은 0/1이다. `weightMap`은 부호·크기를 색으로, 정확한 값을 숫자로 표시한다.
+
+진행은 기존 `ai-matrix-lab-v1-{test|play}-4`의 `imageLessonV4` 필드에 저장한다. 이전 weights/sample/checked 필드는 보존한다. 선택지 순서는 최초 무작위 배치 후 저장한다. 미완료 애니메이션은 다시 열 때 마지막 저장 상태에서 재시작한다. 입력은 −를 -로 정규화하며 화면 숫자는 −로 표시한다.
