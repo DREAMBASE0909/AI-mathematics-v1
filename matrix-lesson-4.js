@@ -1,375 +1,290 @@
-/* Lv.4: receipts → stencils → a conveyor sorter → mathematical names. */
+/* Lv.4: use matrix multiplication to move pixels without changing brightness. */
 (() => {
   'use strict';
   const get = id => document.getElementById(id);
-  const { parts, grid, weightMap, order, format, dot } = MatrixImage;
-  const labels = order(3);
-  const names = { V: '세로 막대', H: '가로 막대', Vtop: '위가 끊긴 세로', Vbot: '아래가 끊긴 세로', Hleft: '왼쪽이 끊긴 가로', Hright: '오른쪽이 끊긴 가로' };
-  const stencil = [1,2,1, 0,3,0, 1,2,1];
-  const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const picture = id => grid(parts[id].map(v => v * 255), 3);
-  const sum = (id, board = data.board) => dot(parts[id], board);
-  const basicReady = () => sum('V') > 0 && sum('H') < 0;
-  const correctPart = id => id.startsWith('V') ? sum(id) > 0 : sum(id) < 0;
-  const allReady = () => Object.keys(parts).every(correctPart);
-  const parse = value => Number(value.trim().replaceAll(',', '').replaceAll('−', '-'));
-  const shuffled = values => {
-    const result = [...values];
-    for (let i = result.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [result[i], result[j]] = [result[j], result[i]];
-    }
-    return result;
+  const { grid, identity, flip, multiply, face, order } = MatrixImage;
+  const A = [[255, 255, 255], [0, 0, 255], [0, 0, 255]];
+  const I = identity(3), J = flip(3);
+  const results = {
+    same: multiply(A, I), horizontal: multiply(A, J),
+    vertical: multiply(J, A), both: multiply(multiply(J, A), J)
   };
-  let data, record, storageKey, running = false, naming = false;
-  const fresh = () => ({ step: 0, receipt: '', receiptOK: false, overlaySeen: false,
-    total: '', totalOK: false, board: Array(9).fill(0), brush: 1,
-    paintHint: 0, trialHint: 0, trialDone: false, results: [],
-    trialOrder: shuffled(Object.keys(parts)), named: false, choice: null,
-    choices: shuffled(['weights', 'image', 'score', 'position']) });
+  const labels = order(3);
+  const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const equal = (a, b) => a.flat().every((value, i) => value === b.flat()[i]);
+  const shuffle = values => {
+    const items = [...values];
+    for (let i = items.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [items[i], items[j]] = [items[j], items[i]];
+    }
+    return items;
+  };
+  let data, record, storageKey, moving = false, introPart = 0;
+  let animations = [];
+  const fresh = () => ({
+    step: 0, inspected: [], machine: identity(3), hint: 0,
+    prediction: null, viewed: [], side: 'right', choice: null,
+    choices: shuffle(['both', 'horizontal', 'vertical', 'same'])
+  });
+  const machineReady = () => equal(data.machine, J);
   function persist() {
     if (!data || !storageKey) return;
-    record.sorterLessonV1 = data;
+    record.flipLessonV1 = data;
     try { localStorage.setItem(storageKey, JSON.stringify(record)); } catch { /* Optional storage. */ }
   }
   function changed() { persist(); controller.refresh(); }
   function reaction(message) {
-    get('sortReaction').textContent = '드림이 · ' + message;
+    get('flipStatus').textContent = message;
     controller.say(message);
   }
-  const statusHTML = '<p id="sortStatus" role="status"></p>';
-  const reactionHTML = '<p id="sortReaction" class="sort-reaction" aria-live="polite"></p>';
-  const receiptHTML = '<table class="sort-receipt"><caption>매점 영수증</caption><thead><tr><th>상품</th><th>가격</th><th>개수</th></tr></thead><tbody><tr><td>빵</td><td>1,500원</td><td>2개</td></tr><tr><td>우유</td><td>1,200원</td><td>0개</td></tr><tr><td>과자</td><td>1,000원</td><td>1개</td></tr></tbody><tfoot><tr><th>합계</th><td colspan="2">4,000원</td></tr></tfoot></table>';
-  function bindAnswer(inputId, buttonId, field, expected, wrong, onCorrect) {
-    const input = get(inputId);
-    input.value = data[field];
-    const check = () => {
-      data[field] = input.value;
-      const good = input.value.trim() !== '' && parse(input.value) === expected;
-      data[field + 'OK'] = good;
-      input.setAttribute('aria-invalid', String(!good));
-      get('sortStatus').textContent = good ? '✓ 맞았어요!' : wrong;
-      if (good) onCorrect();
-      changed();
-    };
-    input.oninput = () => {
-      data[field] = input.value;
-      data[field + 'OK'] = false;
-      changed();
-    };
-    input.onkeydown = event => {
-      if (event.key === 'Enter') { event.preventDefault(); event.stopPropagation(); check(); }
-    };
-    get(buttonId).onclick = check;
+  function picture(values, name, id = '') {
+    return `<section class="flip-card" ${id ? `id="${id}"` : ''}><h4>${name}</h4>${grid(values.flat(), values.length, true)}</section>`;
   }
-  function mountReceipt(api) {
-    bindAnswer('sortReceiptAnswer', 'sortReceiptCheck', 'receipt', 4000,
-      '가격 × 개수를 줄마다 구해서 모두 더해 보세요. 0개인 우유는 0원이에요.', () => {
-        api.say('곱하고 모두 더하기. 이 계산 하나로 AI 분류기를 만들 수 있어요.');
-        api.showSpeech();
-      });
+  function lamps(values, editable = false) {
+    return `<div class="flip-lamps" aria-label="0과 1로 된 기계">` + values.flat().map((v, i) => {
+      const attributes = `class="${v ? 'is-on' : ''}" data-cell="${i}"`;
+      return editable
+        ? `<button type="button" ${attributes} aria-label="기계 ${labels[i]}" aria-pressed="${!!v}">${v}</button>`
+        : `<span ${attributes}>${v}</span>`;
+    }).join('') + '</div>';
   }
-  function mountOverlay(api) {
-    running = false;
-    get('sortPart').innerHTML = picture('V');
-    get('sortStencil').innerHTML = weightMap(stencil, 3);
-    const input = get('sortTotal'), check = get('sortTotalCheck');
-    function horizontal() {
-      get('sortHorizontal').hidden = false;
-      get('sortHorizontal').innerHTML = '<div class="sort-horizontal-stack">' + picture('H')
-        + '<div class="sort-horizontal-overlay">' + weightMap(stencil, 3) + '</div></div>'
-        + '<span>가로 막대: 0 + 3 + 0 = <strong>3점</strong></span>';
-      get('sortHorizontal').querySelectorAll('.mi-weights span').forEach((cell, i) => cell.classList.toggle('sort-muted', !parts.H[i]));
-    }
-    function finishOverlay() {
-      data.overlaySeen = true;
-      running = false;
-      input.disabled = check.disabled = false;
-      get('sortTerms').textContent = '2 + 3 + 2 = ?';
-      changed();
-    }
-    function overlay() {
-      if (running || data.overlaySeen) return;
-      running = true;
-      get('sortOverlap').disabled = true;
-      get('sortOverlay').innerHTML = weightMap(stencil, 3);
-      const cells = get('sortOverlay').querySelectorAll('span');
-      cells.forEach((cell, i) => cell.classList.toggle('sort-muted', !parts.V[i]));
-      const source = get('sortStencil').getBoundingClientRect(), target = get('sortOverlay').getBoundingClientRect();
-      function highlight(index) {
-        const active = [1, 4, 7];
-        if (index === active.length) { finishOverlay(); return; }
-        cells[active[index]].classList.add('sort-lit');
-        get('sortTerms').textContent = active.slice(0, index + 1).map(i => stencil[i]).join(' + ');
-        api.schedule(() => highlight(index + 1), 330);
-      }
-      if (reduced()) { cells.forEach((cell, i) => cell.classList.toggle('sort-lit', !!parts.V[i])); finishOverlay(); }
-      else {
-        get('sortOverlay').animate([{ transform: `translate(${source.left - target.left}px, ${source.top - target.top}px)`, opacity: .4 },
-          { transform: 'translate(0,0)', opacity: .88 }], { duration: 450, easing: 'ease-in-out' });
-        api.schedule(() => highlight(0), 450);
-      }
-    }
-    get('sortOverlap').onclick = overlay;
-    const drag = get('sortStencil');
-    let start = null;
-    drag.onpointerdown = event => {
-      if (data.overlaySeen || running) return;
-      event.preventDefault();
-      start = { x: event.clientX, y: event.clientY };
-      drag.setPointerCapture(event.pointerId);
-    };
-    drag.onpointermove = event => {
-      if (start) drag.style.transform = `translate(${event.clientX - start.x}px,${event.clientY - start.y}px)`;
-    };
-    drag.onpointerup = event => {
-      if (!start) return;
-      const target = get('sortPart').getBoundingClientRect();
-      const inside = event.clientX >= target.left && event.clientX <= target.right && event.clientY >= target.top && event.clientY <= target.bottom;
-      start = null;
-      drag.style.transform = '';
-      if (inside) overlay();
-    };
-    drag.onpointercancel = drag.onlostpointercapture = () => { start = null; drag.style.transform = ''; };
-    input.disabled = check.disabled = !data.overlaySeen;
-    if (data.overlaySeen) {
-      get('sortOverlay').innerHTML = weightMap(stencil, 3);
-      get('sortOverlay').querySelectorAll('span').forEach((cell, i) => cell.classList.toggle('sort-muted', !parts.V[i]));
-      get('sortOverlap').disabled = true;
-      get('sortTerms').textContent = '2 + 3 + 2 = ?';
-    }
-    bindAnswer('sortTotal', 'sortTotalCheck', 'total', 7,
-      '흰 칸 아래의 2, 3, 2를 모두 더해 보세요.', () => {
-        horizontal();
-        api.say('같은 점수판이라도 그림에 따라 점수가 달라졌죠? 이 점수판을 잘 칠하면 분류기가 돼요.');
-        api.showSpeech();
-      });
-    if (data.totalOK) horizontal();
-  }
-  function editor(api, trial) {
-    running = false;
-    const board = get('sortBoard');
-    let previousReady = basicReady();
-    const cells = [];
-    function renderCells() {
-      const map = document.createElement('div');
-      map.innerHTML = weightMap(data.board, 3);
-      [...map.querySelectorAll('span')].forEach((span, i) => {
-        cells[i].style.cssText = span.style.cssText;
-        cells[i].textContent = data.board[i] > 0 ? '+1' : format(data.board[i]);
-        cells[i].setAttribute('aria-label', `${labels[i]} 점수 ${format(data.board[i])}`);
-      });
-    }
-    function scores() {
-      for (const id of ['V', 'H']) {
-        const value = sum(id);
-        get(`sortScore${id}`).textContent = format(value) + '점';
-        get(`sortBar${id}`).value = value;
-      }
-    }
-    function paint(index) {
-      if (running) return;
-      data.board[index] = data.brush;
-      data.trialDone = false;
-      data.results = [];
-      renderCells();
-      if (trial) {
-        get('sortResults').replaceChildren();
-        get('sortReaction').textContent = '';
-        get('sortBoxes').querySelectorAll('small').forEach(node => { node.textContent = '0개'; });
-        get('sortStatus').textContent = '점수판을 바꿨어요. 다시 가동해 보세요.';
-      } else {
-        scores();
-        const ready = basicReady();
-        if (ready && !previousReady) reaction('빨강은 ‘여기가 흰색이면 감점’이에요. 이제 두 막대가 갈렸어요!');
-        else if (data.board.some(v => v > 0) && !data.board.includes(-1) && sum('H') >= 0) {
-          reaction('가로 막대도 점수를 받네요. 가로 막대에만 있는 칸에 빨강을 칠해 보면 어떨까요?');
-        }
-        else if (!ready) reaction('세로 막대는 0보다 크게, 가로 막대는 0보다 작게 만들어 보세요.');
-        previousReady = ready;
-      }
-      changed();
-    }
-    data.board.forEach((_, i) => {
+  const machineCard = (values, id = '', editable = false) =>
+    `<section class="flip-card" ${id ? `id="${id}"` : ''}><h4>기계 ${editable ? '· 칸을 누르세요' : equal(values, I) ? 'I' : 'J'}</h4>${lamps(values, editable)}</section>`;
+  const statusHTML = '<p id="flipStatus" class="flip-status" role="status"></p>';
+  function mountIdentity(api) {
+    const result = get('flipIdentityResult').querySelector('.px-grid');
+    [...result.children].forEach((cell, index) => {
       const button = document.createElement('button');
       button.type = 'button';
-      button.dataset.pixel = i;
-      cells.push(button);
-      board.append(button);
-    });
-    MatrixPaint.bind(board, { size: 3, paint, canPaint: () => !running });
-    for (const [value, name] of [[1, '파랑 +1'], [-1, '빨강 −1'], [0, '지우개 0']]) {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.textContent = name;
-      button.dataset.brush = value;
-      button.setAttribute('aria-pressed', String(data.brush === value));
+      button.style.cssText = cell.style.cssText;
+      button.textContent = cell.textContent;
+      button.setAttribute('aria-label', `결과 ${labels[index]} 계산 보기`);
       button.onclick = () => {
-        data.brush = value;
-        get('sortBrushes').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
-        persist();
+        const row = Math.floor(index / 3), col = index % 3;
+        get('flipIdentityA').querySelectorAll('.px-grid span').forEach((node, i) =>
+          node.classList.toggle('flip-selected', Math.floor(i / 3) === row));
+        get('flipIdentityI').querySelectorAll('.flip-lamps span').forEach((node, i) =>
+          node.classList.toggle('flip-selected', i % 3 === col));
+        [...result.children].forEach((node, i) => node.classList.toggle('flip-selected', i === index));
+        get('flipFormula').innerHTML = A[row].map((v, k) =>
+          `<span class="${I[k][col] ? 'flip-kept' : 'flip-zero'}">${v}×${I[k][col]}</span>`).join(' + ')
+          + ` = <strong>${results.same[row][col]}</strong>`;
+        if (!data.inspected.includes(index)) data.inspected.push(index);
+        get('flipCount').textContent = `${data.inspected.length}칸 확인 · 서로 다른 2칸 이상 눌러 보세요`;
+        if (data.inspected.length >= 2) {
+          reaction('0을 곱하면 사라지고 1을 곱하면 남아요. 그래서 기계의 1은 ‘이 자리를 골라 와!’라는 뜻이에요.');
+        }
+        changed();
       };
-      get('sortBrushes').append(button);
+      cell.replaceWith(button);
+    });
+    get('flipCount').textContent = `${data.inspected.length}칸 확인 · 결과 칸을 눌러 보세요`;
+  }
+  function mountBuilder() {
+    const board = get('flipBuilder');
+    board.innerHTML = lamps(data.machine, true);
+    function update() {
+      board.querySelectorAll('button').forEach((button, i) => {
+        const v = data.machine[Math.floor(i / 3)][i % 3];
+        button.textContent = v;
+        button.classList.toggle('is-on', !!v);
+        button.setAttribute('aria-pressed', String(!!v));
+      });
+      get('flipSources').innerHTML = [0, 1, 2].map(c =>
+        `<span>결과 ${c + 1}열<br>← 원본 ${data.machine.findIndex(row => row[c] === 1) + 1}열</span>`).join('');
+      const result = multiply(A, data.machine);
+      get('flipBuiltResult').innerHTML = grid(result.flat(), 3, true);
+      if (machineReady()) {
+        reaction('1을 대각선 반대 방향으로 놓으니 좌우가 뒤집혔어요. 이 기계를 J라고 부를게요.');
+      } else if (equal(result, results.horizontal)) {
+        reaction('그림은 맞았어요! 원본 1·2열의 모습이 같기 때문이에요. 가운데 열은 그대로 두고, 1열과 3열을 교환해 J를 완성해 주세요.');
+      } else get('flipStatus').textContent = '';
+      changed();
     }
-    const hintKey = trial ? 'trialHint' : 'paintHint';
-    const hints = trial
-      ? ['세로·가로 막대가 함께 가진 칸을 찾아보세요.', '가운데 칸을 지우개(0)로 바꿔 보세요.']
-      : ['세로 막대에만 있는 칸은 어디일까요?', '가운데 열 위·아래는 파랑, 가운데 행 왼쪽·오른쪽은 빨강을 칠해 보세요.'];
-    get('sortHint').onclick = () => {
-      data[hintKey] = Math.min(2, data[hintKey] + 1);
-      get('sortHintText').textContent = hints[data[hintKey] - 1];
+    board.querySelectorAll('button').forEach((button, index) => {
+      button.onclick = () => {
+        const r = Math.floor(index / 3), c = index % 3;
+        data.machine.forEach((row, i) => { row[c] = Number(i === r); });
+        data.viewed = [];
+        data.prediction = null;
+        data.choice = null;
+        update();
+      };
+    });
+    get('flipHint').onclick = () => {
+      const hints = ['결과 1열에는 원본 몇 번째 열이 와야 할까요?', '1열과 3열을 서로 바꿔 보세요. 가운데 열은 그대로예요.'];
+      get('flipHintText').textContent = hints[Math.min(data.hint++, 1)];
       persist();
     };
-    renderCells();
-    if (!trial) {
-      for (const id of ['V', 'H']) get(`sortImage${id}`).innerHTML = picture(id);
-      scores();
-    }
-    return () => {
-      cells.forEach(cell => { cell.disabled = running; });
-      get('sortBrushes').querySelectorAll('button').forEach(button => { button.disabled = running; });
-    };
+    update();
   }
-  function showResults() {
-    const counts = { V: 0, H: 0, wait: 0 };
-    get('sortResults').innerHTML = data.results.map(id => {
-      const score = sum(id), destination = score > 0 ? 'V' : score < 0 ? 'H' : 'wait';
-      counts[destination]++;
-      return `<div class="${correctPart(id) ? '' : 'sort-error'}">${picture(id)}<span>${names[id]}<br><strong>${format(score)}점 · ${destination === 'wait' ? '보류' : destination === 'V' ? '세로' : '가로'} ${correctPart(id) ? '✓' : '✕'}</strong></span></div>`;
-    }).join('');
-    for (const [id, count] of Object.entries(counts)) get(`sortBox${id}`).querySelector('small').textContent = `${count}개`;
-  }
-  function mountTrial(api) {
-    const disableEditor = editor(api, true);
-    showResults();
-    get('sortRun').onclick = () => {
-      if (running) return;
-      running = true;
-      data.trialDone = false;
-      data.results = [];
-      data.trialOrder = shuffled(Object.keys(parts));
-      get('sortRun').disabled = true;
-      disableEditor();
-      showResults();
+  function mountOrder(api) {
+    moving = false;
+    const comparison = get('flipComparison');
+    comparison.innerHTML = picture(multiply(A, data.machine), 'A × J · 좌우 반전')
+      + picture(multiply(data.machine, A), 'J × A · 상하 반전');
+    const stage = get('flipMoveStage');
+    stage.innerHTML = picture(A, '그림 A', 'flipMovingA')
+      + '<b id="flipTimes">×</b>' + machineCard(data.machine, 'flipMovingJ')
+      + '<b>=</b>' + picture(results.horizontal, '결과', 'flipMovingResult');
+    const button = get('flipSwitch');
+    function renderSide() {
+      const left = data.side === 'left';
+      stage.insertBefore(get(left ? 'flipMovingJ' : 'flipMovingA'), stage.firstChild);
+      stage.insertBefore(get('flipTimes'), stage.children[1]);
+      stage.insertBefore(get(left ? 'flipMovingA' : 'flipMovingJ'), stage.children[2]);
+      const output = left ? multiply(data.machine, A) : multiply(A, data.machine);
+      get('flipMovingResult').innerHTML = '<h4>' + (left ? '상하 반전' : '좌우 반전') + '</h4>' + grid(output.flat(), 3, true);
+      get('flipOrderLabel').textContent = left ? 'J × A · 왼쪽 기계는 행을 가져와요' : 'A × J · 오른쪽 기계는 열을 가져와요';
+      if (!data.viewed.includes(data.side)) data.viewed.push(data.side);
+      if (data.viewed.length === 2) {
+        reaction('같은 기계인데 오른쪽에 곱하면 좌우, 왼쪽에 곱하면 상하가 뒤집혀요. 행렬 곱셈은 순서를 바꾸면 결과가 달라요! 숫자 곱셈(2×3 = 3×2)과 다른 점이에요.');
+      }
       changed();
-      function finish() {
-        running = false;
-        data.trialDone = allReady();
-        get('sortRun').disabled = false;
-        disableEditor();
-        get('sortPassenger').replaceChildren();
-        const wrong = data.results.filter(id => !correctPart(id));
-        get('sortStatus').textContent = wrong.length ? `${6 - wrong.length} / 6개 성공 · 빨간 표시를 확인하고 점수판을 고쳐 주세요.` : '✓ 6 / 6개 성공';
-        if (!wrong.length) reaction('6개 모두 맞게 분류했어요! 구별에 도움이 안 되는 칸은 0으로 두는 것도 중요해요.');
-        else if (sum('Hleft') === 0 && sum('Hright') === 0) reaction('끊긴 가로 막대가 0점이에요. 세로 막대와 가로 막대가 둘 다 가진 칸이 있는데, 그 칸은 구별에 도움이 될까요?');
-        else reaction('틀리거나 보류된 부품의 흰 칸을 살펴보세요. 점수판을 고쳐 다시 가동해 볼까요?');
-        changed();
-      }
-      function run(index) {
-        if (index === 6) { finish(); return; }
-        const id = data.trialOrder[index];
-        const passenger = get('sortPassenger');
-        passenger.innerHTML = picture(id) + `<span>${names[id]}</span>`;
-        const score = sum(id), box = get(score > 0 ? 'sortBoxV' : score < 0 ? 'sortBoxH' : 'sortBoxwait');
-        passenger.classList.toggle('sort-error', !correctPart(id));
-        if (reduced()) {
-          data.results.push(id);
-          showResults();
-          run(index + 1);
-          return;
-        }
-        const a = passenger.getBoundingClientRect(), b = box.getBoundingClientRect();
-        passenger.animate([{ transform: 'translateX(-65px)', opacity: 0 }, { transform: 'translate(0,0)', opacity: 1, offset: .35 },
-          { transform: `translate(${b.left + b.width / 2 - a.left - a.width / 2}px,${b.top - a.top}px) scale(.4)`, opacity: .4 }], { duration: 480, easing: 'ease-in-out' });
-        api.schedule(() => { data.results.push(id); showResults(); run(index + 1); }, 480);
-      }
-      run(0);
-    };
-  }
-  function mountNames(api) {
-    naming = false;
-    get('sortNameImage').innerHTML = grid(parts.V, 3, true);
-    get('sortNameImage').querySelectorAll('span').forEach((cell, i) => {
-      cell.style.background = parts.V[i] ? '#fff' : '#18222b';
-      cell.style.color = parts.V[i] ? '#18222b' : '#fff';
+    }
+    function reveal() {
+      get('flipOrderActivity').hidden = false;
+      get('flipPredictionFeedback').textContent = data.prediction === 'vertical'
+        ? '✓ 맞았어요! 왼쪽에 곱하면 상하가 뒤집혀요.'
+        : '예상과 달랐나요? 왼쪽에 곱하면 상하가 뒤집혀요. 두 결과를 비교해 보세요.';
+      renderSide();
+    }
+    get('flipPredictions').querySelectorAll('button').forEach(b => {
+      b.onclick = () => {
+        data.prediction = b.dataset.answer;
+        get('flipPredictions').querySelectorAll('button').forEach(node => node.setAttribute('aria-pressed', String(node === b)));
+        reveal();
+      };
     });
-    get('sortNameBoard').innerHTML = weightMap(data.board, 3);
-    const answers = { weights: '점수판(가중치)', image: '부품 그림', score: '분류 점수', position: '픽셀 위치' };
+    button.onclick = () => {
+      if (moving) return;
+      const cards = [get('flipMovingA'), get('flipMovingJ')];
+      const before = cards.map(card => card.getBoundingClientRect());
+      moving = true;
+      button.disabled = true;
+      data.side = data.side === 'right' ? 'left' : 'right';
+      renderSide();
+      const finish = () => { moving = false; button.disabled = false; changed(); };
+      if (reduced()) finish();
+      else {
+        animations = cards.map((card, i) => {
+          const after = card.getBoundingClientRect();
+          return card.animate([
+            { transform: `translate(${before[i].left - after.left}px,0)`, opacity: .6 },
+            { transform: 'translate(0,0)', opacity: 1 }
+          ], { duration: 650, easing: 'ease-in-out' });
+        });
+        api.schedule(finish, 650);
+      }
+    };
+    if (data.prediction) reveal();
+  }
+  const choiceLabels = { both: 'J × A × J', horizontal: 'A × J', vertical: 'J × A', same: 'A × I' };
+  function revealAnswer() {
+    get('flipAnswerResult').innerHTML = picture(results[data.choice], choiceLabels[data.choice]);
+    get('flipAnswerResult').hidden = false;
+    const complete = data.choice === 'both';
+    get('flipCelebration').hidden = !complete;
+    get('flipQuizIntro').hidden = complete;
+    if (complete) {
+      get('flipGallery').innerHTML = Object.entries({ same: '원본', horizontal: '좌우', vertical: '상하', both: '180°' })
+        .map(([id, name]) => picture(results[id], name)).join('');
+      const faceRows = Array.from({ length: 7 }, (_, r) => face.slice(r * 7, r * 7 + 7));
+      get('flipBonus').innerHTML = picture(multiply(flip(7), faceRows), '물구나무 드림이 · J₇ × 얼굴');
+      get('flipAnswerResult').hidden = true;
+    }
+  }
+  function mountQuiz(api) {
     data.choices.forEach(id => {
       const button = document.createElement('button');
       button.type = 'button';
-      button.textContent = answers[id];
-      button.disabled = true;
+      button.className = 'mt-button';
+      button.textContent = choiceLabels[id];
       button.setAttribute('aria-pressed', String(data.choice === id));
       button.onclick = () => {
         data.choice = id;
-        get('sortChoices').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
-        if (api.answerChoice(id)) {
-          api.say('지금은 여러분이 점수판을 칠했지만, AI는 수많은 예시를 보며 스스로 점수판을 고쳐 가요. 그게 ‘학습’이에요. 경사하강법 공장에서 만나요!');
+        get('flipChoices').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
+        const correct = api.answerChoice(id);
+        revealAnswer();
+        persist();
+        if (correct) {
+          api.say('양쪽으로 뒤집으면 180도 회전! AI는 이렇게 사진 한 장으로 여러 장을 만들어 공부해요.');
           api.showSpeech();
         }
-        persist();
       };
-      get('sortChoices').append(button);
+      get('flipChoices').append(button);
     });
+    if (data.choice) revealAnswer();
   }
-  function animateNames(api) {
-    if (naming) return;
-    naming = true;
-    const cells = [...get('sortNameImage').querySelectorAll('span'), ...get('sortNameBoard').querySelectorAll('span')];
-    const before = cells.map(cell => cell.getBoundingClientRect());
-    get('sortMatrices').classList.add('sort-unfolded');
-    if (!reduced()) cells.forEach((cell, i) => {
-      const after = cell.getBoundingClientRect();
-      cell.animate([{ transform: `translate(${before[i].left - after.left}px,${before[i].top - after.top}px)` }, { transform: 'translate(0,0)' }], { duration: 650, easing: 'ease-in-out' });
-    });
-    const names = ['상품 → 픽셀 위치', '개수 → 픽셀 값', '가격 → 점수판', '합계 → 분류 점수'];
-    function rename(index) {
-      if (index === 4) {
-        data.named = true;
-        get('sortNamingText').hidden = false;
-        get('sortChoices').querySelectorAll('button').forEach(button => { button.disabled = false; });
-        changed();
-        return;
-      }
-      get('sortLabels').children[index].textContent = names[index];
-      if (reduced()) rename(index + 1);
-      else api.schedule(() => rename(index + 1), 180);
-    }
-    if (reduced()) rename(0);
-    else api.schedule(() => rename(0), 650);
-  }
-  const paintHTML = '<div id="sortBrushes" class="sort-brushes"></div><div id="sortBoard" class="sort-board" aria-label="점수판 칠하기"></div>';
-  const hintHTML = '<div class="sort-hints"><button id="sortHint" type="button" class="mt-button">힌트 보기</button><span id="sortHintText"></span></div>';
   const steps = [
-    { title: '매점 영수증', speech: '분류기를 만들기 전에 몸풀기! 매점 영수증 계산해 볼까요?',
-      html: receiptHTML.replace('4,000원', '?') + '<div class="sort-answer"><label>합계 <input id="sortReceiptAnswer" aria-label="영수증 합계" inputmode="decimal" autocomplete="off"> 원</label><button id="sortReceiptCheck" type="button" class="mt-button">확인</button></div>' + statusHTML,
-      onMount: mountReceipt, isComplete: () => data.receiptOK },
-    { title: '점수판 겹치기', speech: '점수판을 그림 위에 겹치면, 흰 칸 아래 점수만 더해져요. 영수증에서 0개인 물건은 0원인 것과 같아요.',
-      html: '<div class="sort-overlay-layout"><section><h4>세로 막대 부품</h4><div class="sort-stack"><div id="sortPart"></div><div id="sortOverlay"></div></div></section><section><h4>점수판 · 왼쪽으로 끌어 보세요</h4><div id="sortStencil"></div><button id="sortOverlap" type="button" class="mt-button">겹치기</button></section></div><p id="sortTerms">흰 칸 아래의 점수를 찾아보세요.</p><p>검은 칸(0)은 곱하면 0이라 무시돼요.</p><div class="sort-answer"><label>세로 막대 총점 <input id="sortTotal" aria-label="세로 막대 총점" inputmode="numeric" autocomplete="off"></label><button id="sortTotalCheck" type="button" class="mt-button">확인</button></div><div id="sortHorizontal" hidden></div>' + statusHTML,
-      onMount: mountOverlay, isComplete: () => data.overlaySeen && data.totalOK },
-    { title: '점수판 칠하기', speech: '컨베이어에 세로 막대와 가로 막대가 섞여 들어와요. 점수판을 칠해서 둘을 구분해 주세요.',
-      html: '<p><strong>목표: 세로 막대는 0보다 크게, 가로 막대는 0보다 작게</strong></p><div class="sort-paint-layout"><section>' + paintHTML + '</section><div class="sort-scores">'
-        + ['V', 'H'].map(id => `<section><div id="sortImage${id}"></div><div><strong>${names[id]}</strong><output id="sortScore${id}"></output><meter id="sortBar${id}" min="-3" max="3" value="0"></meter></div></section>`).join('')
-        + '</div></div>' + hintHTML + reactionHTML,
-      onMount: api => editor(api, false), isComplete: basicReady },
-    { title: '컨베이어 시험', speech: '이번에는 조금 끊긴 부품도 들어와요. 여섯 개 모두 맞는 상자로 보내 보세요. 점수판은 여기서도 고칠 수 있어요.',
-      html: '<div class="sort-trial-layout"><section>' + paintHTML + '<button id="sortRun" type="button" class="mt-button">가동</button></section><section class="sort-machine"><div id="sortBelt"><span>부품 투입 →</span><div id="sortPassenger"></div></div><div id="sortBoxes"><div id="sortBoxV">세로 상자<small>0개</small></div><div id="sortBoxH">가로 상자<small>0개</small></div><div id="sortBoxwait">보류<small>0개</small></div></div><div id="sortResults"></div></section></div>' + hintHTML + statusHTML + reactionHTML,
-      onMount: mountTrial, isComplete: () => data.trialDone && allReady() && !running },
-    { title: '이 계산의 이름은?', speech: '우리가 만든 분류기를 영수증과 나란히 놓아 볼까요? 같은 계산에 이름을 붙여 볼게요.',
-      html: '<div class="sort-names-layout"><section>' + receiptHTML + '<div id="sortLabels"><span>상품</span><span>개수</span><span>가격</span><span>합계</span></div></section><div id="sortMatrices"><div id="sortNameImage"></div><b>×</b><div id="sortNameBoard"></div></div><div id="sortNamingText" hidden><p>가로 한 줄 × 세로 한 줄을 짝지어 곱하고 모두 더하는 계산, 이것이 <strong>행렬 곱셈</strong>이에요. 신경망에서는 점수판을 <strong>가중치</strong>라고 불러요.</p><small>실제 사진은 0~255지만, 계산을 쉽게 하려고 0~1로 바꿔서 써요.</small></div></div><p><strong>영수증의 ‘가격표’는 AI 분류기에서 무엇일까요?</strong></p><div id="sortChoices"></div>',
-      onMount: mountNames, onDismiss: animateNames, isComplete: () => data.named && data.choice === 'weights' }
+    {
+      title: '거울 셀카',
+      speech: '셀카를 찍으면 좌우가 뒤집히죠? AI도 사진을 뒤집어서 공부해요. 고양이 사진 한 장을 뒤집으면, 고양이 사진이 두 장이 되거든요!',
+      html: '<div class="flip-equation flip-intro">' + picture(A, '원본 ㄱ') + '<b>→</b>'
+        + '<div class="flip-ghost">' + picture(results.horizontal, '거울에 비친 ㄱ') + '</div></div>'
+        + '<p>Lv.3: 밝기 바꾸기 → Lv.4: 위치 바꾸기</p><p>사진을 변형해 학습 데이터를 늘리는 방법을 <strong>데이터 증강</strong>이라고 해요.</p>',
+      onMount() { introPart = 0; },
+      onDismiss(api) {
+        if (introPart++ === 0) {
+          api.say('Lv.3에서는 덧셈과 곱하기로 밝기를 바꿨어요. 그럼 그림의 위치는 어떻게 바꿀까요? 바로 행렬 곱셈이에요.');
+          api.showSpeech();
+        }
+      }
+    },
+    {
+      title: '아무것도 안 바꾸는 기계',
+      speech: '이 기계는 대각선에만 1이 있어요. 곱해도 그림이 그대로예요. 숫자 1처럼요! 이런 기계를 ‘단위행렬’이라고 해요.',
+      html: '<div class="flip-equation">' + picture(A, '그림 A', 'flipIdentityA') + '<b>×</b>'
+        + machineCard(I, 'flipIdentityI') + '<b>=</b>' + picture(results.same, '결과 · 칸을 누르세요', 'flipIdentityResult')
+        + '</div><p><strong>A × I = A</strong></p><p id="flipFormula" class="flip-formula">결과 칸을 누르면 행과 열의 계산을 볼 수 있어요.</p><p id="flipCount"></p>' + statusHTML,
+      onMount: mountIdentity, isComplete: () => data.inspected.length >= 2
+    },
+    {
+      title: '좌우 반전 기계 만들기',
+      speech: '기계의 1 위치를 옮겨서 그림을 좌우로 뒤집어 보세요!',
+      html: '<div id="flipSources"></div><div class="flip-equation">' + picture(A, '그림 A')
+        + '<b>×</b><section class="flip-card"><h4>기계 · 열마다 하나 선택</h4><div id="flipBuilder"></div></section><b>=</b><section class="flip-card"><h4>결과</h4><div id="flipBuiltResult"></div></section></div>'
+        + '<div class="flip-builder-footer">' + picture(results.horizontal, '목표 · 좌우 반전')
+        + '<div><button type="button" id="flipHint" class="mt-button">힌트 보기</button><p id="flipHintText">가운데 열은 유지하고 양끝 열을 교환해요.</p></div></div>' + statusHTML,
+      onMount: mountBuilder, isComplete: machineReady
+    },
+    {
+      title: '순서를 바꾸면?',
+      speech: '기계를 그림 왼쪽에 놓고 곱하면 어떻게 될까요? 먼저 예상해 보세요.',
+      html: '<p>J × A는 어떻게 될까요?</p><div id="flipPredictions" class="flip-buttons">'
+        + ['horizontal', 'vertical', 'same'].map((id, i) => `<button type="button" class="mt-button" data-answer="${id}">${['좌우 반전', '상하 반전', '그대로'][i]}</button>`).join('')
+        + '</div><p id="flipPredictionFeedback" role="status"></p><div id="flipOrderActivity" hidden><div id="flipComparison"></div><div id="flipMoveStage" class="flip-equation"></div><p id="flipOrderLabel"></p><button type="button" id="flipSwitch" class="mt-button">기계 위치 바꾸기</button></div>' + statusHTML,
+      onMount: mountOrder,
+      isComplete: () => !!data.prediction && data.viewed.length === 2 && !moving
+    },
+    {
+      title: 'ㄱ을 ㄴ으로',
+      speech: '좌우와 상하를 모두 뒤집으려면 기계를 어디에 놓아야 할까요?',
+      html: '<div id="flipQuizIntro"><p><strong>ㄱ을 ㄴ으로 바꾸려면 어떻게 곱해야 할까요?</strong></p><div class="flip-equation">'
+        + picture(A, '원본 ㄱ') + '<b>→</b>' + picture(results.both, '목표 ㄴ') + '</div></div>'
+        + '<div id="flipChoices" class="flip-buttons"></div><div id="flipAnswerResult" hidden></div>'
+        + '<div id="flipCelebration" hidden><p><strong>사진 1장 → 학습 데이터 4장!</strong></p><div id="flipGallery"></div><div id="flipBonus"></div></div>',
+      onMount: mountQuiz, isComplete: () => data.choice === 'both'
+    }
   ];
   const root = get('learningDialog');
   const controller = StepLesson.create({
     root, className: 'matrix-tutorial', extraClass: 'matrix-level-four',
-    headingId: 'sortStepTitle', title: '드림이의 부품 분류기', description: 'Lv.4 · 점수판으로 부품 구분하기',
+    headingId: 'flipStepTitle', title: '그림 뒤집기 기계', description: 'Lv.4 · 행렬 곱셈으로 그림 뒤집기',
     steps, requireAllSteps: true, closeOnComplete: true,
     finishLabel: ({ testing, cost = 0 }) => testing ? '체험 완료 →' : `연구 완료 · ${cost.toLocaleString('ko-KR')}원으로 업그레이드`,
-    quiz: { type: 'choice', step: 4, answer: 'weights',
-      hints: { image: '그림은 ‘개수’처럼 매번 바뀌는 쪽이에요.', score: '점수는 ‘합계’처럼 계산 결과예요.', position: '픽셀 위치는 ‘상품 이름’에 해당해요.' },
-      success: '정답이에요! 영수증의 가격표가 분류기의 점수판, 즉 가중치에 해당해요.' },
-    onStop() { running = false; }, onStepChange(index) { data.step = index; persist(); }, onClose: persist,
+    quiz: {
+      type: 'choice', step: 4, answer: 'both',
+      hints: {
+        horizontal: '좌우만 뒤집혀서 ┌이 돼요.',
+        vertical: '상하만 뒤집혀서 ┘이 돼요.',
+        same: '단위행렬은 아무것도 바꾸지 않아요.'
+      },
+      success: '양쪽으로 뒤집으면 180도 회전! 행렬 곱셈으로 학습 데이터를 늘렸어요.'
+    },
+    onStop() { animations.forEach(animation => animation.cancel()); animations = []; moving = false; },
+    onStepChange(index) { data.step = index; persist(); }, onClose: persist,
     elements: {
       card: root.querySelector('.card'), top: root.querySelector('.dialog-top'),
       title: get('learningTitle'), description: get('learningDescription'), question: get('learningQuestion'),
@@ -383,29 +298,22 @@
     storageKey = `ai-matrix-lab-v1-${options.test ? 'test' : 'play'}-4`;
     try { record = JSON.parse(localStorage.getItem(storageKey)) || {}; } catch { record = {}; }
     if (typeof record !== 'object' || Array.isArray(record)) record = {};
-    const saved = record.sorterLessonV1;
+    const saved = record.flipLessonV1;
     data = fresh();
     if (saved && typeof saved === 'object') {
-      for (const field of ['receipt', 'total']) {
-        data[field] = typeof saved[field] === 'string' ? saved[field].slice(0, 24) : '';
-        data[field + 'OK'] = saved[field + 'OK'] === true && data[field].trim() !== '' && parse(data[field]) === (field === 'receipt' ? 4000 : 7);
-      }
-      data.overlaySeen = saved.overlaySeen === true;
-      if (Array.isArray(saved.board) && saved.board.length === 9 && saved.board.every(v => [-1,0,1].includes(v))) data.board = [...saved.board];
-      if ([-1,0,1].includes(saved.brush)) data.brush = saved.brush;
-      for (const field of ['paintHint', 'trialHint']) if ([0,1,2].includes(saved[field])) data[field] = saved[field];
-      if (Array.isArray(saved.results) && saved.results.length <= 6 && new Set(saved.results).size === saved.results.length && saved.results.every(id => Object.hasOwn(parts, id))) data.results = [...saved.results];
-      data.trialDone = saved.trialDone === true && data.results.length === 6 && allReady();
-      data.named = saved.named === true;
+      if (Array.isArray(saved.inspected)) data.inspected = [...new Set(saved.inspected.filter(i => Number.isInteger(i) && i >= 0 && i < 9))];
+      const m = saved.machine;
+      if (Array.isArray(m) && m.length === 3 && m.every(row => Array.isArray(row) && row.length === 3 && row.every(v => v === 0 || v === 1))
+        && [0, 1, 2].every(c => m.reduce((sum, row) => sum + row[c], 0) === 1)) data.machine = m.map(row => [...row]);
+      if (['horizontal', 'vertical', 'same'].includes(saved.prediction)) data.prediction = saved.prediction;
+      if (Array.isArray(saved.viewed) && data.prediction && machineReady()) data.viewed = [...new Set(saved.viewed.filter(v => ['left', 'right'].includes(v)))];
+      data.side = saved.side === 'left' ? 'left' : 'right';
       if (data.choices.includes(saved.choice)) data.choice = saved.choice;
-      for (const field of ['choices', 'trialOrder']) {
-        const allowed = data[field];
-        if (Array.isArray(saved[field]) && saved[field].length === allowed.length && new Set(saved[field]).size === allowed.length && saved[field].every(id => allowed.includes(id))) data[field] = [...saved[field]];
-      }
-      const incomplete = steps.findIndex(step => !step.isComplete());
+      if (Array.isArray(saved.choices) && saved.choices.length === 4 && new Set(saved.choices).size === 4 && saved.choices.every(id => data.choices.includes(id))) data.choices = [...saved.choices];
+      const incomplete = steps.findIndex(step => !(step.isComplete?.() ?? true));
       data.step = Math.min(Number.isInteger(saved.step) ? Math.max(0, saved.step) : 0, incomplete < 0 ? 4 : incomplete);
     }
-    controller.start({ ...options, step: data.step, verified: data.choice === 'weights' });
+    controller.start({ ...options, step: data.step, verified: data.choice === 'both' });
   }
   window.MatrixLessonFour = { start };
 })();

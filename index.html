@@ -140,7 +140,7 @@ const factories=[
 {id:'cluster',name:'군집화 공장',cost:1000000,rate:60000,period:250,payout:15000,description:'K-means는 같은 군집에 속한 점들의 평균으로 중심을 갱신해요.',question:'같은 군집의 세 점: (2, 0), (4, 0), (6, 0)\n새 중심의 x좌표는?',answer:4,hint:'x좌표 2, 4, 6의 평균을 구하세요.'}
 ];
 
-const TOPICS={matrix:['연립방정식의 계수 정리','흑백 이미지의 행렬 표현','행렬 연산으로 이미지 값 변경','신경망의 입력과 가중치 계산','여러 입력의 일괄 계산'],language:['형태소와 단어 집합','단어 빈도 벡터','문장 유사도 비교','단어 순서와 문맥 표현'],gradient:['기울기를 따라 손실 줄이기','학습률과 학습 경로','여러 가중치 조정','지역 최솟값과 전역 최솟값'],cluster:['거리·평균과 K-means','군집 수 비교','초기 중심에 따른 결과 비교']};
+const TOPICS={matrix:['연립방정식의 계수 정리','흑백 이미지의 행렬 표현','행렬 연산으로 이미지 값 변경','행렬 곱셈으로 그림 뒤집기','여러 입력의 일괄 계산'],language:['형태소와 단어 집합','단어 빈도 벡터','문장 유사도 비교','단어 순서와 문맥 표현'],gradient:['기울기를 따라 손실 줄이기','학습률과 학습 경로','여러 가중치 조정','지역 최솟값과 전역 최솟값'],cluster:['거리·평균과 K-means','군집 수 비교','초기 중심에 따른 결과 비교']};
 const COLS=21,ROWS=18,SIZES={matrix:2,gradient:4,language:3,cluster:5};
 let selectedFactory=null,selectedInstance=null,placing=null,moving=null,preview=null,dragging=false,selectedBuilding=null,upgradeOfferFor=null,sellOfferFor=null;
 const LAND_PRICES=[2000,8000,30000,100000,300000,1000000,3000000,10000000];
