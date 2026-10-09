@@ -65,7 +65,7 @@
   const button=(label,fn,cls='ml-chip')=>{const b=document.createElement('button');b.type='button';b.className=cls;b.textContent=label;b.onclick=fn;return b;};
   const panel=(title,content)=>`<section class="ml-panel"><h3>${title}</h3>${content}</section>`;
   let activityReady=false;
-  function update(ready, message) {activityReady=ready;el('mlStatus').textContent=message;el('mlStatus').className=ready?'ml-success':'';el('mlFinish').disabled=!ready;el('mlFinish').textContent=testing?'체험 완료':`연구 완료 · ${cost.toLocaleString('ko-KR')}원으로 업그레이드`;persist();}
+  function update(ready, message) {activityReady=ready;el('mlStatus').textContent=message;el('mlStatus').className=ready?'ml-success':'';el('mlFinish').disabled=!ready;el('mlFinish').textContent=testing?'체험 완료':`연구 완료 · ${typeof cost === 'string' ? cost : cost.toLocaleString('ko-KR') + '원'} · 업그레이드`;persist();}
   function draw(){activityReady=false;el('mlSceneControls').replaceChildren();el('mlDreamText').textContent=goals[level-1];el('mlBody').innerHTML='';batch();}
   const batchInputs=[MatrixImage.patterns.left,MatrixImage.patterns.top,MatrixImage.patterns.left],batchWeights=[[1,1],[-1,1],[1,-1],[-1,-1]];
   const outputs=batchInputs.map(row=>[0,1].map(c=>row.reduce((s,v,i)=>s+v*batchWeights[i][c],0)));
