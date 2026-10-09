@@ -214,7 +214,7 @@
     headingId: 'imStepTitle', title: '어두운 사진을 되살려라',
     description: 'Lv.3 · 행렬 연산으로 이미지 값 변경', steps,
     requireAllSteps: true, closeOnComplete: true,
-    finishLabel: ({ testing, cost = 0 }) => testing ? '체험 완료 →' : `연구 완료 · ${cost.toLocaleString('ko-KR')}원으로 업그레이드`,
+    finishLabel: ({ testing, cost = 0 }) => testing ? '체험 완료 →' : `연구 완료 · ${typeof cost === 'string' ? cost : cost.toLocaleString('ko-KR') + '원'} · 업그레이드`,
     quiz: {
       type: 'choice', step: 4, answer: 'restore',
       hints: {
