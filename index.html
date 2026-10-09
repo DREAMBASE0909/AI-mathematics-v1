@@ -44,7 +44,7 @@ button{text-align:center}
 .flow-spark{filter:drop-shadow(0 0 .10px #64e7ff)}.steady-pad,#padArrivalGlow{filter:drop-shadow(0 0 .07px #5de6f7)}
 
 .resource-wallet .label:before{content:none!important}.resource-wallet{background:#fff7dc!important}.resource-row{display:flex;align-items:center;gap:10px;position:relative;margin-top:16px}.resource-row>div{flex:1;min-width:0}.resource-row>div>span{font-size:12px;color:#5c705b}.resource-row strong{display:block;font-size:21px;font-variant-numeric:tabular-nums;color:#304e49;overflow-wrap:anywhere}.resource-row small{font-size:11px;color:#4c7b64}.resource-icon{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;color:#294d56;font-size:20px}.resource-row .income-pop{right:0;top:-7px;font-size:15px}.resource-row .expense-pop{color:#cf4949}
-.center-building{position:absolute;z-index:3;display:flex;align-items:center;justify-content:center;flex-direction:column;border:2px dashed #ead69b;border-radius:12px;background:linear-gradient(135deg,#425e69ed,#597680e6);color:#fff8de;cursor:pointer;padding:5px}.center-building strong{font-size:14px;text-shadow:0 1px 3px #213f4c}.center-building small{font-size:10px;color:#e0f3ed}.center-art{width:90%;height:65%}.center-art svg{width:100%;height:100%}.center-building[data-stage="3"]{border-style:solid;border-color:#a3ebcb;box-shadow:0 0 10px #97e9c47a}.map-building.learning{cursor:pointer}.map-building.learning .facility-art{filter:saturate(.4)}
+.center-building{position:absolute;z-index:3;display:flex;align-items:center;justify-content:flex-end;flex-direction:column;border:0;background:none;color:#fff8de;cursor:pointer;padding:2px}.center-building strong{font-size:14px;text-shadow:0 1px 3px #213f4c}.center-building small{font-size:10px;color:#e0f3ed;text-shadow:0 1px 2px #152c38}.center-art{width:100%;height:76%;min-height:0;pointer-events:none}.center-art svg{display:block;width:100%;height:100%;overflow:visible}.map-building.learning{cursor:pointer}.map-building.learning .facility-art{filter:saturate(.4)}
 #centerDialog{width:min(540px,94vw)}#centerRows{display:grid;gap:12px}.center-resource{border:1px solid #dce3d1;background:#f6f8f0;padding:12px;border-radius:12px}.center-resource>span{float:right;font-size:12px;color:#4c6256}.center-resource .progress{margin:9px 0}.center-resource button{width:100%}.reserve-label{display:flex;align-items:center;gap:8px;margin:16px 0;font-size:13px}#contributeAll{width:100%}#centerCelebration{color:#316b51;font-weight:700}.mission .primary{margin-top:14px;width:100%;font-size:13px}#missionSteps{list-style:none;padding:0;margin:22px 0 0}#missionSteps li{padding:11px 0;border-top:1px solid #e2e7d5;color:#687769}#missionSteps li.done{color:#318263;font-weight:700}#missionDetail{line-height:1.7}#upgradeOffer,#sellOffer{white-space:normal;min-width:230px;max-width:320px;line-height:1.5}.shop-item span{font-size:11px}.land-locked span{white-space:normal;font-size:11px}.map-building .facility-art{height:72%}.map-building.language .facility-art,.map-building.cluster .facility-art{display:flex;align-items:center}.map-building small{white-space:nowrap}.center-building:focus-visible{outline:3px solid #fff5a1}
 .placement-ghost.map-building{pointer-events:none;cursor:inherit}.placement-ghost .facility-art{opacity:.55}.placement-ghost .building-label,.placement-ghost small,.placement-ghost .level-badge{opacity:.7}
 </style><link rel="stylesheet" href="matrix-lab.css"><style>
@@ -142,7 +142,7 @@ const factories=[
 ];
 
 const TOPICS={matrix:['연립방정식의 계수 정리','흑백 이미지의 행렬 표현','행렬 연산으로 이미지 값 변경','행렬 곱셈으로 그림 뒤집기','여러 입력의 일괄 계산'],language:['형태소와 단어 집합','단어 빈도 벡터','문장 유사도 비교','단어 순서와 문맥 표현'],gradient:['기울기를 따라 손실 줄이기','학습률과 학습 경로','여러 가중치 조정','지역 최솟값과 전역 최솟값'],cluster:['거리·평균과 K-means','군집 수 비교','초기 중심에 따른 결과 비교']};
-const COLS=21,ROWS=18,SIZES={matrix:{w:2,h:2},language:{w:3,h:2},gradient:{w:3,h:3},cluster:{w:4,h:3}};
+const COLS=21,ROWS=18,SIZES={matrix:{w:2,h:2},language:{w:3,h:2},gradient:{w:3,h:3},cluster:{w:4,h:3},center:{w:5,h:4}};
 const CENTER={cell:6*21+8};
 let selectedFactory=null,selectedInstance=null,placing=null,moving=null,preview=null,dragging=false,selectedBuilding=null,upgradeOfferFor=null,sellOfferFor=null;
 
@@ -251,14 +251,17 @@ function factoryArtwork(item){
 
 
 
+function mapFacilities(items){return [...items.filter(v=>v.type!=='center'),{uid:'ai-center',type:'center',cell:CENTER.cell,status:state.centerComplete?'active':'learning'}]}
 function roadPlan(items){
+items=mapFacilities(items);
 const placed=items.filter(v=>v.cell>=0),blocked=new Set();
 const cells=v=>{const result=[],size=SIZES[v.type];for(let y=0;y<size.h;y++)for(let x=0;x<size.w;x++)result.push(v.cell+y*COLS+x);return result};
 for(const v of placed)for(const c of cells(v))blocked.add(c);
 for(let y=0;y<4;y++)for(let x=0;x<5;x++)blocked.add(CENTER.cell+y*COLS+x);
 const network=new Set(),fallbackNetwork=new Set(),paths=[],connected=[];
 // The first factory seeds the network; no fixed entrance or reserved ground cell.
-const seed=placed[0];if(seed){for(const c of factoryPortals(seed))network.add(c);for(const c of allFactoryPortals(seed))fallbackNetwork.add(c);connected.push(seed.uid)}
+const eligible=placed.filter(v=>v.status==='active');
+const seed=eligible[0];if(seed){for(const c of factoryPortals(seed))network.add(c);for(const c of allFactoryPortals(seed))fallbackNetwork.add(c);connected.push(seed.uid)}
 const neighbors=c=>[c-COLS,c+COLS,...(c%COLS>0?[c-1]:[]),...(c%COLS<COLS-1?[c+1]:[])].filter(n=>n>=0&&n<COLS*ROWS&&ownsCell(n));
 function findRoute(v,portals,allowSideSources){
  const sources=new Set(allowSideSources?[...network,...fallbackNetwork]:network),targets=new Map();
@@ -267,7 +270,7 @@ function findRoute(v,portals,allowSideSources){
  for(let i=0;i<queue.length;i++){const cell=queue[i];if(targets.has(cell)){const route=[];for(let c=cell;c!==null;c=prev.get(c))route.push(c);route.reverse();return [...route,targets.get(cell)]}for(const next of neighbors(cell))if(!blocked.has(next)&&!prev.has(next)){prev.set(next,cell);queue.push(next)}}
  return null;
 }
-let pending=placed.filter(v=>v!==seed).sort((a,b)=>b.cell-a.cell),progress=true;
+let pending=eligible.filter(v=>v!==seed).sort((a,b)=>b.cell-a.cell),progress=true;
 while(pending.length&&progress){progress=false;const waiting=[];
 for(const v of pending){
  // Prefer central entrances on both factories. Relax source, then destination only if blocked.
@@ -279,7 +282,7 @@ for(const v of pending){
  connected.push(v.uid);progress=true;
 }pending=waiting}
 return {paths,missing:pending.map(v=>v.uid),blocked,network,connected};}
-function previewLayout(){const type=previewType();if(!type||!fits(type,preview,moving))return state.instances;const result=state.instances.filter(v=>v.uid!==moving).map(v=>({...v}));result.push({uid:moving||'preview',type,cell:preview});return result}
+function previewLayout(){const type=previewType();if(!type||!fits(type,preview,moving))return state.instances;const result=state.instances.filter(v=>v.uid!==moving).map(v=>({...v}));const source=state.instances.find(v=>v.uid===moving);result.push({...source,uid:moving||'preview',type,cell:preview,status:source?.status||(state.unlocked.includes(type)?'active':'learning')});return result}
 function roadShape(path,items){
 // Every segment reaches the shared grid node. Rounded stroke joins handle bends
 // without moving a junction off its center and exposing grass between branches.
@@ -317,7 +320,7 @@ function dataFlowCircuit(items,plan){
  const graph=new Map();
  const edge=(a,b)=>{if(a===b)return;if(!graph.has(a))graph.set(a,new Set());if(!graph.has(b))graph.set(b,new Set());graph.get(a).add(b);graph.get(b).add(a)};
  for(const path of plan.paths)for(let i=1;i<path.length;i++)edge(path[i-1],path[i]);
- for(const v of items.filter(v=>v.cell>=0)){const n=SIZES[v.type],ring=[];for(let x=0;x<n.w;x++)ring.push(v.cell+x);for(let y=1;y<n.h;y++)ring.push(v.cell+y*COLS+n.w-1);for(let x=n.w-2;x>=0;x--)ring.push(v.cell+(n.h-1)*COLS+x);for(let y=n.h-2;y>0;y--)ring.push(v.cell+y*COLS);for(let i=0;i<ring.length;i++)edge(ring[i],ring[(i+1)%ring.length])}
+ for(const v of items.filter(v=>v.cell>=0&&v.status==='active')){const n=SIZES[v.type],ring=[];for(let x=0;x<n.w;x++)ring.push(v.cell+x);for(let y=1;y<n.h;y++)ring.push(v.cell+y*COLS+n.w-1);for(let x=n.w-2;x>=0;x--)ring.push(v.cell+(n.h-1)*COLS+x);for(let y=n.h-2;y>0;y--)ring.push(v.cell+y*COLS);for(let i=0;i<ring.length;i++)edge(ring[i],ring[(i+1)%ring.length])}
  // Traverse shared junction nodes, never restart a particle on a separate road segment.
  const visited=new Set(),tours=[];const key=(a,b)=>a<b?a+':'+b:b+':'+a;
  for(const start of graph.keys()){if([...graph.get(start)].every(n=>visited.has(key(start,n))))continue;const tour=[start];function walk(at){for(const next of graph.get(at)){const k=key(at,next);if(visited.has(k))continue;visited.add(k);tour.push(next);walk(next);tour.push(at)}}walk(start);tours.push(tour)}
@@ -326,8 +329,9 @@ function dataFlowCircuit(items,plan){
 let electricFrameHandle;
 const electricEpoch=performance.now();
 function dataFlowLights(items,plan){
- const rings=items.filter(v=>v.cell>=0).map(v=>{const n=SIZES[v.type];return '<rect data-pad="'+v.uid+'" x="'+(v.cell%COLS+.5)+'" y="'+(Math.floor(v.cell/COLS)+.5)+'" width="'+(n.w-1)+'" height="'+(n.h-1)+'" rx=".2"/>'}).join('');
- return '<g fill="none" stroke="#6ccbd8" stroke-width=".045" opacity=".7" class="steady-pad">'+rings+'</g><g id="padArrivalGlow" fill="none" stroke="#b9faff" stroke-width=".09">'+rings+'</g><g id="electricPackets"></g>';
+ const ring=v=>{const n=SIZES[v.type];return '<rect data-pad="'+v.uid+'" x="'+(v.cell%COLS+.5)+'" y="'+(Math.floor(v.cell/COLS)+.5)+'" width="'+(n.w-1)+'" height="'+(n.h-1)+'" rx=".2"/>'};
+ const placed=items.filter(v=>v.cell>=0),rings=placed.filter(v=>v.status==='active').map(ring).join(''),inactive=placed.filter(v=>v.status!=='active').map(ring).join('');
+ return '<g fill="none" stroke="#6ccbd8" stroke-width=".045" opacity=".7" class="steady-pad">'+rings+'</g><g class="inactive-pad" fill="none" stroke="#f06b68" stroke-width=".07">'+inactive+'</g><g id="padArrivalGlow" fill="none" stroke="#b9faff" stroke-width=".09">'+rings+'</g><g id="electricPackets"></g>';
 }
 function animateElectricity(items,plan){
  cancelAnimationFrame(electricFrameHandle);const tours=dataFlowCircuit(items,plan),pads=new Map();for(const v of items){if(v.cell<0)continue;for(let y=0;y<SIZES[v.type].h;y++)for(let x=0;x<SIZES[v.type].w;x++)pads.set(v.cell+y*COLS+x,v.uid)}
@@ -359,7 +363,7 @@ function animateElectricity(items,plan){
  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;window.renderElectricFrame(reduced?0:(performance.now()-electricEpoch)/1000);if(reduced||previewType()||!plan.paths.length)return;let last=0;function frame(now){if(!document.hidden&&now-last>=33){window.renderElectricFrame((now-electricEpoch)/1000);last=now}electricFrameHandle=requestAnimationFrame(frame)}electricFrameHandle=requestAnimationFrame(frame);
 }
 
-function drawRoads(){const old=$('roadLayer');if(old)old.remove();const editing=!!previewType(),items=editing?previewLayout():state.instances,plan=roadPlan(items);const layer=document.createElement('div');layer.id='roadLayer';layer.className='road-layer'+(editing?' road-preview':'');layer.setAttribute('aria-hidden','true');const shapes=plan.paths.map(path=>roadShape(path,items));const lines=shapes.map(v=>'<path d="'+v.d+'"/>').join('');const joins=shapes.flatMap(v=>v.joins).map(d=>'<path d="'+d+'"/>').join('');const innerCorners=innerRoadCorners(plan.paths);const junctions=[...plan.network].filter(c=>!plan.blocked.has(c)).map(c=>'<circle cx="'+(c%COLS+.5)+'" cy="'+(Math.floor(c/COLS)+.5)+'" r="0.3"/>').join('');const pads=items.filter(v=>v.cell>=0).map(v=>'<rect x="'+(v.cell%COLS+.2)+'" y="'+(Math.floor(v.cell/COLS)+.2)+'" width="'+(SIZES[v.type].w-.4)+'" height="'+(SIZES[v.type].h-.4)+'" rx="0.3"/>').join('');layer.innerHTML='<svg viewBox="0 0 '+COLS+' '+ROWS+'" preserveAspectRatio="none"><g fill="#435b68" stroke="#708b96" stroke-width=".06">'+pads+'</g><g fill="none" stroke="#435b68" stroke-width=".34" stroke-linecap="round" stroke-linejoin="round">'+lines+'</g>'+dataFlowLights(items,plan)+'</svg>';$('factories').append(layer);renderGroundDecor(items,plan);animateElectricity(items,plan);return plan;}
+function drawRoads(){const old=$('roadLayer');if(old)old.remove();const editing=!!previewType(),items=mapFacilities(editing?previewLayout():state.instances),plan=roadPlan(items);const layer=document.createElement('div');layer.id='roadLayer';layer.className='road-layer'+(editing?' road-preview':'');layer.setAttribute('aria-hidden','true');const shapes=plan.paths.map(path=>roadShape(path,items));const lines=shapes.map(v=>'<path d="'+v.d+'"/>').join('');const joins=shapes.flatMap(v=>v.joins).map(d=>'<path d="'+d+'"/>').join('');const innerCorners=innerRoadCorners(plan.paths);const junctions=[...plan.network].filter(c=>!plan.blocked.has(c)).map(c=>'<circle cx="'+(c%COLS+.5)+'" cy="'+(Math.floor(c/COLS)+.5)+'" r="0.3"/>').join('');const pads=items.filter(v=>v.cell>=0).map(v=>'<rect x="'+(v.cell%COLS+.2)+'" y="'+(Math.floor(v.cell/COLS)+.2)+'" width="'+(SIZES[v.type].w-.4)+'" height="'+(SIZES[v.type].h-.4)+'" rx="0.3"/>').join('');layer.innerHTML='<svg viewBox="0 0 '+COLS+' '+ROWS+'" preserveAspectRatio="none"><g fill="#435b68" stroke="#708b96" stroke-width=".06">'+pads+'</g><g fill="none" stroke="#435b68" stroke-width=".34" stroke-linecap="round" stroke-linejoin="round">'+lines+'</g>'+dataFlowLights(items,plan)+'</svg>';$('factories').append(layer);renderGroundDecor(items,plan);animateElectricity(items,plan);return plan;}
 function previewType(){return placing||state.instances.find(v=>v.uid===moving)?.type}
 
 function selectBuilding(uid){selectedBuilding=uid;upgradeOfferFor=null;sellOfferFor=null;document.querySelectorAll('.map-building[data-uid]').forEach(node=>node.classList.toggle('selected',node.dataset.uid===uid));const item=state.instances.find(v=>v.uid===uid);$('resumeLearning').hidden=!item||item.status!=='learning';renderPreview()}
@@ -523,7 +527,7 @@ function centerArtwork(){const stage=centerStage();let art='<path d="M10 83L41 6
  if(stage===3)art+='<path d="M36 24L49 14H111L98 24Z" fill="#e5f3e5"/><path d="M36 24v7H98v-7" fill="#82b9be"/><path d="M13 87L113 91L139 73" stroke="#adf2d0" stroke-width="3" fill="none"/><circle cx="74" cy="19" r="3" fill="#fff0a4"/>';
  return '<svg viewBox="0 0 150 100" aria-hidden="true">'+art+'</svg>'}
 function renderCenter(){const b=document.createElement('button');b.id='centerBuilding';b.className='center-building';b.type='button';b.style.left=(CENTER.cell%COLS)/COLS*100+'%';b.style.top=Math.floor(CENTER.cell/COLS)/ROWS*100+'%';b.style.width=5/COLS*100+'%';b.style.height=4/ROWS*100+'%';b.innerHTML='<div class="center-art">'+centerArtwork()+'</div><strong>AI 센터</strong><small id="centerStatus"></small>';b.dataset.stage=centerStage();b.onclick=e=>{e.stopPropagation();if(!placing&&!moving)openCenter()};$('factories').append(b);updateCenterStatus()}
-function updateCenterStatus(){const b=$('centerBuilding');if(!b)return;const stage=centerStage();if(Number(b.dataset.stage)!==stage){b.dataset.stage=stage;b.querySelector('.center-art').innerHTML=centerArtwork()}$('centerStatus').textContent=state.centerComplete?'건설 완료 ✓':centerProgress()===0?'건설 예정 · 눌러서 보기':'건설 '+Math.floor(centerProgress()*100)+'%'}
+function updateCenterStatus(){const b=$('centerBuilding');if(!b)return;const stage=centerStage();if(Number(b.dataset.stage)!==stage){b.dataset.stage=stage;b.querySelector('.center-art').innerHTML=centerArtwork();drawRoads()}$('centerStatus').textContent=state.centerComplete?'건설 완료 ✓':centerProgress()===0?'건설 예정 · 눌러서 보기':'건설 '+Math.floor(centerProgress()*100)+'%'}
 function centerReserve(id){if(!$('reserveUpgrade').checked)return 0;return state.instances.filter(v=>v.type===id&&v.status==='active'&&levelOf(v)<maxLevel(v)).reduce((n,v)=>Math.max(n,upgradeCost(v)),0)}
 function contribution(id){return Math.max(0,Math.min(CENTER_TARGET[id]-state.centerPaid[id],state.resources[id]-centerReserve(id)))}
 function openCenter(){updateCenterDialog();$('centerDialog').showModal()}
