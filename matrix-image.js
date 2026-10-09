@@ -31,7 +31,7 @@
       const alpha = Math.abs(value) / 3 * 0.65 + 0.2;
       const color = value > 0 ? `rgba(40,105,200,${alpha})`
         : value < 0 ? `rgba(193,48,53,${alpha})` : '#858c90';
-      return `<span style="background:${color}" aria-label="${order[i]} 가중치 ${format(value)}">${format(value)}</span>`;
+      return `<span style="background:${color};color:${Math.abs(value) >= 3 || value === 0 ? '#fff' : '#132333'}" aria-label="${order[i]} 가중치 ${format(value)}">${format(value)}</span>`;
     }).join('') + '</div>';
   }
   window.MatrixImage = Object.freeze({
