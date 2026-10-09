@@ -166,7 +166,7 @@ button{touch-action:manipulation}
 <span class="mini">입문 의뢰 · x + a = b</span>
 <div class="problem"><p>다음 식을 만족하는 x를 구하세요.</p><div id="equation" class="equation"></div><form id="form"><label class="answer" for="answer">x = <input id="answer" type="text" inputmode="decimal" autocomplete="off" aria-describedby="feedback" placeholder="정답" required></label><div class="feedback" id="feedback" role="status" aria-live="polite">천천히 풀어도 괜찮아요. 시간 제한은 없어요.</div><div id="hint" class="hint" hidden></div><button id="submit" class="primary" type="submit">정답 제출하기 →</button></form></div>
 <div class="actions"><button class="secondary" id="hintButton">💡 힌트 보기</button><button class="secondary" id="skip">다른 문제 풀기 ↗</button></div><div class="desk"><span class="desk-icon" aria-hidden="true">🧑‍💻</span><div><strong>오늘은 기초 자금을 모으는 날</strong><p>정답을 맞히면 보상이 바로 입금돼요. 틀려도 돈이 줄지 않아요.</p></div></div></section></dialog>
-<dialog id="learningDialog" aria-labelledby="learningTitle"><div class="dialog-top"><span>공장 설계 · 학습</span><button class="secondary" data-close="learningDialog">나중에 하기 ✕</button></div><section class="card"><div class="eyebrow">LEARNING LAB</div><h2 id="learningTitle"></h2><p id="learningDescription"></p><nav id="mtTestLevels" hidden aria-label="행렬 테스트 레벨"></nav><div id="learningQuestion" class="learning-question"></div><aside id="mtGuide" hidden><div><strong>드림이</strong><p id="mtSpeech" aria-live="polite"></p></div><div class="ml-dream-character" role="img" aria-label="드림이"><img src="assets/dreamy-dialogue.webp" alt="" draggable="false"></div></aside><div id="mtNav" hidden><button type="button" id="mtPrev" class="mt-button">← 이전</button><button type="button" id="mtNext" class="mt-button">다음 →</button></div><form id="learningForm"><label for="learningAnswer" hidden>정답 <input id="learningAnswer" inputmode="decimal" autocomplete="off" required></label><p id="learningFeedback" role="status"></p><button class="primary">완료하고 가동하기 →</button></form><p class="mini">종류별로 한 번만 학습합니다. 같은 종류의 학습 대기 공장도 함께 가동됩니다.</p></section></dialog>
+<dialog id="learningDialog" aria-labelledby="learningTitle"><div class="dialog-top"><span>공장 설계 · 학습</span><button class="secondary" data-close="learningDialog">나중에 하기 ✕</button></div><section class="card"><div class="eyebrow">LEARNING LAB</div><h2 id="learningTitle"></h2><p id="learningDescription"></p><nav id="mtTestLevels" hidden aria-label="행렬 테스트 레벨"></nav><div id="learningQuestion" class="learning-question"></div><aside id="mtGuide" hidden><div><strong>드림이</strong><p id="mtSpeech" aria-live="polite"></p></div><div class="ml-dream-character" role="img" aria-label="드림이"><img src="assets/dreamy-dialogue.webp" alt="" draggable="false"></div></aside><div id="mtNav" hidden><button type="button" id="mtPrev" class="mt-button">← 이전</button><span id="mtTapHint" aria-live="polite" style="font-size:13px;color:#627657">화면을 터치하면 다음으로 ▸</span><button type="button" id="mtNext" class="mt-button">다음 →</button></div><form id="learningForm"><label for="learningAnswer" hidden>정답 <input id="learningAnswer" inputmode="decimal" autocomplete="off" required></label><p id="learningFeedback" role="status"></p><button class="primary">완료하고 가동하기 →</button></form><p class="mini">종류별로 한 번만 학습합니다. 같은 종류의 학습 대기 공장도 함께 가동됩니다.</p></section></dialog>
 <dialog id="landDialog" aria-labelledby="landTitle"><div class="dialog-top"><span>부지 확장</span><button class="secondary" data-close="landDialog" aria-label="닫기">✕</button></div><div class="land-content"><div id="landPreview" aria-hidden="true"></div><h2 id="landTitle">회사를 더 넓혀 볼까요?</h2><p>7 × 6 · 공장을 놓을 공간 42칸 추가</p><strong id="landPrice"></strong><p id="landAfter" role="status"></p><button id="confirmLand" class="primary"></button><button class="secondary" data-close="landDialog">다음에 할게요</button></div></dialog><dialog id="upgradeDialog" aria-labelledby="upgradeTitle"><div class="dialog-top"><span>공장 업그레이드</span><button class="secondary" data-close="upgradeDialog">닫기 ✕</button></div><section class="card"><h2 id="upgradeTitle"></h2><p id="upgradeTopic"></p><div id="upgradePlaceholder" class="upgrade-placeholder">(학습 요소)</div><p id="upgradeSummary"></p><p id="upgradeFeedback" role="status"></p><button id="completeUpgrade" class="primary">완료하고 업그레이드</button><p class="mini">프로토타입: 버튼을 누르면 학습을 완료한 것으로 처리합니다.</p></section></dialog><script>
 'use strict';
 const KEY='ai-company-math-v1', $=id=>document.getElementById(id), names=['','입문','기본','도전'], rewards=[0,100,150,250];
@@ -375,7 +375,7 @@ function renderMatrixLesson(){
  $('mtSpeech').textContent=step.speech;$('learningFeedback').textContent='';$('learningForm').hidden=matrixLessonStep<4;
  $('learningForm').querySelector('label').hidden=true;$('learningAnswer').hidden=true;$('learningAnswer').required=false;
  $('learningForm').querySelector('button').textContent=matrixLessonStep===4?'정답 확인 →':matrixLessonTest?'체험 완료 →':'완료하고 가동하기 →';
- $('mtPrev').hidden=matrixLessonStep===5;$('mtPrev').disabled=matrixLessonStep===0;$('mtNext').hidden=matrixLessonStep>=4;$('mtNext').disabled=matrixLessonStep===2;
+ $('mtPrev').hidden=false;$('mtPrev').disabled=matrixLessonStep===0;$('mtNext').hidden=true;$('mtTapHint').hidden=matrixLessonStep>=4;$('mtTapHint').textContent=matrixLessonStep===2?'숫자의 움직임을 지켜보세요':'화면을 터치하면 다음으로 ▸';$('mtNext').disabled=matrixLessonStep===2;
  showMatrixSpeech();
 }
 function showMatrixSpeech(){
@@ -394,7 +394,7 @@ function dismissMatrixSpeech(){
 function showMatrixLessonResult(){
  $('mtMorph').classList.add('mt-formed','mt-revealed');$('mtMatrixResult').classList.add('mt-visible');$('mtMatrixResult').setAttribute('aria-hidden','false');
  $('mtTransformNote').textContent='같은 숫자가 자리를 옮겼어요. 두 방정식과 같은 뜻이에요.';
- $('mtNext').disabled=false;matrixLessonAnimating=false;$('mtSpeech').textContent='숫자들이 행렬로 모였어요. 왼쪽에는 계수, 오른쪽에는 상수가 남았고, x와 y는 하나의 묶음으로 표현해요.';
+ $('mtNext').disabled=false;$('mtTapHint').textContent='화면을 터치하면 다음으로 ▸';matrixLessonAnimating=false;$('mtSpeech').textContent='숫자들이 행렬로 모였어요. 왼쪽에는 계수, 오른쪽에는 상수가 남았고, x와 y는 하나의 묶음으로 표현해요.';
 }
 function animateMatrixLesson(){
  if(matrixLessonAnimating||!$('learningDialog').open||matrixLessonStep!==2)return;matrixLessonAnimating=true;$('mtNext').disabled=true;
@@ -406,6 +406,15 @@ function animateMatrixLesson(){
 }
 $('mtPrev').onclick=()=>{if(matrixLessonStep>0){matrixLessonStep--;renderMatrixLesson();$('mtStepTitle').focus();}};
 $('mtNext').onclick=()=>{if(matrixLessonStep<4&&!$('mtNext').disabled){matrixLessonStep++;renderMatrixLesson();if(matrixLessonStep===4)$('mtAnswerZero').focus();else $('mtStepTitle').focus();}};
+// Ignore controls, text selection and swipe gestures; one tap advances one scene.
+let matrixTapStart=null,matrixTapMoved=false;
+const matrixInteractive='button,input,select,textarea,a,label,form,#mtGuide';
+$('learningDialog').addEventListener('pointerdown',e=>{matrixTapStart={x:e.clientX,y:e.clientY};matrixTapMoved=false;});
+$('learningDialog').addEventListener('pointermove',e=>{if(matrixTapStart&&Math.hypot(e.clientX-matrixTapStart.x,e.clientY-matrixTapStart.y)>12)matrixTapMoved=true;});
+$('learningDialog').addEventListener('pointercancel',()=>{matrixTapMoved=true;});
+function canTapMatrix(e){return $('learningDialog').classList.contains('matrix-tutorial')&&$('mtGuide').hidden&&!e.target.closest(matrixInteractive)&&matrixLessonStep<4&&!$('mtNext').disabled;}
+$('learningDialog').addEventListener('click',e=>{if(canTapMatrix(e)&&!matrixTapMoved&&!window.getSelection()?.toString())$('mtNext').onclick();matrixTapStart=null;});
+$('learningDialog').addEventListener('keydown',e=>{if(['Enter',' '].includes(e.key)&&!e.repeat&&canTapMatrix(e)){e.preventDefault();$('mtNext').onclick();}});
 $('learningDialog').addEventListener('close',()=>{stopMatrixLessonAnimation();$('mtGuide').hidden=true;for(const node of $('learningDialog').querySelectorAll('[inert]'))node.inert=false;if(matrixLessonReturn?.isConnected)matrixLessonReturn.focus();matrixLessonReturn=null;});
 function openLearning(uid){
  const item=state.instances.find(v=>v.uid===uid);if(!item||item.status!=='learning')return;
@@ -454,7 +463,7 @@ document.querySelectorAll('.ml-dream-character img').forEach(img=>{img.src='asse
 const replaySpeech=document.createElement('button');replaySpeech.id='mtReplay';replaySpeech.type='button';replaySpeech.className='mt-button';replaySpeech.textContent='대사 다시 보기';replaySpeech.onclick=showMatrixSpeech;$('mtNav').insertBefore(replaySpeech,$('mtNext'));
 const dismissHint=document.createElement('span');dismissHint.className='mt-dismiss-hint';dismissHint.textContent='화면을 터치하거나 Enter를 눌러 계속 ▾';$('mtGuide').firstElementChild.append(dismissHint);
 $('mtGuide').setAttribute('role','button');$('mtGuide').setAttribute('tabindex','0');$('mtGuide').setAttribute('aria-label','드림이 대사 닫고 학습 계속');$('mtGuide').setAttribute('aria-describedby','mtSpeech');
-$('mtGuide').addEventListener('click',dismissMatrixSpeech);
+$('mtGuide').addEventListener('click',e=>{e.stopPropagation();dismissMatrixSpeech();});
 $('mtGuide').addEventListener('keydown',e=>{if(['Enter',' ','Escape'].includes(e.key)){e.preventDefault();e.stopPropagation();dismissMatrixSpeech();}});
 const previousMatrixStart=MatrixLab.start;
 MatrixLab.start=function(level,options={}){if(level===1){if(document.getElementById('matrixLab').open)document.getElementById('matrixLab').close();startMatrixLesson(null,true);return;}return previousMatrixStart(level,options);};
