@@ -128,6 +128,34 @@ button{touch-action:manipulation}
  #learningDialog.matrix-tutorial #mtGuide .ml-dream-character{width:115px;height:132px}
  #learningDialog.matrix-tutorial #learningForm+p{display:none}
 }
+
+/* Full-screen dialogue scene: tap the dimmed screen to return to the lesson. */
+#learningDialog.matrix-tutorial #mtGuide{
+ position:fixed;inset:0;z-index:100;margin:0;width:100vw;height:100dvh;min-height:0;
+ padding:0;border:0;border-radius:0;box-shadow:none;cursor:pointer;
+ background:linear-gradient(to bottom,rgba(0,0,0,.43) 0%,rgba(0,0,0,.5) 44%,rgba(0,0,0,.84) 68%,#000 88%);
+ animation:mtSceneIn .24s ease-out;
+}
+#learningDialog.matrix-tutorial #mtGuide>div:first-child{position:absolute;left:max(6vw,24px);right:34vw;bottom:max(6dvh,24px);z-index:3}
+#learningDialog.matrix-tutorial #mtGuide>div:first-child>strong{position:static;display:block;padding:0;margin:0 0 16px;background:none;border:0;border-radius:0;box-shadow:none;font-size:24px;letter-spacing:2px;color:#a9e9ff;text-shadow:0 2px 5px #000}
+#learningDialog.matrix-tutorial #mtSpeech{font-size:clamp(18px,2.1vw,26px);line-height:1.9;min-height:0;margin:0;color:white;word-break:keep-all;text-shadow:0 2px 5px #000}
+#learningDialog.matrix-tutorial #mtGuide .ml-dream-character{width:clamp(180px,32vw,390px);height:clamp(210px,38vw,450px);right:3vw;bottom:3dvh;animation:mtPortraitEnter .3s ease-out}
+.mt-dismiss-hint{display:block;margin-top:24px;color:#c3c8d1;font-size:13px;letter-spacing:.5px}
+#learningDialog.matrix-tutorial #mtNav{flex:none;margin:12px 0 0;align-items:center}
+#learningDialog.matrix-tutorial #mtNav .mt-button{color:#3d5833;border-color:#bccda9;background:#eff4e6;min-height:44px}
+#mtReplay{margin-left:auto}
+#learningDialog.matrix-tutorial #mtNext{margin-left:0}
+#learningDialog.matrix-tutorial #mtNext::after{color:#557440}
+@keyframes mtSceneIn{from{opacity:0}to{opacity:1}}
+@media(max-width:649px){
+ #learningDialog.matrix-tutorial #mtGuide>div:first-child{left:24px;right:24px;bottom:5dvh}
+ #learningDialog.matrix-tutorial #mtGuide .ml-dream-character{width:180px;height:210px;right:10px;bottom:30dvh;opacity:.95}
+ #learningDialog.matrix-tutorial #mtGuide>div:first-child>strong{font-size:21px;margin-bottom:12px}
+ #learningDialog.matrix-tutorial #mtSpeech{font-size:18px;line-height:1.75}
+ #learningDialog.matrix-tutorial #mtNav{margin-right:0;gap:6px;flex-wrap:wrap}
+ .mt-dismiss-hint{margin-top:16px}
+}
+@media(prefers-reduced-motion:reduce){#learningDialog.matrix-tutorial #mtGuide{animation:none}}
 </style></head><body>
 <div class="world-scenery" aria-hidden="true"><div class="sun"></div><div class="cloud"></div><div class="cloud c2"></div><div class="cloud c3"></div><div class="hill"></div><div class="hill h2"></div><div class="hill h3"></div></div><header><div class="brand"><span>ai</span> AI COMPANY</div><div class="tag">AI × MATH · TYCOON</div></header>
 <main><section class="intro"><div><div class="eyebrow">BUILD YOUR OWN AI COMPANY</div><h1>나의 AI 회사</h1><p>의뢰를 해결하고, 공장을 하나씩 가동해 보세요.</p></div><span class="badge">LEVEL 01 · 신입 창업가</span></section>
@@ -348,7 +376,20 @@ function renderMatrixLesson(){
  $('learningForm').querySelector('label').hidden=true;$('learningAnswer').hidden=true;$('learningAnswer').required=false;
  $('learningForm').querySelector('button').textContent=matrixLessonStep===4?'정답 확인 →':matrixLessonTest?'체험 완료 →':'완료하고 가동하기 →';
  $('mtPrev').hidden=matrixLessonStep===5;$('mtPrev').disabled=matrixLessonStep===0;$('mtNext').hidden=matrixLessonStep>=4;$('mtNext').disabled=matrixLessonStep===2;
- if(matrixLessonStep===2){matrixLessonTimer=setTimeout(animateMatrixLesson,250);}
+ showMatrixSpeech();
+}
+function showMatrixSpeech(){
+ $('mtGuide').hidden=false;
+ for(const child of $('learningDialog').querySelector('.card').children)if(child.id!=='mtGuide')child.inert=true;
+ $('learningDialog').querySelector('.dialog-top').inert=true;
+ queueMicrotask(()=>{if($('learningDialog').open&&!$('mtGuide').hidden)$('mtGuide').focus({preventScroll:true});});
+}
+function dismissMatrixSpeech(){
+ $('mtGuide').hidden=true;
+ for(const child of $('learningDialog').querySelector('.card').children)child.inert=false;
+ $('learningDialog').querySelector('.dialog-top').inert=false;
+ if(matrixLessonStep===2&&!$('mtMorph').classList.contains('mt-formed')&&!matrixLessonAnimating){matrixLessonTimer=setTimeout(animateMatrixLesson,150);}
+ const target=matrixLessonStep===4?$('mtAnswerZero'):matrixLessonStep===5?$('learningForm').querySelector('button'):$('mtStepTitle');target.focus({preventScroll:true});
 }
 function showMatrixLessonResult(){
  $('mtMorph').classList.add('mt-formed','mt-revealed');$('mtMatrixResult').classList.add('mt-visible');$('mtMatrixResult').setAttribute('aria-hidden','false');
@@ -365,11 +406,11 @@ function animateMatrixLesson(){
 }
 $('mtPrev').onclick=()=>{if(matrixLessonStep>0){matrixLessonStep--;renderMatrixLesson();$('mtStepTitle').focus();}};
 $('mtNext').onclick=()=>{if(matrixLessonStep<4&&!$('mtNext').disabled){matrixLessonStep++;renderMatrixLesson();if(matrixLessonStep===4)$('mtAnswerZero').focus();else $('mtStepTitle').focus();}};
-$('learningDialog').addEventListener('close',()=>{stopMatrixLessonAnimation();if(matrixLessonReturn?.isConnected)matrixLessonReturn.focus();matrixLessonReturn=null;});
+$('learningDialog').addEventListener('close',()=>{stopMatrixLessonAnimation();$('mtGuide').hidden=true;for(const node of $('learningDialog').querySelectorAll('[inert]'))node.inert=false;if(matrixLessonReturn?.isConnected)matrixLessonReturn.focus();matrixLessonReturn=null;});
 function openLearning(uid){
  const item=state.instances.find(v=>v.uid===uid);if(!item||item.status!=='learning')return;
  if(item.type==='matrix'){startMatrixLesson(uid);return;}
- stopMatrixLessonAnimation();matrixLessonTest=false;$('learningDialog').classList.remove('matrix-tutorial');$('mtGuide').hidden=true;$('mtNav').hidden=true;$('mtTestLevels').hidden=true;$('learningForm').hidden=false;$('learningForm').querySelector('label').hidden=true;$('learningForm').querySelector('button').textContent='완료하고 가동하기 →';
+ for(const node of $('learningDialog').querySelectorAll('[inert]'))node.inert=false;stopMatrixLessonAnimation();matrixLessonTest=false;$('learningDialog').classList.remove('matrix-tutorial');$('mtGuide').hidden=true;$('mtNav').hidden=true;$('mtTestLevels').hidden=true;$('learningForm').hidden=false;$('learningForm').querySelector('label').hidden=true;$('learningForm').querySelector('button').textContent='완료하고 가동하기 →';
  const f=factories.find(v=>v.id===item.type);selectedInstance=uid;selectedFactory=f.id;$('learningTitle').textContent=f.name+' 설계';$('learningDescription').textContent='Lv.1 · '+TOPICS[item.type][0];$('learningQuestion').textContent='(학습 요소)';$('learningAnswer').value=String(f.answer);$('learningAnswer').hidden=true;$('learningAnswer').required=false;$('learningFeedback').textContent='한 번 학습하면 같은 종류의 공장은 다음 구매부터 바로 가동돼요.';if(!$('learningDialog').open)$('learningDialog').showModal();$('learningForm').querySelector('button').focus();
 }
 $('learningForm').addEventListener('submit',e=>{
@@ -409,7 +450,12 @@ $('skip').addEventListener('click',newProblem);$('addTestMoney').addEventListene
 </script><script src="matrix-solver.js"></script><script src="learning-shell.js"></script><script src="matrix-level-one.js"></script><script src="matrix-lab.js"></script><script>
 // Route the existing Lv.1 test entry to the same lesson as first purchase.
 document.querySelectorAll('.ml-dream-character img').forEach(img=>{img.src='assets/dreamy-dialogue.webp';});
-$('mtGuide').querySelector('div').append($('mtNav'));
+// Dialogue is a full-screen layer, separate from persistent lesson controls.
+const replaySpeech=document.createElement('button');replaySpeech.id='mtReplay';replaySpeech.type='button';replaySpeech.className='mt-button';replaySpeech.textContent='대사 다시 보기';replaySpeech.onclick=showMatrixSpeech;$('mtNav').insertBefore(replaySpeech,$('mtNext'));
+const dismissHint=document.createElement('span');dismissHint.className='mt-dismiss-hint';dismissHint.textContent='화면을 터치하거나 Enter를 눌러 계속 ▾';$('mtGuide').firstElementChild.append(dismissHint);
+$('mtGuide').setAttribute('role','button');$('mtGuide').setAttribute('tabindex','0');$('mtGuide').setAttribute('aria-label','드림이 대사 닫고 학습 계속');$('mtGuide').setAttribute('aria-describedby','mtSpeech');
+$('mtGuide').addEventListener('click',dismissMatrixSpeech);
+$('mtGuide').addEventListener('keydown',e=>{if(['Enter',' ','Escape'].includes(e.key)){e.preventDefault();e.stopPropagation();dismissMatrixSpeech();}});
 const previousMatrixStart=MatrixLab.start;
 MatrixLab.start=function(level,options={}){if(level===1){if(document.getElementById('matrixLab').open)document.getElementById('matrixLab').close();startMatrixLesson(null,true);return;}return previousMatrixStart(level,options);};
 document.getElementById('testMatrixLab').onclick=()=>startMatrixLesson(null,true);
