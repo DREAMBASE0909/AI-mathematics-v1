@@ -16,3 +16,13 @@
 ## 확인
 
 입력 순서 오류 [3,2,1,0], 빈칸, 공백, 문자 입력은 실패한다. [2,3,1,0]만 수치상 정답으로 인정한다. 브라우저에서 두 단계 힌트, 빈칸/오답 차단, Enter 완료, 최초 구매 학습 후 공장 가동과 초당 30원 표시를 확인했다.
+
+## 리팩터링 사용처 조사 (2026-10-09)
+
+- 확정 Lv.1: `openLearning` → `startMatrixLesson`; 자유 테스트 버튼과 두 레벨 탭도 동일 튜토리얼로 우회된다.
+- Lv.2~5: `MatrixLab.start` → `LearningShell.create`의 본문·완료 콜백.
+- `MatrixLevelOne.mount/correct`는 우회된 `arrange`/Lv.1 완료 검사에서만 참조된다. 다른 진입점 없음.
+- `MatrixSolver.open/mount` 호출 없음. `stop` 호출 두 곳만 남아 있다.
+- `matrixBracket`는 정의만 존재한다.
+- 옛 `coefficients`, `slots`, `scene` 등은 현재 Lv.2~5 저장 객체에 포함된다. 실행 코드는 제거하되 저장 형식 호환용 기본 필드는 유지한다.
+- 기준: index.html 119188 bytes. 저장 키 `ai-company-math-v1`, `ai-matrix-lab-v1-{test|play}-{level}` 유지.
