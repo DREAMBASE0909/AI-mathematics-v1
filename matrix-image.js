@@ -25,14 +25,26 @@
   });
   const order = (size = 2) => Array.from({ length: size * size }, (_, i) =>
     `${Math.floor(i / size) + 1}행 ${i % size + 1}열`);
-  const parts = Object.freeze({
-    V: Object.freeze([0,1,0, 0,1,0, 0,1,0]),
-    H: Object.freeze([0,0,0, 1,1,1, 0,0,0]),
-    Vtop: Object.freeze([0,0,0, 0,1,0, 0,1,0]),
-    Vbot: Object.freeze([0,1,0, 0,1,0, 0,0,0]),
-    Hleft: Object.freeze([0,0,0, 0,1,1, 0,0,0]),
-    Hright: Object.freeze([0,0,0, 1,1,0, 0,0,0])
-  });
+  // Matrix arithmetic uses row arrays; image markup continues to use flat values.
+  function identity(n) {
+    if (!Number.isInteger(n) || n < 1) throw new RangeError('Invalid matrix size');
+    return Array.from({ length: n }, (_, r) =>
+      Array.from({ length: n }, (_, c) => Number(r === c)));
+  }
+  function flip(n) {
+    return identity(n).map(row => row.reverse());
+  }
+  function multiply(left, right) {
+    const valid = matrix => Array.isArray(matrix) && matrix.length > 0
+      && Array.isArray(matrix[0]) && matrix[0].length > 0
+      && matrix.every(row => Array.isArray(row) && row.length === matrix[0].length
+        && row.every(Number.isFinite));
+    if (!valid(left) || !valid(right) || left[0].length !== right.length) {
+      throw new RangeError('Incompatible matrix dimensions');
+    }
+    return left.map(row => right[0].map((_, c) =>
+      row.reduce((sum, value, k) => sum + value * right[k][c], 0)));
+  }
   const format = value => String(value).replace('-', '−');
   const dot = (row, column) => row.reduce((sum, value, i) => sum + value * column[i], 0);
   function weightMap(values, size = 2) {
@@ -47,6 +59,6 @@
   window.MatrixImage = Object.freeze({
     face: Object.freeze(face),
     dark: Object.freeze(face.map(value => darkValues[value])),
-    clip, grid, patterns, parts, order, format, dot, weightMap
+    clip, grid, patterns, order, format, dot, weightMap, identity, flip, multiply
   });
 })();
