@@ -1,5 +1,5 @@
 #matrixLab {
-  width:920px;
+  width:1040px;
   max-width:calc(100vw - 24px);
   padding:24px;
   background:#f7f8f3;
@@ -105,34 +105,6 @@
 .ml-chip:disabled {
   opacity:.45;
   cursor:default;
-}
-.ml-equation {
-  font-size:24px!important;
-  color:#314f41!important;
-  line-height:2!important;
-  white-space:nowrap;
-}
-.ml-table {
-  border-collapse:collapse;
-  width:100%;
-  font-size:12px;
-}
-.ml-table th,.ml-table td {
-  padding:8px 3px;
-  text-align:center;
-}
-.ml-table th {
-  color:#587161;
-}
-.ml-table td {
-  border:1px solid #dce3d6;
-}
-.ml-table td button {
-  width:100%;
-  font-size:19px;
-}
-.ml-table-scroll {
-  overflow-x:auto;
 }
 .ml-highlight {
   background:#fff0bd!important;
@@ -363,9 +335,6 @@
 .ml-notation:after {
   right:0;
   border-right:3px solid #345e4b;
-}
-#matrixLab {
-  width:1040px;
 }
 .ml-dialogue {
   display:flex;
