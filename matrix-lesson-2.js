@@ -2,15 +2,7 @@
 (() => {
   'use strict';
   const get = id => document.getElementById(id);
-  const face = [
-    [255,170,170,170,170,170,255],
-    [170,0,0,0,0,0,170],
-    [170,0,255,0,255,0,170],
-    [170,0,255,0,255,0,170],
-    [170,0,0,0,0,0,170],
-    [170,0,85,85,85,0,170],
-    [255,170,170,170,170,170,255]
-  ].flat();
+  const { face, grid } = MatrixImage;
   const shades = [0, 85, 170, 255];
   const edge = i => i < 7 || i >= 42 || i % 7 === 0 || i % 7 === 6;
   const correct = Array.from({ length: 25 }, (_, i) => i === 12 ? 128
@@ -29,10 +21,6 @@
     try { localStorage.setItem(storageKey, JSON.stringify(record)); } catch { /* Optional storage. */ }
   }
   function changed() { persist(); controller.refresh(); }
-  function grid(values, size, numbers = false) {
-    return `<div class="px-grid ${numbers ? 'px-numbers' : ''}" style="--n:${size}">`
-      + values.map(v => `<span style="background:rgb(${v},${v},${v});color:${v < 140 ? '#fff' : '#182730'}">${numbers ? v : ''}</span>`).join('') + '</div>';
-  }
   function status(message) { get('pxStatus').textContent = message; }
   function mountZoom(api) {
     get('pxZoomImage').innerHTML = grid(face, 7, true);
